@@ -1,0 +1,42 @@
+
+{{ extends "global/Page.html" }}
+{{ block title }}Round x Decision{{ endblock }}
+{{ block content }}
+
+<div class="flex-container">
+
+  <div class="flex-child magenta">
+    Flex Column 1
+     {{ include C.pgg_contribute_template }}
+  </div>
+
+  <div class="flex-child green">
+    Flex Column 2
+  </div>
+
+</div>
+
+<button class="otree-btn-next btn btn-primary">Submit</button>
+
+<style>
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+    padding: 20px;
+    border: 2px solid black;
+  border-radius: 25px;
+}
+
+.flex-child:first-child {
+    margin-right: 20px;
+}
+
+
+.otree-btn-next {
+  float: right;
+}
+</style>
+{{ endblock }}
