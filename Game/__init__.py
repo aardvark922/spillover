@@ -8,11 +8,42 @@ indefinitely repeated public goods game with 4 playes
 class C(BaseConstants):
     NAME_IN_URL = 'public_goods_simple'
     pgg_contribute_template = 'Game/pgg_contribute.html'
-    PLAYERS_PER_GROUP = 4
-    NUM_ROUNDS = 1
+    PLAYERS_PER_GROUP = None
+    num_super_games = 5
+    delta = 0.90  # discount factor equals to 0.90
+    # supergame_duration = [10, 3, 21, 10, 12]
+    #for app building
+    supergame_duration = [1,2,1,1,2]
+    num_rounds = sum(supergame_duration)
+    last_round = sum(supergame_duration)  # sum(super_game_duration)
+
+    # Nested groups parameters
+    super_group_size = 4
+    group_size = 2
+
+    ## parameters for Easy PD matrix
+    # payoff if 1 player defects and the other cooperates""",
+    ez_betray_payoff = cu(50)
+    ez_betrayed_payoff = cu(12)
+
+    # payoff if both players cooperate or both defect
+    ez_both_cooperate_payoff = cu(48)
+    ez_both_defect_payoff = cu(25)
+
+    ## parameters for Difficult PD matrix
+    # payoff if 1 player defects and the other cooperates""",
+    dt_betray_payoff = cu(50)
+    dt_betrayed_payoff = cu(12)
+
+    # payoff if both players cooperate or both defect
+    dt_both_cooperate_payoff = cu(32) #TODO: needs to be calculated
+    dt_both_defect_payoff = cu(25)
+
+    #PGG Parameters
+
     ENDOWMENT = cu(25)
     MPCR = 0.4
-    MULTIPLIER = PLAYERS_PER_GROUP * MPCR
+    MULTIPLIER = super_group_size * MPCR
 
 
 class Subsession(BaseSubsession):
