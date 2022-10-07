@@ -119,18 +119,28 @@ def creating_session(subsession: Subsession):
         # Set group matrix in oTree based on the supergroups
         subsession.set_group_matrix(super_groups)
         # Call the set_pairs function
-        set_pairs(subsession, pair_ids, C.observer_num)
+        set_pairs(subsession, pair_ids)
+        #TODO pair_ID 0 needs to be fixed!
         print('new pair ids:', pair_ids)
+    else:
+        super_groups=subsession.get_groups()
+        for g in super_groups:
+            players = g.get_players()
+            for p in players:
+                prev_p= p.in_round(p.round_number-1)
+                p.pair_id = prev_p.pair_id
+
+
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
-def set_pairs(subsession: Subsession, pair_ids: list, observer_num: int):
+def set_pairs(subsession: Subsession, pair_ids: list):
     from random import shuffle
     # Get the supergroups for this round
     super_groups = subsession.get_groups()
     for g in super_groups:
         players = g.get_players()
         shuffle(pair_ids)
-        for n, p in enumerate(players[:len(players) - observer_num]):
+        for n, p in enumerate(players[:len(players)]):
             p.pair_id = pair_ids[n]
 
 def set_payoffs(group: Group):
