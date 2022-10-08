@@ -10,10 +10,10 @@ class C(BaseConstants):
     pgg_contribute_template = 'Game/pgg_contribute.html'
     PLAYERS_PER_GROUP = None
     num_super_games = 5
-    delta = 0.90  # discount factor equals to 0.90
+    delta = 0.75  # discount factor equals to 0.75
     # supergame_duration = [10, 3, 21, 10, 12]
     #for app building
-    supergame_duration = [1,2,1,1,2]
+    supergame_duration = [2,1,3,2,3]
     NUM_ROUNDS = sum(supergame_duration)
     last_round = sum(supergame_duration)  # sum(super_game_duration)
 
@@ -123,6 +123,8 @@ def creating_session(subsession: Subsession):
         #TODO pair_ID 0 needs to be fixed!
         print('new pair ids:', pair_ids)
     else:
+        # Set group matrix in oTree based on the matrix of the previous round
+        subsession.group_like_round(subsession.round_number - 1)
         super_groups=subsession.get_groups()
         for g in super_groups:
             players = g.get_players()
