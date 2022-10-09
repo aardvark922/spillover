@@ -6,12 +6,12 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211; R
 <div class="flex-container">
 
   <div class="flex-child magenta" style="background-color: aliceblue">
-    <h5> Game Blue </h5>
+      <h5 style="color: darkblue; " >Blue Game</h5>
      {{ include C.pgg_results_template }}
   </div>
 
   <div class="flex-child green" style="background-color: lightyellow">
-    <h5>Game Yellow</h5>
+    <h5 style="color: saddlebrown">Yellow Game</h5>
   </div>
 
 </div>
@@ -22,6 +22,7 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211; R
 <style>
 .flex-container {
     display: flex;
+    height: 400px;
 }
 
 .flex-child {

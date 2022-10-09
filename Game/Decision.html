@@ -8,12 +8,16 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 <div class="flex-container">
 
   <div class="flex-child magenta" style="background-color: aliceblue">
-    <h5> Game Blue </h5>
+    <h5 style="color: darkblue; " >Blue Game</h5>
+    <br>
+    <br>
+    <br>
+    <br>
      {{ include C.pgg_contribute_template }}
   </div>
 
   <div class="flex-child green" style="background-color: lightyellow">
-    <h5>Game Yellow</h5>
+    <h5 style="color: saddlebrown">Yellow Game</h5>
   </div>
 
 </div>
@@ -24,6 +28,7 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 <style>
 .flex-container {
     display: flex;
+  height: 400px;
 }
 
 .flex-child {
@@ -38,8 +43,8 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 }
 .controls{
   width: 50px;
-    margin-left:85%;
-  margin-right:15%;
+    margin-left:45%;
+  margin-right:55%;
 }
 
 .otree-btn-next {

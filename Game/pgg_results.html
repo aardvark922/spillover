@@ -1,11 +1,20 @@
 <div>
 
-    <p>
-        You started with an endowment of {{ C.ENDOWMENT }},
-        of which you contributed {{ player.contribution }}.
-        Your group contributed {{ group.total_contribution }},
-        resulting in an individual share of {{ group.individual_share }}.
-        Your profit is therefore {{ player.pgg_earning }}.
-    </p>
+  <p>The number of tokens you moved to the
+    <span style="font-style:italic">Group Account</span>:
+    <br>
+    {{ player.contribution }}
+  <br>
+    Totle number of tokens moved to the
+    <span style="font-style:italic">Group Account</span>
+    by the group: {{ group.total_contribution }}
+  <br>Every group member's earning from the
+    <span style="font-style:italic">Group Account</span>:
+  {{C.MPCR}} &times; {{group.total_contribution}} = {{ group.individual_share }}</p>
+  <br>
+  <br>
+  <p>Your earnings from your <span style="font-style:italic">Private Account</span>:
+  {{pgg_private}}</p>
+  <p style="font-weight: bold">Your Blue Game earning in this round: {{ player.pgg_earning }}</p>
 
 </div>

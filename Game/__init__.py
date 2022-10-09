@@ -54,8 +54,8 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    total_contribution = models.CurrencyField()
-    individual_share = models.CurrencyField()
+    total_contribution = models.FloatField()
+    individual_share = models.FloatField()
 
 
 class Player(BasePlayer):
@@ -63,7 +63,7 @@ class Player(BasePlayer):
     contribution = models.IntegerField(
         min=0,
         max=C.ENDOWMENT,
-        label="Token you choose to move to the group account:"
+        label="Token you choose to move to the Group Account:"
     )
     pgg_earning = models.FloatField()
     PD_decision = models.StringField(
@@ -153,9 +153,7 @@ def set_payoffs(group: Group):
     players = group.get_players()
     contributions = [p.contribution for p in players]
     group.total_contribution = sum(contributions)
-    group.individual_share = (
-            group.total_contribution * C.MULTIPLIER / C.super_group_size
-    )
+    group.individual_share = round(group.total_contribution * C.MPCR,2)
     for p in players:
         p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
@@ -179,7 +177,8 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
             return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                            player.subsession.curr_super_game - 1] + 1)
+                            player.subsession.curr_super_game - 1] + 1,
+                        pgg_private=C.ENDOWMENT-player.contribution)
 
 
 
