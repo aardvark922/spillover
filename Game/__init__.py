@@ -8,6 +8,7 @@ indefinitely repeated public goods game with 4 playes
 class C(BaseConstants):
     NAME_IN_URL = 'public_goods_simple'
     pgg_contribute_template = 'Game/pgg_contribute.html'
+    pgg_results_template = 'Game/pgg_results.html'
     PLAYERS_PER_GROUP = None
     num_super_games = 5
     delta = 0.75  # discount factor equals to 0.75
@@ -42,7 +43,7 @@ class C(BaseConstants):
 
     #PGG Parameters
 
-    ENDOWMENT = cu(25)
+    ENDOWMENT = 25
     MPCR = 0.4
     MULTIPLIER = super_group_size * MPCR
 
@@ -59,9 +60,12 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     pair_id = models.IntegerField(initial=0)
-    contribution = models.CurrencyField(
-        min=0, max=C.ENDOWMENT, label="How much will you contribute?"
+    contribution = models.IntegerField(
+        min=0,
+        max=C.ENDOWMENT,
+        label="Token you choose to move to the group account:"
     )
+    pgg_earning = models.FloatField()
     PD_decision = models.StringField(
         initial='NA',
         choices=[['Action Y', 'Action Y'], ['Action Z', 'Action Z']],
@@ -150,10 +154,10 @@ def set_payoffs(group: Group):
     contributions = [p.contribution for p in players]
     group.total_contribution = sum(contributions)
     group.individual_share = (
-            group.total_contribution * C.MULTIPLIER / C.PLAYERS_PER_GROUP
+            group.total_contribution * C.MULTIPLIER / C.super_group_size
     )
     for p in players:
-        p.payoff = C.ENDOWMENT - p.contribution + group.individual_share
+        p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
 
 # PAGES
@@ -161,13 +165,22 @@ class Decision(Page):
     form_model = 'player'
     form_fields = ['contribution']
 
+    @staticmethod
+    def vars_for_template(player: Player):
+            return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+                            player.subsession.curr_super_game - 1] + 1)
+
 
 class ResultsWaitPage(WaitPage):
     after_all_players_arrive = set_payoffs
 
 
 class Results(Page):
-    pass
+    @staticmethod
+    def vars_for_template(player: Player):
+            return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+                            player.subsession.curr_super_game - 1] + 1)
+
 
 
 page_sequence = [Decision, ResultsWaitPage, Results]

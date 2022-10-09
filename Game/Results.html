@@ -1,14 +1,52 @@
-{{ block title }}Results{{ endblock }}
+{{ block title }}
+Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211; Results
+{{ endblock }}
 {{ block content }}
 
-    <p>
-        You started with an endowment of {{ C.ENDOWMENT }},
-        of which you contributed {{ player.contribution }}.
-        Your group contributed {{ group.total_contribution }},
-        resulting in an individual share of {{ group.individual_share }}.
-        Your profit is therefore {{ player.payoff }}.
-    </p>
+<div class="flex-container">
 
-    {{ next_button }}
+  <div class="flex-child magenta" style="background-color: aliceblue">
+    <h5> Game Blue </h5>
+     {{ include C.pgg_results_template }}
+  </div>
+
+  <div class="flex-child green" style="background-color: lightyellow">
+    <h5>Game Yellow</h5>
+  </div>
+
+</div>
+<br>
+<br>
+<button class="otree-btn-next btn btn-primary">OK</button>
+
+<style>
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+    padding: 20px;
+    border: 2px solid black;
+  border-radius: 25px;
+}
+
+.flex-child:first-child {
+    margin-right: 20px;
+}
+.controls{
+  width: 50px;
+    margin-left:85%;
+  margin-right:15%;
+}
+
+.otree-btn-next {
+  float: right;
+  margin-left:53%;
+  margin-right:47%;
+}
+
+
+</style>
 
 {{ endblock }}

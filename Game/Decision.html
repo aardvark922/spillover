@@ -1,17 +1,19 @@
 
 {{ extends "global/Page.html" }}
-{{ block title }}Round x Decision{{ endblock }}
+{{ block title }}
+Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Your choices
+{{ endblock }}
 {{ block content }}
 
 <div class="flex-container">
 
-  <div class="flex-child magenta">
-    Flex Column 1
+  <div class="flex-child magenta" style="background-color: aliceblue">
+    <h5> Game Blue </h5>
      {{ include C.pgg_contribute_template }}
   </div>
 
-  <div class="flex-child green">
-    Flex Column 2
+  <div class="flex-child green" style="background-color: lightyellow">
+    <h5>Game Yellow</h5>
   </div>
 
 </div>
@@ -34,12 +36,18 @@
 .flex-child:first-child {
     margin-right: 20px;
 }
-
+.controls{
+  width: 50px;
+    margin-left:85%;
+  margin-right:15%;
+}
 
 .otree-btn-next {
   float: right;
   margin-left:54%;
   margin-right:46%;
 }
+
+
 </style>
 {{ endblock }}
