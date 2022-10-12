@@ -65,6 +65,7 @@ class Player(BasePlayer):
         max=C.ENDOWMENT,
         label="Token you choose to move to the Group Account:"
     )
+    #record ss's payoff from PGG
     pgg_earning = models.FloatField()
     PD_decision = models.StringField(
         initial='NA',
@@ -72,6 +73,9 @@ class Player(BasePlayer):
         label="""This player's decision""",
         widget=widgets.RadioSelect
     )
+    # record ss's payoff from PD
+    pd_earning = models.FloatField()
+    dieroll = models.IntegerField(min=1, max=100)
 
 
 # FUNCTIONS
@@ -148,7 +152,7 @@ def set_pairs(subsession: Subsession, pair_ids: list):
         shuffle(pair_ids)
         for n, p in enumerate(players[:len(players)]):
             p.pair_id = pair_ids[n]
-
+#in one function set pgg and pd payoffs
 def set_payoffs(group: Group):
     players = group.get_players()
     contributions = [p.contribution for p in players]
@@ -157,6 +161,38 @@ def set_payoffs(group: Group):
     for p in players:
         p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
+#PD functions
+# Get opponent player id
+def other_player(player: Player):
+    return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
+
+def set_pd_payoff(player: Player):
+    if player.session.config['easy']==1:
+        #if PD in this session is the Easy PD
+        both_cooperate_payoff = C.ez_both_cooperate_payoff
+        betrayed_payoff = C.ez_betrayed_payoff
+        betray_payoff = C.ez_betrayed_payoff
+        both_defect_payoff = C.ez_both_defect_payoff
+    else:
+        # if PD in this session is the Difficult PD
+        both_cooperate_payoff = C.dt_both_cooperate_payoff
+        betrayed_payoff = C.dt_betrayed_payoff
+        betray_payoff = C.dt_betrayed_payoff
+        both_defect_payoff = C.dt_both_defect_payoff
+    payoff_matrix = {
+        'Action Y':
+            {
+                'Action Y': both_cooperate_payoff,
+                'Action Z': betrayed_payoff
+            },
+        'Action Z':
+            {
+                'Action Y': betray_payoff,
+                'Action Z': both_defect_payoff
+            }
+    }
+    for p in player.group.get_players():
+        p.pd_earning = payoff_matrix[p.decision][other_player(p).decision]
 
 # PAGES
 class Decision(Page):

@@ -5,6 +5,7 @@ SESSION_CONFIGS = [
         name='main_task',
         app_sequence=['Game'],
         num_demo_participants=4,
+        easy=1
     ),
 ]
 

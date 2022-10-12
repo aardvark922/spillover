@@ -1,2 +1,2 @@
-# spillover2
-# spillover2
+# Spillover
+This is the oTree program for simultaneous PGG and PD
