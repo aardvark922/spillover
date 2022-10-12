@@ -9,12 +9,14 @@ class C(BaseConstants):
     NAME_IN_URL = 'public_goods_simple'
     pgg_contribute_template = 'Game/pgg_contribute.html'
     pgg_results_template = 'Game/pgg_results.html'
+    pd_choice_template = 'Game/pd_choice.html'
+    pd_results_template = 'Game/pd_results.html'
     PLAYERS_PER_GROUP = None
     num_super_games = 5
     delta = 0.75  # discount factor equals to 0.75
     # supergame_duration = [10, 3, 21, 10, 12]
-    #for app building
-    supergame_duration = [2,1,3,2,3]
+    # for app building
+    supergame_duration = [2, 1, 3, 2, 3]
     NUM_ROUNDS = sum(supergame_duration)
     last_round = sum(supergame_duration)  # sum(super_game_duration)
 
@@ -25,23 +27,23 @@ class C(BaseConstants):
 
     ## parameters for Easy PD matrix
     # payoff if 1 player defects and the other cooperates""",
-    ez_betray_payoff = cu(50)
-    ez_betrayed_payoff = cu(12)
+    ez_betray_payoff = 50
+    ez_betrayed_payoff = 12
 
     # payoff if both players cooperate or both defect
-    ez_both_cooperate_payoff = cu(48)
-    ez_both_defect_payoff = cu(25)
+    ez_both_cooperate_payoff = 48
+    ez_both_defect_payoff = 25
 
     ## parameters for Difficult PD matrix
     # payoff if 1 player defects and the other cooperates""",
-    dt_betray_payoff = cu(50)
-    dt_betrayed_payoff = cu(12)
+    dt_betray_payoff = 50
+    dt_betrayed_payoff = 12
 
     # payoff if both players cooperate or both defect
-    dt_both_cooperate_payoff = cu(32) #TODO: needs to be calculated
-    dt_both_defect_payoff = cu(25)
+    dt_both_cooperate_payoff = 32  # TODO: needs to be calculated
+    dt_both_defect_payoff = 25
 
-    #PGG Parameters
+    # PGG Parameters
 
     ENDOWMENT = 25
     MPCR = 0.4
@@ -65,7 +67,7 @@ class Player(BasePlayer):
         max=C.ENDOWMENT,
         label="Token you choose to move to the Group Account:"
     )
-    #record ss's payoff from PGG
+    # record ss's payoff from PGG
     pgg_earning = models.FloatField()
     PD_decision = models.StringField(
         initial='NA',
@@ -128,18 +130,17 @@ def creating_session(subsession: Subsession):
         subsession.set_group_matrix(super_groups)
         # Call the set_pairs function
         set_pairs(subsession, pair_ids)
-        #TODO pair_ID 0 needs to be fixed!
+        # TODO pair_ID 0 needs to be fixed!
         print('new pair ids:', pair_ids)
     else:
         # Set group matrix in oTree based on the matrix of the previous round
         subsession.group_like_round(subsession.round_number - 1)
-        super_groups=subsession.get_groups()
+        super_groups = subsession.get_groups()
         for g in super_groups:
             players = g.get_players()
             for p in players:
-                prev_p= p.in_round(p.round_number-1)
+                prev_p = p.in_round(p.round_number - 1)
                 p.pair_id = prev_p.pair_id
-
 
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
@@ -152,23 +153,27 @@ def set_pairs(subsession: Subsession, pair_ids: list):
         shuffle(pair_ids)
         for n, p in enumerate(players[:len(players)]):
             p.pair_id = pair_ids[n]
-#in one function set pgg and pd payoffs
+
+
+# in one function set pgg and pd payoffs
 def set_payoffs(group: Group):
     players = group.get_players()
     contributions = [p.contribution for p in players]
     group.total_contribution = sum(contributions)
-    group.individual_share = round(group.total_contribution * C.MPCR,2)
+    group.individual_share = round(group.total_contribution * C.MPCR, 2)
     for p in players:
         p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
-#PD functions
+
+# PD functions
 # Get opponent player id
 def other_player(player: Player):
     return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
 
+
 def set_pd_payoff(player: Player):
-    if player.session.config['easy']==1:
-        #if PD in this session is the Easy PD
+    if player.session.config['easy'] == 1:
+        # if PD in this session is the Easy PD
         both_cooperate_payoff = C.ez_both_cooperate_payoff
         betrayed_payoff = C.ez_betrayed_payoff
         betray_payoff = C.ez_betrayed_payoff
@@ -194,6 +199,7 @@ def set_pd_payoff(player: Player):
     for p in player.group.get_players():
         p.pd_earning = payoff_matrix[p.decision][other_player(p).decision]
 
+
 # PAGES
 class Decision(Page):
     form_model = 'player'
@@ -201,8 +207,26 @@ class Decision(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-            return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                            player.subsession.curr_super_game - 1] + 1)
+        if player.session.config['easy'] == 1:
+            # if PD in this session is the Easy PD
+            both_cooperate_payoff = C.ez_both_cooperate_payoff
+            betrayed_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betrayed_payoff
+            both_defect_payoff = C.ez_both_defect_payoff
+        else:
+            # if PD in this session is the Difficult PD
+            both_cooperate_payoff = C.dt_both_cooperate_payoff
+            betrayed_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betrayed_payoff
+            both_defect_payoff = C.dt_both_defect_payoff
+        return dict(
+            cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+                player.subsession.curr_super_game - 1] + 1,
+            both_cooperate_payoff=both_cooperate_payoff,
+            betrayed_payoff=betrayed_payoff,
+            betray_payoff=betray_payoff,
+            both_defect_payoff=both_defect_payoff
+        )
 
 
 class ResultsWaitPage(WaitPage):
@@ -212,10 +236,9 @@ class ResultsWaitPage(WaitPage):
 class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
-            return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                            player.subsession.curr_super_game - 1] + 1,
-                        pgg_private=C.ENDOWMENT-player.contribution)
-
+        return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+            player.subsession.curr_super_game - 1] + 1,
+                    pgg_private=C.ENDOWMENT - player.contribution)
 
 
 page_sequence = [Decision, ResultsWaitPage, Results]

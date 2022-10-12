@@ -1,0 +1,37 @@
+
+<div class="form-group required">
+    <table class="table table-bordered text-center" style="width: auto; margin: auto">
+        <tr>
+            <th colspan="2" rowspan="2"></th>
+            <th colspan="2" style="color: royalblue">The Other Participant</th>
+        </tr>
+        <tr>
+            <th style="color: royalblue">Action Y</th>
+            <th style="color: royalblue">Action Z</th>
+        </tr>
+        <tr>
+            <th rowspan="2"><span style="color: indianred">You</span></th>
+            <td>
+                <input type="radio" id="Action Y" name="decision" value="Action Y">
+                <label for="Action Y"> I will choose<b style="color: indianred"> Action Y</b></label></td>
+            </td>
+            <td><span style="color: indianred">{{both_cooperate_payoff}}</span> ,
+                <span style="color: royalblue"> {{both_cooperate_payoff}} </span>
+            </td>
+            <td><span style="color: indianred">{{betrayed_payoff }}</span> ,
+                <span style="color: royalblue"> {{betray_payoff}}</span>
+            </td>
+        </tr>
+        <tr>
+
+            <td><input type="radio" id="Action Z" name="decision" value="Action Z">
+                <label for="Action Z">I will choose<b style="color: indianred"> Action Z</b></label></td>
+            <td><span style="color: indianred">{{betray_payoff}}</span>,
+                <span style="color: royalblue"> {{betrayed_payoff }}</span>
+            </td>
+            <td><span style="color: indianred">{{both_defect_payoff}}</span>,
+                <span style="color: royalblue"> {{both_defect_payoff}}</span>
+            </td>
+        </tr>
+    </table>
+</div>

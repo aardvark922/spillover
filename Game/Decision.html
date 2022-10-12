@@ -18,6 +18,9 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 
   <div class="flex-child green" style="background-color: lightyellow">
     <h5 style="color: saddlebrown">Yellow Game</h5>
+    <br>
+    <br>
+    {{ include C.pd_choice_template }}
   </div>
 
 </div>
@@ -29,6 +32,7 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 .flex-container {
     display: flex;
   height: 400px;
+  width: 1400px;
 }
 
 .flex-child {
@@ -53,6 +57,9 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
   margin-right:46%;
 }
 
+.otree-body {
+    max-width: 1400px;
+}
 
 </style>
 {{ endblock }}
