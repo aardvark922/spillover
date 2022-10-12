@@ -12,6 +12,8 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211; R
 
   <div class="flex-child green" style="background-color: lightyellow">
     <h5 style="color: saddlebrown">Yellow Game</h5>
+      <br>
+      {{ include C.pd_results_template }}
   </div>
 
 </div>
@@ -43,10 +45,19 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211; R
 
 .otree-btn-next {
   float: right;
-  margin-left:53%;
-  margin-right:47%;
+  margin-left:51.5%;
+  margin-right:48.5%;
+}
+.otree-body {
+    max-width: 1400px;
 }
 
+.page-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 40px;
+  margin-left:35%;
+}
 
 </style>
 

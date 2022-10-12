@@ -1,32 +1,28 @@
-
-<div class="form-group required">
-    <table class="table table-bordered text-center" style="width: auto; margin: auto">
+{% if both_cooperate %}
+    <table class='table table-bordered text-center'
+           style='width: auto; margin: auto'>
         <tr>
-            <th colspan="2" rowspan="2"></th>
-            <th colspan="2" style="color: royalblue">The Other Participant</th>
+            <th colspan=2 rowspan=2></th>
+            <th colspan=2 style="color: royalblue">The Other Participant</th>
         </tr>
         <tr>
             <th style="color: royalblue">Action Y</th>
             <th style="color: royalblue">Action Z</th>
         </tr>
         <tr>
-            <th rowspan="2"><span style="color: indianred">You</span></th>
-            <td>
-                <input type="radio" id="Action Y" name="decision" value="Action Y">
-                <label for="Action Y"> I will choose<b style="color: indianred"> Action Y</b></label></td>
+            <th rowspan=2><span style="color: indianred" class="rotate90">You</span></th>
+            <th style="color: indianred">Action Y</th>
+            <td><span style="font-weight: bold;color: indianred",>{{both_cooperate_payoff}}</span>,
+                <span style="font-weight: bold;color: royalblue"> {{both_cooperate_payoff}} </span>
             </td>
-            <td><span style="color: indianred">{{both_cooperate_payoff}}</span> ,
-                <span style="color: royalblue"> {{both_cooperate_payoff}} </span>
-            </td>
-            <td><span style="color: indianred">{{betrayed_payoff }}</span> ,
+
+            <td><span style="color: indianred">{{betrayed_payoff }}</span>,
                 <span style="color: royalblue"> {{betray_payoff}}</span>
             </td>
         </tr>
         <tr>
-
-            <td><input type="radio" id="Action Z" name="decision" value="Action Z">
-                <label for="Action Z">I will choose<b style="color: indianred"> Action Z</b></label></td>
-            <td><span style="color: indianred">{{betray_payoff}}</span>,
+            <th style="color: indianred">Action Z</th>
+                <td><span style="color: indianred">{{betray_payoff}}</span>,
                 <span style="color: royalblue"> {{betrayed_payoff }}</span>
             </td>
             <td><span style="color: indianred">{{both_defect_payoff}}</span>,
@@ -34,4 +30,107 @@
             </td>
         </tr>
     </table>
-</div>
+
+{% elif both_defect %}
+    <table class='table table-bordered text-center'
+           style='width: auto; margin: auto'>
+        <tr>
+            <th colspan=2 rowspan=2></th>
+            <th colspan=2 style="color: royalblue">The Other Participant</th>
+        </tr>
+        <tr>
+            <th style="color: royalblue">Action Y</th>
+            <th style="color: royalblue">Action Z</th>
+        </tr>
+        <tr>
+            <th rowspan=2><span class="rotate90"; style="color: indianred">You</span></th>
+            <th style="color: indianred">Action Y</th>
+            <td><span style="color: indianred"> {{both_cooperate_payoff }}</span>,
+                <span style="color: royalblue">{{both_cooperate_payoff }}</span>
+                </td>
+            <td><span style="color: indianred"> {{betrayed_payoff  }}</span>,
+                <span style="color: royalblue">{{betray_payoff }}</span></td>
+        </tr>
+        <tr>
+            <th style="color: indianred">Action Z</th>
+            <td><span style="color: indianred">{{betray_payoff }}</span>,
+                <span style="color: royalblue">{{betrayed_payoff  }}</span></td>
+            <td bgcolor="#FFFF00" style="font-weight: bold">
+                <span style="color: indianred">{{both_defect_payoff }}</span>,
+                <span style="color: royalblue">{{both_defect_payoff }}</span>
+            </td>
+        </tr>
+    </table>
+
+{% elif i_cooperate_he_defects %}
+    <table class='table table-bordered text-center'
+           style='width: auto; margin: auto'>
+        <tr>
+            <th colspan=2 rowspan=2></th>
+            <th colspan=2 style="color: royalblue">The Other Participant</th>
+        </tr>
+        <tr>
+            <th style="color: royalblue">Action Y</th>
+            <th style="color: royalblue">Action Z</th>
+        </tr>
+        <tr>
+            <th rowspan=2><span class="rotate90", style="color: indianred">You</span></th>
+            <th style="color: indianred">Action Y</th>
+            <td><span style="color: indianred">{{both_cooperate_payoff }}</span>,
+                <span style="color: royalblue">{{both_cooperate_payoff }}</span>
+            </td>
+            <td bgcolor="#FFFF00" style="font-weight: bold">
+                <span style="color: indianred">{{ betrayed_payoff  }}</span>,
+                <span style="color: royalblue">{{ betray_payoff }}</span>
+            </td>
+        </tr>
+        <tr>
+            <th style="color: indianred">Action Z</th>
+            <td><span style="color: indianred">{{ betray_payoff }}</span>,
+                <span style="color: royalblue">{{ betrayed_payoff  }}</span>
+            </td>
+            <td><span style="color: indianred">{{ both_defect_payoff }}</span>,
+                <span style="color: royalblue">{{ both_defect_payoff }}</span>
+            </td>
+        </tr>
+    </table>
+
+{% else %}
+    <table class='table table-bordered text-center'
+           style='width: auto; margin: auto'>
+        <tr>
+            <th colspan=2 rowspan=2></th>
+            <th colspan=2 style="color: royalblue">The Other Participant</th>
+        </tr>
+        <tr>
+            <th style="color: royalblue">Action Y</th>
+            <th style="color: royalblue">Action Z</th>
+        </tr>
+        <tr>
+            <th rowspan=2><span class="rotate90"; style="color: indianred">You</span></th>
+            <th style="color: indianred">Action Y</th>
+            <td><span style="color: indianred"> {{ both_cooperate_payoff }}</span>,
+                <span style="color: royalblue"> {{ both_cooperate_payoff }}</span>
+            </td>
+            <td><span style="color: indianred">{{ betrayed_payoff  }}</span>,
+                <span style="color: royalblue">{{ betray_payoff}}</span>
+            </td>
+        </tr>
+        <tr>
+            <th style="color: indianred">Action Z</th>
+            <td bgcolor="#FFFF00"  style="font-weight: bold"><span style="color: indianred">{{ Constants.betray_payoff }}</span> ,
+                <span style="color: royalblue">{{ betrayed_payoff  }}</span>
+            </td>
+            <td><span style="color: indianred"> {{ both_defect_payoff }}</span>,
+                <span style="color: royalblue">{{ both_defect_payoff }}</span>
+            </td>
+        </tr>
+    </table>
+{% endif %}
+    <p>
+        {% if same_choice %}
+            Both of you chose {{ my_decision }}.
+        {% else %}
+            You chose {{ my_decision }} and the other participant chose {{ opponent_decision }}.
+        {% endif %}
+    </p>

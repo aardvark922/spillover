@@ -69,7 +69,7 @@ class Player(BasePlayer):
     )
     # record ss's payoff from PGG
     pgg_earning = models.FloatField()
-    PD_decision = models.StringField(
+    pd_decision = models.StringField(
         initial='NA',
         choices=[['Action Y', 'Action Y'], ['Action Z', 'Action Z']],
         label="""This player's decision""",
@@ -203,7 +203,7 @@ def set_pd_payoff(player: Player):
 # PAGES
 class Decision(Page):
     form_model = 'player'
-    form_fields = ['contribution']
+    form_fields = ['contribution','pd_decision']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -236,9 +236,37 @@ class ResultsWaitPage(WaitPage):
 class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-            player.subsession.curr_super_game - 1] + 1,
-                    pgg_private=C.ENDOWMENT - player.contribution)
+        me = player
+        opponent = other_player(player)
+        if player.session.config['easy'] == 1:
+            # if PD in this session is the Easy PD
+            both_cooperate_payoff = C.ez_both_cooperate_payoff
+            betrayed_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betrayed_payoff
+            both_defect_payoff = C.ez_both_defect_payoff
+        else:
+            # if PD in this session is the Difficult PD
+            both_cooperate_payoff = C.dt_both_cooperate_payoff
+            betrayed_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betrayed_payoff
+            both_defect_payoff = C.dt_both_defect_payoff
+        return {
+            'cycle_round_number': player.round_number - player.session.vars['super_games_start_rounds'][
+                player.subsession.curr_super_game - 1] + 1,
+            'pgg_private': C.ENDOWMENT - player.contribution,
+            #PD relevant variables
+            'both_cooperate_payoff': both_cooperate_payoff,
+            'betrayed_payoff': betrayed_payoff,
+            'betray_payoff': betray_payoff,
+            'both_defect_payoff': both_defect_payoff,
+            'my_decision': me.pd_decision,
+            'opponent_decision': opponent.pd_decision,
+            'same_choice': me.pd_decision == opponent.pd_decision,
+            'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
+            'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
+            'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
+            'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
+        }
 
 
 page_sequence = [Decision, ResultsWaitPage, Results]
