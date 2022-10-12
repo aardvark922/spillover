@@ -1,4 +1,5 @@
 from otree.api import *
+import random
 
 doc = """
 indefinitely repeated public goods game with 4 playes
@@ -6,7 +7,7 @@ indefinitely repeated public goods game with 4 playes
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'public_goods_simple'
+    NAME_IN_URL = 'BS'
     pgg_contribute_template = 'Game/pgg_contribute.html'
     pgg_results_template = 'Game/pgg_results.html'
     pd_choice_template = 'Game/pd_choice.html'
@@ -171,7 +172,6 @@ def set_payoffs(group: Group):
 def other_player(player: Player):
     return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
 
-
 def set_pd_payoff(player: Player):
     if player.session.config['easy'] == 1:
         # if PD in this session is the Easy PD
@@ -200,7 +200,20 @@ def set_pd_payoff(player: Player):
     for p in player.group.get_players():
         p.pd_earning = payoff_matrix[p.pd_decision][other_player(p).pd_decision]
 
+#roll a die for the whole group
+def roll_die(group:Group):
+    continuation_chance = int(round(C.delta * 100))
+    dieroll_continue = random.randint(1, continuation_chance)
+    dieroll_end = random.randint(continuation_chance + 1, 100)
+    for p in group.get_players():
+        if p.subsession.round_number in p.session.vars['super_games_end_rounds']:
+            p.dieroll=dieroll_end
+        else:
+            p.dieroll = dieroll_continue
 
+def round_payoff_and_roll_die(group:Group):
+    roll_die(group)
+    set_payoffs(group)
 # PAGES
 class Decision(Page):
     form_model = 'player'
@@ -231,8 +244,8 @@ class Decision(Page):
 
 
 class ResultsWaitPage(WaitPage):
-    after_all_players_arrive = set_payoffs
-
+    #set payoffs and roll a die for the whole group
+    after_all_players_arrive = round_payoff_and_roll_die
 
 class Results(Page):
     @staticmethod
@@ -269,5 +282,17 @@ class Results(Page):
             'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
         }
 
+class EndRound(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number < player.session.vars['last_round'] + 1
+    @staticmethod
+    def vars_for_template(player: Player):
+        continuation_chance = int(round(C.delta * 100))
+        return dict(dieroll=player.dieroll, continuation_chance=continuation_chance,
+                        die_threshold_plus_one=continuation_chance + 1,
+                        cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+                            player.subsession.curr_super_game - 1] + 1
+                        )
 
-page_sequence = [Decision, ResultsWaitPage, Results]
+page_sequence = [Decision, ResultsWaitPage, Results, EndRound]
