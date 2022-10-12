@@ -163,6 +163,7 @@ def set_payoffs(group: Group):
     group.individual_share = round(group.total_contribution * C.MPCR, 2)
     for p in players:
         p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
+        set_pd_payoff(p)
 
 
 # PD functions
@@ -197,7 +198,7 @@ def set_pd_payoff(player: Player):
             }
     }
     for p in player.group.get_players():
-        p.pd_earning = payoff_matrix[p.decision][other_player(p).decision]
+        p.pd_earning = payoff_matrix[p.pd_decision][other_player(p).pd_decision]
 
 
 # PAGES

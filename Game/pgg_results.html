@@ -2,19 +2,23 @@
 
   <p>The number of tokens you moved to the
     <span style="font-style:italic">Group Account</span>:
-    <br>
     {{ player.contribution }}
   <br>
     Totle number of tokens moved to the
     <span style="font-style:italic">Group Account</span>
     by the group: {{ group.total_contribution }}
   <br>Every group member's earning from the
-    <span style="font-style:italic">Group Account</span>:
-  {{C.MPCR}} &times; {{group.total_contribution}} = {{ group.individual_share }}</p>
+    <span style="text-decoration: underline">    <span style="font-style:italic">Group Account</span>:
+  {{C.MPCR}} &times; {{group.total_contribution}} = {{ group.individual_share }}</span>
+
+  <br>
+  Your earnings from your <span style="text-decoration: underline"><span style="font-style:italic">Private Account</span>:
+  {{pgg_private}}</span> </p>
+
+    <br>
   <br>
   <br>
-  <p>Your earnings from your <span style="font-style:italic">Private Account</span>:
-  {{pgg_private}}</p>
-  <p style="font-weight: bold">Your Blue Game earning in this round: {{ player.pgg_earning }}</p>
+  <br>
+  <p style="font-weight: bold">Your <span style="color: darkblue">Blue Game</span>  earning in this round: {{ player.pgg_earning }}</p>
 
 </div>

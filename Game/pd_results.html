@@ -127,6 +127,7 @@
         </tr>
     </table>
 {% endif %}
+<br>
     <p>
         {% if same_choice %}
             Both of you chose {{ my_decision }}.
@@ -134,3 +135,4 @@
             You chose {{ my_decision }} and the other participant chose {{ opponent_decision }}.
         {% endif %}
     </p>
+  <p style="font-weight: bold">Your <span style="color: saddlebrown">Yellow Game</span>  earning in this round: {{ player.pd_earning }}</p>
