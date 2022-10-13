@@ -1,0 +1,30 @@
+
+
+{{ block title }}
+     Quiz Questions
+{{ endblock }}
+{{ block content }}
+{{ include Constants.progress_template }}
+<p>{{ form.Q9_response.label}}
+<br>
+<div>{{ form.Q9_response.0}} {{Q9_1}}</div>
+<div>{{ form.Q9_response.1}} {{Q9_2}}</div>
+<div>{{ form.Q9_response.2}} {{Q9_3}}</div>
+<div>{{ form.Q9_response.3}} {{Q9_4}}</div></p>
+
+<div class="container">
+  <div class="btn-holder">
+    <button class="otree-btn-next btn btn-primary">Submit</button>
+  </div>
+</div>
+{{ endblock }}
+{{block styles}}
+<style>
+.container {
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+  display: flex;
+}
+</style>
+{{endblock}}

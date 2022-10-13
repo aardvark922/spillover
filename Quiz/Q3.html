@@ -1,0 +1,26 @@
+{{block styles}}
+<style>
+.container {
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+  display: flex;
+}
+</style>
+{{endblock}}
+
+{{ block title }}
+    Quiz Questions
+{{ endblock }}
+{{ block content }}
+{{ include Constants.progress_template }}
+    {{ formfields }}
+
+<div class="container">
+  <div class="btn-holder">
+    <button class="otree-btn-next btn btn-primary">Submit</button>
+  </div>
+</div>
+
+
+{{ endblock }}

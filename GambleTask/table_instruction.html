@@ -1,0 +1,41 @@
+<style>
+    td {
+        text-align: center;
+        height: 10px;
+        vertical-align: center;
+    }
+
+    th {
+        text-align: center;
+        vertical-align: bottom;
+    }
+
+</style>
+<div style="width: 80%;margin-left:auto;margin-right:auto;"  align="center">
+<table class="table table-striped" >
+            <colgroup>
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 45%;">
+            <col span="1" style="width: 45%;">
+        </colgroup>
+    <tr>
+        <th>Option</th>
+        <th>Random numbers 1-50<br>(50% chance)</th>
+        <th> Random numbers 51-100<br>(50% chance)</th>
+    </tr>
+   <tr>
+    {{ for t in trials }}
+       {{ if not is_results }}
+       <td>{{t.gamble}}</td>
+        <td>
+            You earn ${{ t.lottery_high }}
+        </td>
+        <td>
+            You earn ${{ t.lottery_low }}
+        </td>
+       {{endif}}
+    </tr>
+    {{ endfor }}
+</table>
+
+</div>

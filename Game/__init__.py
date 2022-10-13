@@ -5,6 +5,14 @@ doc = """
 indefinitely repeated public goods game with 4 playes
 """
 
+def cumsum(lst):
+    total = 0
+    new = []
+    for ele in lst:
+        total += ele
+        new.append(total)
+    return new
+
 
 class C(BaseConstants):
     NAME_IN_URL = 'BS'
@@ -18,6 +26,8 @@ class C(BaseConstants):
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
     supergame_duration = [2, 1, 3, 2, 3]
+    #Get what the round each supergame ends
+    supergame_ends = cumsum(supergame_duration)
     NUM_ROUNDS = sum(supergame_duration)
     last_round = sum(supergame_duration)  # sum(super_game_duration)
 
@@ -26,33 +36,38 @@ class C(BaseConstants):
     observer_num = 0
     group_size = 2
 
-    ## parameters for Easy PD matrix
-    # payoff if 1 player defects and the other cooperates""",
+    ## Easy PD payoff matrix
+    # payoff if 1 player defects and the other cooperates
     ez_betray_payoff = 50
+    # payoff if 1 player cooperates and the other defects
     ez_betrayed_payoff = 12
 
     # payoff if both players cooperate or both defect
     ez_both_cooperate_payoff = 48
     ez_both_defect_payoff = 25
 
-    ## parameters for Difficult PD matrix
-    # payoff if 1 player defects and the other cooperates""",
+    ## Difficult PD payoff matrix
+    # payoff if 1 player defects and the other cooperates
     dt_betray_payoff = 50
+    # payoff if 1 player cooperates and the other defects
     dt_betrayed_payoff = 12
 
     # payoff if both players cooperate or both defect
-    dt_both_cooperate_payoff = 32  # TODO: needs to be calculated
+    dt_both_cooperate_payoff = 32
     dt_both_defect_payoff = 25
 
-    # PGG Parameters
-
+    ## PGG Parameters
     ENDOWMENT = 25
     MPCR = 0.4
     MULTIPLIER = super_group_size * MPCR
 
 
 class Subsession(BaseSubsession):
-    curr_super_game = models.IntegerField(initial=0)
+    #current number of supergame
+    supergame = models.IntegerField(initial=0)
+    #the period in current supergame
+    supergame_period=models.IntegerField()
+    is_last_period = models.BooleanField()
     last_round = models.IntegerField()
 
 
@@ -94,7 +109,7 @@ def creating_session(subsession: Subsession):
     super_games_duration = C.supergame_duration.copy()
 
     subsession.session.vars['super_games_duration'] = super_games_duration
-    print('supergame duration:', super_games_duration)
+    # print('supergame duration:', super_games_duration)
 
     subsession.session.vars['super_games_end_rounds'] = [sum(super_games_duration[:i + 1]) for i in
                                                          range(len(super_games_duration))]
@@ -102,23 +117,41 @@ def creating_session(subsession: Subsession):
     subsession.session.vars['last_round'] = subsession.session.vars['super_games_end_rounds'][
         C.num_super_games - 1]
     subsession.last_round = C.last_round
-    print('supergames end at rounds:', subsession.session.vars['super_games_end_rounds'])
-    print('the last round of the experiment is:', subsession.session.vars['last_round'])
+    # print('supergames end at rounds:', subsession.session.vars['super_games_end_rounds'])
+    # print('the last round of the experiment is:', subsession.session.vars['last_round'])
 
     subsession.session.vars['super_games_start_rounds'] = [sum(([1] + super_games_duration)[:i + 1]) for i in
                                                            range(len(super_games_duration))]
-    print('supergames start at rounds:', subsession.session.vars['super_games_start_rounds'])
+    # print('supergames start at rounds:', subsession.session.vars['super_games_start_rounds'])
+    #from otree snipets
+    if subsession.round_number == 1:
+        sg = 1
+        period = 1
+        # loop over all subsessions
+        for ss in subsession.in_rounds(1, C.NUM_ROUNDS):
+            ss.supergame = sg
+            ss.supergame_period = period
+            # 'in' gives you a bool. for example: 5 in [1, 5, 6] # => True
+            is_last_period = ss.round_number in C.supergame_ends
+            ss.is_last_period = is_last_period
+            if is_last_period:
+                sg += 1
+                period = 1
+            else:
+                period += 1
 
-    curr_round = subsession.round_number
-    for i, start in enumerate(subsession.session.vars['super_games_start_rounds']):
-        if curr_round == start:
-            subsession.curr_super_game = i + 1
-            break
-        else:
-            # print(curr_round)
-            subsession.curr_super_game = subsession.in_round(curr_round - 1).curr_super_game
+    # curr_round = subsession.round_number
+    # for i, start in enumerate(subsession.session.vars['super_games_start_rounds']):
+    #     if curr_round == start:
+    #         subsession.supergame = i + 1
+    #         break
+    #     else:
+    #         # print(curr_round)
+    #         subsession.supergame = subsession.in_round(curr_round - 1).supergame
 
-    if subsession.round_number in subsession.session.vars['super_games_start_rounds']:
+    # if subsession.round_number in subsession.session.vars['super_games_start_rounds']:
+
+    if subsession.supergame_period==1:
         # Get all players in the session and in the current round
         ps = subsession.get_players()
         # Apply in-place permutation
@@ -143,6 +176,9 @@ def creating_session(subsession: Subsession):
                 prev_p = p.in_round(p.round_number - 1)
                 p.pair_id = prev_p.pair_id
 
+    random_sample = random.sample(range(1,C.num_super_games+1),2) #randomly pick two different supergames from all supergames
+    subsession.session.vars['pgg_payment_match'] = random_sample[0] #select one match of PGG to pay
+    subsession.session.vars['pd_payment_match'] = random_sample[1]  #select one match of PD to pay
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
 def set_pairs(subsession: Subsession, pair_ids: list):
@@ -239,7 +275,9 @@ class Decision(Page):
             both_cooperate_payoff=both_cooperate_payoff,
             betrayed_payoff=betrayed_payoff,
             betray_payoff=betray_payoff,
-            both_defect_payoff=both_defect_payoff
+            both_defect_payoff=both_defect_payoff,
+            pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
+            pd_selected_match=player.subsession.session.vars['pd_payment_match']
         )
 
 
@@ -247,7 +285,7 @@ class ResultsWaitPage(WaitPage):
     #set payoffs and roll a die for the whole group
     after_all_players_arrive = round_payoff_and_roll_die
 
-class Results(Page):
+class RoundResults(Page):
     @staticmethod
     def vars_for_template(player: Player):
         me = player
@@ -295,4 +333,4 @@ class EndRound(Page):
                             player.subsession.curr_super_game - 1] + 1
                         )
 
-page_sequence = [Decision, ResultsWaitPage, Results, EndRound]
+page_sequence = [Decision, ResultsWaitPage, RoundResults, EndRound]

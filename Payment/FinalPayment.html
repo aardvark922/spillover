@@ -1,0 +1,40 @@
+{{ block title }}
+Summary of earnings
+{{ endblock }}
+
+{{ block content }}
+<p>Below shows a summary of your earnings in each task.</p>
+<h5>Quiz Earning</h5>
+<p>You have correctly answered {{quiz_num_correct}} questions. Your earning from the quiz is
+    <b>${{quiz_earning|to2}}</b>.
+</p>
+<h5>Task 1 Earning</h5>
+
+<p>
+<h6>Choice Earning:</h6>
+<div> Period {{ participant.selected_round_choice }} is randomly selected and your earning in this period was
+    {{choice_earning}}.
+</div>
+<div>The exchange rate is 1 point = ${{conversion_rate}}. The payoff of your choice is therefore
+    <b>{{choice_payment}}</b>.
+</div></p>
+
+<p><h6>Guess Earning:</h6>
+Period {{ participant.selected_round_guess }} Question {{participant.selected_question_guess}} is randomly selected.
+The payoff of your guess is <b>${{guess_payment|to2}}</b>.
+</p>
+<h5>Task 2 Earning</h5>
+<p>You chose option {{participant.chosen_gamble}}. The random number was {{participant.random_num_gamble}}.
+
+    So your payoff is <b>${{gamble_payment|to2}}</b>.
+</p>
+
+<h5>Task 3 Earning</h5>
+<p>Decision {{participant.selected_round_SVO}} is randomly chosen and your role was {{participant.role_SVO}}. Your
+    payoff for that decision is <b>${{SVO_payment|to2}}</b>.</p>
+<br>
+<h4>Total</h4>
+<u><p>Your final payment including the <b>{{participation_fee}} </b> participation fee is <b>{{payment}}</b>.</p></u>
+{{ endblock }}
+
+

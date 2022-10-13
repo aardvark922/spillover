@@ -1,0 +1,44 @@
+{{ block title }}
+ Quiz Questions
+{{ endblock }}
+{{ block content }}
+{{ include Constants.progress_template }}
+<h5>Result</h5>
+{{ formfields }}
+{{ if show_solutions }}
+{{ if player.Q8_correct}}
+<p class="solution-correct">
+    Your answer is correct.<br>
+        As mentioned in the instructions:<br>
+    <i>"{{ Q8.explanation }}"<br>
+</p>
+{{ else }}
+<p class="solution-incorrect">
+    Your answer is incorrect. The correct answer is {{Q8.solution}}.<br>
+        As mentioned in the instructions:<br>
+    <i>"{{ Q8.explanation }}"<br>
+
+    </i>
+</p>
+{{ endif }}
+{{ endif }}
+
+<button class="otree-btn-next btn btn-primary">Next Question</button>
+
+<style>
+    /* we use this instead of setting 'disabled' because disabled inputs don't get
+    submitted by the form, and therefore the server would complain that the form is missing.
+     */
+    input {
+        pointer-events: none;
+    }
+
+    .solution-incorrect {
+        color: darkred;
+    }
+
+    .solution-correct {
+        color: green;
+    }
+</style>
+{{ endblock }}

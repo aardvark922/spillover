@@ -1,0 +1,42 @@
+{{block styles}}
+<style>
+.container {
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+  display: flex;
+}
+.container .btn-holder {
+  justify-content: center;
+  display: flex;
+}
+</style>
+{{endblock}}
+{{ block title }}
+<center>
+    <ul> Quiz Questions</ul>
+</center>
+{{ endblock }}
+
+{{ block content }}
+<br>
+<br>
+<br>
+<div align="center">
+<p>Feel free to refer to the instructions to find the correct answers to these questions.</p>
+<p>You will earn ${{Constants.quiz_payoff|to2}} for each correct answer. </p>
+</div>
+<br>
+<br>
+<br>
+
+<div class="container">
+  <div class="btn-holder">
+    <button class="otree-btn-next btn btn-primary">Start Quiz</button>
+  </div>
+</div>
+
+
+{{ endblock }}
+
+

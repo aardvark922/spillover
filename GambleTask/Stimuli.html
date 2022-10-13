@@ -1,0 +1,25 @@
+{{ block title }}
+Task 2
+{{ endblock }}
+{{ block content }}
+
+<p>
+    Choose the option to determine your payment for this task.
+</p>
+
+{{ include C.TABLE_TEMPLATE }}
+
+<button class="otree-btn-next btn btn-primary">Submit</button>
+<style>
+    .otree-btn-next {
+        float: right;
+    }
+</style>
+
+<script>
+    function sendPref(radio) {
+        liveSend({trial_id: radio.name, chose_lottery: radio.value === '1'});
+    }
+</script>
+
+{{ endblock }}

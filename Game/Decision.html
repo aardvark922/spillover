@@ -1,4 +1,3 @@
-
 {{ extends "global/Page.html" }}
 {{ block title }}
 Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Your choices
@@ -6,65 +5,63 @@ Match {{ subsession.curr_super_game }}, Round {{ cycle_round_number }} &#8211;Yo
 {{ block content }}
 
 <div class="flex-container">
-
-  <div class="flex-child magenta" style="background-color: aliceblue">
-    <h5 style="color: darkblue; " >Blue Game</h5>
-    <br>
-    <br>
-    <br>
-    <br>
-     {{ include C.pgg_contribute_template }}
-  </div>
-
-  <div class="flex-child green" style="background-color: lightyellow">
-    <h5 style="color: saddlebrown">Yellow Game</h5>
-    <br>
-    <br>
-    {{ include C.pd_choice_template }}
-  </div>
-
+    <div class="flex-child magenta" style="background-color: aliceblue">
+        <h5 style="color: darkblue; ">Blue Game</h5>
+        <br>
+        <br>
+        <br>
+        <br>
+        {{ include C.pgg_contribute_template }}
+    </div>
+    <div class="flex-child green" style="background-color: lightyellow">
+        <h5 style="color: saddlebrown">Yellow Game</h5>
+        <br>
+        <br>
+        {{ include C.pd_choice_template }}
+    </div>
 </div>
 <br>
 <br>
 <button class="otree-btn-next btn btn-primary">Submit</button>
 
 <style>
-.flex-container {
-    display: flex;
-  height: 400px;
-}
+    .flex-container {
+        display: flex;
+        height: 400px;
+    }
 
-.flex-child {
-    flex: 1;
-    padding: 20px;
-    border: 2px solid black;
-  border-radius: 25px;
-}
+    .flex-child {
+        flex: 1;
+        padding: 20px;
+        border: 2px solid black;
+        border-radius: 25px;
+    }
 
-.flex-child:first-child {
-    margin-right: 20px;
-}
-.controls{
-  width: 50px;
-    margin-left:45%;
-  margin-right:55%;
-}
+    .flex-child:first-child {
+        margin-right: 20px;
+    }
 
-.otree-btn-next {
-  float: right;
-  margin-left:53.5%;
-  margin-right:46.5%;
-}
+    .controls {
+        width: 50px;
+        margin-left: 45%;
+        margin-right: 55%;
+    }
 
-.otree-body {
-    max-width: 1400px;
-}
+    .otree-btn-next {
+        float: right;
+        margin-left: 53.5%;
+        margin-right: 46.5%;
+    }
 
-.page-header {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding-top: 40px;
-  margin-left:35%;
-}
+    .otree-body {
+        max-width: 1400px;
+    }
+
+    .page-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 40px;
+        margin-left: 35%;
+    }
 </style>
 {{ endblock }}

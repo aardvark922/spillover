@@ -1,0 +1,49 @@
+{{ block title }}
+<center>
+    <ul> Task 2 Instructions</ul>
+</center>
+{{ endblock }}
+
+{{ block content }}
+<div align="justify">
+    <p>
+        This is an individual task. Each of you will take part in an Option Selection Task. You will be shown five
+        options
+        and will be asked to choose the one you prefer. Each option has two possible outcomes, both with equal ({{C.probability}}%)
+        chance
+        of occurring. Your earnings from this task will depend on which option you choose, and which outcome occurs.
+    </p>
+    <p>The options are as follows: </p>
+
+    {{ include C.TABLE_INSTRUCTION_TEMPLATE }}
+    <p>
+        After you have chosen one of these options, the computer will randomly draw a whole number between 1 and 100
+        (inclusive). If the random number is {{C.probability}} or less, your earnings from this task are as shown in the middle column
+        of
+        the table. If the random number is {{probability_low}}  or more, your earnings from this task are as shown in the right column of
+        the
+        table. The random number drawn for you may be different from the ones drawn for other participants.
+    </p>
+
+    <p>
+        Once everyone has chosen an option, you will proceed to the next task.
+    </p>
+
+    <p>At the end of the experiment, you will be informed of the results of this task: your choice of option, your
+        random
+        number, and your earnings from this part.</p>
+</div>
+
+
+<p> {{ next_button }} </p>
+
+
+<style>
+    .otree-btn-next {
+        float: right;
+    }
+</style>
+
+{{ endblock }}
+
+

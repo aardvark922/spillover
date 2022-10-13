@@ -1,0 +1,14 @@
+{{ for d in fields }}
+    {{ formfield d.name }}
+    {{ if show_solutions }}
+        {{ if d.is_correct }}
+        <p class="solution-correct">
+            Correct.
+        </p>
+        {{ else }}
+        <p class="solution-incorrect">
+            {{ d.explanation }}
+        </p>
+        {{ endif }}
+    {{ endif }}
+{{ endfor }}

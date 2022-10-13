@@ -1,0 +1,40 @@
+
+{{ block title }}
+Quiz Results
+{{ endblock }}
+{{ block content }}
+
+<style>
+.container {
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+  display: flex;
+}
+.container .btn-holder {
+  justify-content: center;
+  display: flex;
+}
+</style>
+
+<p></p>
+<p>You have correctly answered {{correct_answers}} questions. Your earning from the quiz is <b>${{quiz_earning_dollar|to2}}</b>.
+</p>
+
+<p>After reviewing your results, you may click "Start" to start the experiment.</p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+  <div class="btn-holder">
+    <button class="otree-btn-next btn btn-primary">Start</button>
+  </div>
+</div>
+
+{{ endblock }}
