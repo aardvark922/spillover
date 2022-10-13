@@ -8,6 +8,12 @@ SESSION_CONFIGS = [
         easy=1,
 
     ),
+    dict(
+        name='Block_Random_Termination',
+        app_sequence=['block_random_termination'],
+        num_demo_participants=1,
+
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

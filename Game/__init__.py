@@ -4,7 +4,7 @@ import random
 doc = """
 indefinitely repeated public goods game with 4 playes
 """
-
+#A function to find at which round each supergame ends
 def cumsum(lst):
     total = 0
     new = []
@@ -22,10 +22,13 @@ class C(BaseConstants):
     pd_results_template = 'Game/pd_results.html'
     PLAYERS_PER_GROUP = None
     num_super_games = 5
+    block_size = 4
     delta = 0.75  # discount factor equals to 0.75
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
     supergame_duration = [2, 1, 3, 2, 3]
+    #find how many blocks are needed for each supergame
+    # num_block_sg= [i//block_size for i in supergame_duration]
     #Get what the round each supergame ends
     supergame_ends = cumsum(supergame_duration)
     NUM_ROUNDS = sum(supergame_duration)
