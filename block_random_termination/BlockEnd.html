@@ -1,0 +1,14 @@
+{{ block title }}
+    Supergame {{ subsession.sg }}
+{{ endblock }}
+{{ block content }}
+{{if subsession.is_sg_last_period}}
+The match has ended
+{{else}}
+    <p>The die rolls for previous rounds in this block are...
+    <br> This match will continue to a new block
+    </p>
+{{endif}}
+    {{ next_button }}
+
+{{ endblock }}
