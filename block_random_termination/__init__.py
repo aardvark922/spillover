@@ -32,6 +32,7 @@ def find_pay_rounds(sg_lst,sg_start):
 class C(BaseConstants):
     NAME_IN_URL = 'block_random_termination'
     PLAYERS_PER_GROUP = None
+    block_dierolls_template = 'block_random_termination/block_dierolls.html'
 
     DELTA = 0.75  # discount factor equals to 0.75
     BLOCK_SIZE = 1/(1-DELTA)
@@ -130,6 +131,15 @@ class Player(BasePlayer):
     pass
 
 
+def get_block_dierolls(player:Player):
+    block_first_round=player.round_number-C.BLOCK_SIZE+1
+    block= player.in_rounds(block_first_round,player.round_number)
+    block_history=[]
+    for b in block:
+        block_round=dict(round_number=b.round_number,dieroll=b.subsession.dieroll)
+        block_history.append(block_round)
+    return block_history
+
 class NewSupergame(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -143,20 +153,19 @@ class BlockEnd(Page):
         return subsession.is_bk_last_period == 1
 
     def vars_for_template(player: Player):
-        continuation_chance = int(round(C.delta * 100))
+        continuation_chance = int(round(C.DELTA * 100))
         #TODO: pull out a history of dierolls in this block gettattr()?
+        #write a founction get block die rolls
         # player.subsession.dieroll
         # previous_rounds_in_block=
-        return dict(dieroll=player.dieroll, continuation_chance=continuation_chance,
-                        die_threshold_plus_one=continuation_chance + 1,
-                        cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                            player.subsession.curr_super_game - 1] + 1
+        return dict( continuation_chance=continuation_chance,
+                     die_threshold_plus_one=continuation_chance + 1,
+                     block_history=get_block_dierolls(player)
                         )
 
 
 
 class Play(Page):
     pass
-
 
 page_sequence = [NewSupergame, Play, BlockEnd]

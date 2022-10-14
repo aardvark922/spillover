@@ -2,6 +2,7 @@
     Supergame {{ subsession.sg }}
 {{ endblock }}
 {{ block content }}
+
 {{if subsession.is_sg_last_period}}
 The match has ended
 {{else}}
@@ -9,6 +10,7 @@ The match has ended
     <br> This match will continue to a new block
     </p>
 {{endif}}
+{{ include C.block_dierolls_template }}
     {{ next_button }}
 
 {{ endblock }}
