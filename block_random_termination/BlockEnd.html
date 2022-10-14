@@ -1,23 +1,21 @@
 {{ block title }}
-    Supergame {{ subsession.sg }}
+    Supergame {{ subsession.sg }} - Block end?
 {{ endblock }}
 {{ block content }}
 
 {{if subsession.is_sg_last_period}}
 The match has ended within this block at period {{end_period}}.
 <br>
-{{if end_period < 4}}
-Your choice after that will not be considered for payment.
-{{endif}}
-{{else}}
-    <p>The die rolls for previous rounds in this block are...
-    <br> This match will continue to a new block
-    </p>
-{{endif}}
+Your choices up to period {{end_period}} will be considered for payment.
 <br>
 <br>
 <br>
 {{ include C.block_dierolls_template }}
+{{else}}
+    <p>The match has not ended in this block and you will play for another block of {{C.BLOCK_SIZE}} periods.
+    </p>
+{{endif}}
+
 <br>
 <br>
 <button class="otree-btn-next btn btn-primary">Next</button>

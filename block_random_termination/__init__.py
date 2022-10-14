@@ -40,7 +40,7 @@ class C(BaseConstants):
     block_dierolls_template = 'block_random_termination/block_dierolls.html'
 
     DELTA = 0.75  # discount factor equals to 0.75
-    BLOCK_SIZE = 1 / (1 - DELTA)
+    BLOCK_SIZE = int(1 / (1 - DELTA))
     # first supergame lasts 2 rounds, second supergame lasts 3 rounds, etc...
     # These are the payoff relevants rounds
     COUNT_ROUNDS_PER_SG = [2, 3, 4, 5]
