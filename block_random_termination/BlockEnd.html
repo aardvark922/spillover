@@ -4,13 +4,28 @@
 {{ block content }}
 
 {{if subsession.is_sg_last_period}}
-The match has ended
+The match has ended within this block at period {{end_period}}.
+<br>
+{{if end_period < 4}}
+Your choice after that will not be considered for payment.
+{{endif}}
 {{else}}
     <p>The die rolls for previous rounds in this block are...
     <br> This match will continue to a new block
     </p>
 {{endif}}
+<br>
+<br>
+<br>
 {{ include C.block_dierolls_template }}
-    {{ next_button }}
+<br>
+<br>
+<button class="otree-btn-next btn btn-primary">Next</button>
 
+<style>
+
+        .otree-btn-next {
+        float: right;
+    }
+</style>
 {{ endblock }}

@@ -1,20 +1,47 @@
 
-<br><br>
-<h5>Dierolls in this block</h5>
-<table  border="0" cellpadding="0" cellspacing="0" width="100%" class="scrollTable">
+<h6>Dierolls in the past 4 rounds</h6>
+<div class="table-dieroll">
+  <table  cellpadding="0" cellspacing="0" width="30%">
     <thead class="fixedHeader">
     <tr class="alternateRow">
-        <th>Round number</th>
-        <th>Dieroll</th>
+        <th  style="width: 80px;">Round Number</th>
+      {{ for b in block_history }}
+        <td style="width: 60px;"> {{ b.round_number }} </td>{{endfor}}
     </tr>
     </thead>
-    <tbody class="scrollContent">
-       {{ for b in block_history }}
+    <tbody>
+
     <tr>
-        <td class="normalRow">{{ b.round_number }}</td>
-        <td>{{ b.dieroll }}</td>
+      <th>Dieroll</th>
+      {{ for b in block_history }}
+      {{if b.dieroll > continuation_chance}}
+        <td > <span style="color: indianred">{{ b.dieroll }}</span> </td>
+      {{else}}
+      <td ><span style="color: forestgreen">{{ b.dieroll }}</span> </td>
+      {{endif}}
+      {{ endfor }}
     </tr>
-    {{ endfor }}
+
     </tbody>
 
 </table>
+</div>
+
+
+<style>
+
+  .table-dieroll{
+      text-align: center;
+  }
+
+.table{
+    border-collapse: collapse;
+
+}
+.table, th, td {
+  border: 1px solid;
+  height: 60px;
+}
+
+
+</style>
