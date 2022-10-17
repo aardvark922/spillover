@@ -14,7 +14,7 @@ def cumsum(lst):
         new.append(total)
     return new
 
-
+#function to calculate how many blocks are needed in total
 def numblock(lst, a):
     block = []
     for ele in lst:
@@ -24,7 +24,7 @@ def numblock(lst, a):
             block.append(int(ele // a + 1))
     return block
 
-
+#function to find a list of rounds that are pay relevant
 def find_pay_rounds(sg_lst, sg_start):
     rounds = []
     for m in range(len(sg_lst)):

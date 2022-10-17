@@ -13,6 +13,24 @@ def cumsum(lst):
         new.append(total)
     return new
 
+#function to calculate how many blocks are needed in total
+def numblock(lst, a):
+    block = []
+    for ele in lst:
+        if ele % a == 0:
+            block.append(int(ele / a))
+        else:
+            block.append(int(ele // a + 1))
+    return block
+
+#function to find a list of rounds that are pay relevant
+def find_pay_rounds(sg_lst, sg_start):
+    rounds = []
+    for m in range(len(sg_lst)):
+        pay_periods = [a + 1 for a in list(range(sg_lst[m]))]
+        pay_rounds = [b + sg_start[m] for b in pay_periods]
+        rounds.extend(pay_rounds)
+    return rounds
 
 class C(BaseConstants):
     NAME_IN_URL = 'BS'
@@ -20,19 +38,32 @@ class C(BaseConstants):
     pgg_results_template = 'Game/pgg_results.html'
     pd_choice_template = 'Game/pd_choice.html'
     pd_results_template = 'Game/pd_results.html'
+    block_dierolls_template = 'Game/block_dierolls.html'
     PLAYERS_PER_GROUP = None
-    num_super_games = 5
-    block_size = 4
-    delta = 0.75  # discount factor equals to 0.75
+    DELTA = 0.75  # discount factor equals to 0.75
+    BLOCK_SIZE = int(1 / (1 - DELTA))
+
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    supergame_duration = [2, 1, 3, 2, 3]
-    #find how many blocks are needed for each supergame
-    # num_block_sg= [i//block_size for i in supergame_duration]
-    #Get what the round each supergame ends
-    supergame_ends = cumsum(supergame_duration)
-    NUM_ROUNDS = sum(supergame_duration)
-    last_round = sum(supergame_duration)  # sum(super_game_duration)
+    COUNT_ROUNDS_PER_SG = [2, 1, 3, 2, 5]
+
+    NUM_SG = len(COUNT_ROUNDS_PER_SG)
+    # find how many blocks are needed for each supergame
+    BLOCKS_PER_SG = numblock(COUNT_ROUNDS_PER_SG, BLOCK_SIZE)
+    print('BLOCKS_PER_SG is', BLOCKS_PER_SG)
+    # find out how many rounds players have to go through
+    # PLAYED_ROUNDS_PER_SG= [i*BLOCK_SIZE for i in BLOCKS_PER_SG]
+    PLAYED_ROUNDS_PER_SG = [i * 4 for i in BLOCKS_PER_SG]
+    SG_ENDS = cumsum(PLAYED_ROUNDS_PER_SG)
+    print('PLAYED_ROUND_END is', SG_ENDS)
+    PLAYED_ROUND_STARTS = [0] + SG_ENDS[:-1]
+    print('PLAY_STARTS is', PLAYED_ROUND_STARTS)
+    PAY_ROUNDS = find_pay_rounds(COUNT_ROUNDS_PER_SG, PLAYED_ROUND_STARTS)
+    print('PAY_ROUNDS are', PAY_ROUNDS)
+    PAY_ROUNDS_ENDS = [sum(x) for x in zip(COUNT_ROUNDS_PER_SG, PLAYED_ROUND_STARTS)]
+    print('PAY_ROUND_ENDS are', PAY_ROUNDS_ENDS)
+    NUM_ROUNDS = sum(PLAYED_ROUNDS_PER_SG)
+
 
     # Nested groups parameters
     super_group_size = 4
@@ -66,12 +97,18 @@ class C(BaseConstants):
 
 
 class Subsession(BaseSubsession):
-    #current number of supergame
-    supergame = models.IntegerField(initial=0)
-    #the period in current supergame
-    supergame_period=models.IntegerField()
-    is_last_period = models.BooleanField()
-    last_round = models.IntegerField()
+    # current # of supergame
+    sg = models.IntegerField()
+    # the period in current supergame
+    period = models.IntegerField()
+    # whether a round is the last period of a supergame
+    is_sg_last_period = models.BooleanField()
+    # block = models.IntegerField()
+    bk = models.IntegerField()
+    # whether a round is the last period of a block
+    is_bk_last_period = models.BooleanField()
+    is_pay_relevant = models.BooleanField()
+    dieroll = models.IntegerField(min=1, max=100)
 
 
 class Group(BaseGroup):
@@ -109,52 +146,50 @@ def creating_session(subsession: Subsession):
     pair_ids = [n for n in range(1, C.super_group_size // C.group_size + 1)] * C.group_size
     print('pair ids:', pair_ids)
 
-    super_games_duration = C.supergame_duration.copy()
-
-    subsession.session.vars['super_games_duration'] = super_games_duration
-    # print('supergame duration:', super_games_duration)
-
-    subsession.session.vars['super_games_end_rounds'] = [sum(super_games_duration[:i + 1]) for i in
-                                                         range(len(super_games_duration))]
-
-    subsession.session.vars['last_round'] = subsession.session.vars['super_games_end_rounds'][
-        C.num_super_games - 1]
-    subsession.last_round = C.last_round
-    # print('supergames end at rounds:', subsession.session.vars['super_games_end_rounds'])
-    # print('the last round of the experiment is:', subsession.session.vars['last_round'])
-
-    subsession.session.vars['super_games_start_rounds'] = [sum(([1] + super_games_duration)[:i + 1]) for i in
-                                                           range(len(super_games_duration))]
-    # print('supergames start at rounds:', subsession.session.vars['super_games_start_rounds'])
-    #from otree snipets
     if subsession.round_number == 1:
         sg = 1
         period = 1
+        bk = 1
         # loop over all subsessions
         for ss in subsession.in_rounds(1, C.NUM_ROUNDS):
-            ss.supergame = sg
-            ss.supergame_period = period
+            ss.sg = sg
+            ss.period = period
+            ss.bk = bk
+            # Whether a round is the last round of a supergame
             # 'in' gives you a bool. for example: 5 in [1, 5, 6] # => True
-            is_last_period = ss.round_number in C.supergame_ends
-            ss.is_last_period = is_last_period
-            if is_last_period:
+            is_sg_last_period = ss.round_number in C.SG_ENDS
+            ss.is_sg_last_period = is_sg_last_period
+            if is_sg_last_period:
                 sg += 1
                 period = 1
             else:
                 period += 1
+            # whether a round is the last round of a block
+            if ss.round_number % C.BLOCK_SIZE == 0:
+                is_bk_last_period = 1
+            else:
+                is_bk_last_period = 0
+            ss.is_bk_last_period = is_bk_last_period
 
-    # curr_round = subsession.round_number
-    # for i, start in enumerate(subsession.session.vars['super_games_start_rounds']):
-    #     if curr_round == start:
-    #         subsession.supergame = i + 1
-    #         break
-    #     else:
-    #         # print(curr_round)
-    #         subsession.supergame = subsession.in_round(curr_round - 1).supergame
+            if is_bk_last_period:
+                bk += 1
+                # if is_sg_last_period:
+                #     bk = 1
+            # whether a round is pay relevant
+            is_pay_relevant = ss.round_number in C.PAY_ROUNDS
+            ss.is_pay_relevant = is_pay_relevant
 
-    # if subsession.round_number in subsession.session.vars['super_games_start_rounds']:
+            continuation_chance = int(round(C.DELTA * 100))
+            dieroll_continue = random.randint(1, continuation_chance)
+            dieroll_end = random.randint(continuation_chance + 1, 100)
+            is_pay_round_end = ss.round_number in C.PAY_ROUNDS_ENDS
+            if ss.is_pay_relevant and not is_pay_round_end:
+                ss.dieroll = random.randint(1, continuation_chance)
+            else:
+                ss.dieroll = random.randint(continuation_chance + 1, 100)
 
-    if subsession.supergame_period==1:
+
+    if subsession.period==1:
         # Get all players in the session and in the current round
         ps = subsession.get_players()
         # Apply in-place permutation
@@ -179,7 +214,7 @@ def creating_session(subsession: Subsession):
                 prev_p = p.in_round(p.round_number - 1)
                 p.pair_id = prev_p.pair_id
 
-    random_sample = random.sample(range(1,C.num_super_games+1),2) #randomly pick two different supergames from all supergames
+    random_sample = random.sample(range(1,C.NUM_SG+1),2) #randomly pick two different supergames from all supergames
     subsession.session.vars['pgg_payment_match'] = random_sample[0] #select one match of PGG to pay
     subsession.session.vars['pd_payment_match'] = random_sample[1]  #select one match of PD to pay
 
@@ -239,24 +274,43 @@ def set_pd_payoff(player: Player):
     for p in player.group.get_players():
         p.pd_earning = payoff_matrix[p.pd_decision][other_player(p).pd_decision]
 
-#roll a die for the whole group
-def roll_die(group:Group):
-    continuation_chance = int(round(C.delta * 100))
-    dieroll_continue = random.randint(1, continuation_chance)
-    dieroll_end = random.randint(continuation_chance + 1, 100)
-    for p in group.get_players():
-        if p.subsession.round_number in p.session.vars['super_games_end_rounds']:
-            p.dieroll=dieroll_end
-        else:
-            p.dieroll = dieroll_continue
+# #roll a die for the whole session
+def get_block_dierolls(player: Player):
+    block_first_round = player.round_number - C.BLOCK_SIZE + 1
+    block = player.in_rounds(block_first_round, player.round_number)
+    block_history = []
+    for b in block:
+        block_round = dict(round_number=b.subsession.period, dieroll=b.subsession.dieroll)
+        block_history.append(block_round)
+    return block_history
 
-def round_payoff_and_roll_die(group:Group):
-    roll_die(group)
-    set_payoffs(group)
+# def roll_die(group:Group):
+#     continuation_chance = int(round(C.delta * 100))
+#     dieroll_continue = random.randint(1, continuation_chance)
+#     dieroll_end = random.randint(continuation_chance + 1, 100)
+#     for p in group.get_players():
+#         if p.subsession.round_number in p.session.vars['super_games_end_rounds']:
+#             p.dieroll=dieroll_end
+#         else:
+#             p.dieroll = dieroll_continue
+
+# def round_payoff_and_roll_die(group:Group):
+#     roll_die(group)
+#     set_payoffs(group)
 # PAGES
+class NewSupergame(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        subsession = player.subsession
+        return subsession.period == 1
+
 class Decision(Page):
     form_model = 'player'
     form_fields = ['contribution','pd_decision']
+
+    # @staticmethod
+    # def error_message_pd(player):
+    #     return 'Please make a choice'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -273,8 +327,9 @@ class Decision(Page):
             betray_payoff = C.dt_betrayed_payoff
             both_defect_payoff = C.dt_both_defect_payoff
         return dict(
-            cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                player.subsession.curr_super_game - 1] + 1,
+            # cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+            #     player.subsession.curr_super_game - 1] + 1,
+            cycle_round_number = player.subsession.period,
             both_cooperate_payoff=both_cooperate_payoff,
             betrayed_payoff=betrayed_payoff,
             betray_payoff=betray_payoff,
@@ -286,7 +341,7 @@ class Decision(Page):
 
 class ResultsWaitPage(WaitPage):
     #set payoffs and roll a die for the whole group
-    after_all_players_arrive = round_payoff_and_roll_die
+    after_all_players_arrive = set_payoffs
 
 class RoundResults(Page):
     @staticmethod
@@ -306,8 +361,7 @@ class RoundResults(Page):
             betray_payoff = C.dt_betrayed_payoff
             both_defect_payoff = C.dt_both_defect_payoff
         return {
-            'cycle_round_number': player.round_number - player.session.vars['super_games_start_rounds'][
-                player.subsession.curr_super_game - 1] + 1,
+            'cycle_round_number': player.subsession.period,
             'pgg_private': C.ENDOWMENT - player.contribution,
             #PD relevant variables
             'both_cooperate_payoff': both_cooperate_payoff,
@@ -323,6 +377,28 @@ class RoundResults(Page):
             'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
         }
 
+class BlockEnd(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        subsession = player.subsession
+        return subsession.is_bk_last_period == 1
+
+    def vars_for_template(player: Player):
+        continuation_chance = int(round(C.DELTA * 100))
+        # TODO: pull out a history of dierolls in this block gettattr()?
+        # write a founction get block die rolls
+        # player.subsession.dieroll
+        # previous_rounds_in_block=
+        sg = player.subsession.sg
+        player_in_end_round=player.in_round(C.PAY_ROUNDS_ENDS[sg-1])
+        end_period=player_in_end_round.subsession.period
+
+        return dict(continuation_chance=continuation_chance,
+                    die_threshold_plus_one=continuation_chance + 1,
+                    block_history=get_block_dierolls(player),
+                    end_period=end_period
+                    )
+
 class EndRound(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -336,4 +412,4 @@ class EndRound(Page):
                             player.subsession.curr_super_game - 1] + 1
                         )
 
-page_sequence = [Decision, ResultsWaitPage, RoundResults, EndRound]
+page_sequence = [NewSupergame,Decision, ResultsWaitPage, RoundResults, BlockEnd]
