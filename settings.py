@@ -6,7 +6,31 @@ SESSION_CONFIGS = [
         app_sequence=['Game'],
         num_demo_participants=4,
         easy=1,
+        pd_only=0,
+        pgg_only=0,
+        doc="""
+        This is the oTree program for treatment with both games"""
 
+    ),
+    dict(
+        name='main_task_pd',
+        app_sequence=['Game'],
+        num_demo_participants=4,
+        easy=1,
+        pd_only=1,
+        pgg_only=0,
+        doc="""
+        This is the oTree program for treatment with PD game only"""
+    ),
+    dict(
+        name='main_task_pgg',
+        app_sequence=['Game'],
+        num_demo_participants=4,
+        easy=1,
+        pd_only=0,
+        pgg_only=1,
+        doc="""
+    This is the oTree program for treatment with PD game only"""
     ),
     dict(
         name='Block_Random_Termination',
@@ -22,13 +46,13 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.20, participation_fee=5.00, doc="",use_browser_bots=True
+    real_world_currency_per_point=0.20, participation_fee=5.00, doc="", use_browser_bots=True
 )
 # use_browser_bots=True
-PARTICIPANT_FIELDS = ['quiz_num_correct','quiz_earning','progress','selected_match_pgg', 'selected_match_pd',
-                      'pgg_earning','pd_earning','chosen_gamble','random_num_gamble','gamble_earning',
-                      'selected_round_SVO','role_SVO','SVO_earning']
-SESSION_FIELDS = ['pgg_payment_match','pd_payment_match']
+PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress', 'selected_match_pgg', 'selected_match_pd',
+                      'pgg_earning', 'pd_earning', 'chosen_gamble', 'random_num_gamble', 'gamble_earning',
+                      'selected_round_SVO', 'role_SVO', 'SVO_earning']
+SESSION_FIELDS = ['pgg_payment_match', 'pd_payment_match']
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans
