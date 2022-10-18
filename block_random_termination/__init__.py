@@ -158,7 +158,6 @@ class BlockEnd(Page):
 
     def vars_for_template(player: Player):
         continuation_chance = int(round(C.DELTA * 100))
-        # TODO: pull out a history of dierolls in this block gettattr()?
         # write a founction get block die rolls
         # player.subsession.dieroll
         # previous_rounds_in_block=

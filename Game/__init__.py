@@ -112,6 +112,7 @@ class Subsession(BaseSubsession):
     is_bk_last_period = models.BooleanField()
     is_pay_relevant = models.BooleanField()
     dieroll = models.IntegerField(min=1, max=100)
+    treatment = models.StringField()
 
 
 class Group(BaseGroup):
@@ -221,6 +222,18 @@ def creating_session(subsession: Subsession):
     random_sample = random.sample(range(1,C.NUM_SG+1),2) #randomly pick two different supergames from all supergames
     subsession.session.vars['pgg_payment_match'] = random_sample[0] #select one match of PGG to pay
     subsession.session.vars['pd_payment_match'] = random_sample[1]  #select one match of PD to pay
+    if subsession.session.config['pd_only']==0 and subsession.session.config['pg_only']==0:
+        if subsession.session.config['easy']==1:
+            subsession.treatment = 'sim_easy'
+        else:
+            subsession.treatment = 'sim_difficult'
+    elif subsession.session.config['pd_only']==1 and subsession.session.config['pg_only']==0:
+        if subsession.session.config['easy']==1:
+            subsession.treatment = 'pd_easy'
+        else:
+            subsession.treatment = 'pd_difficult'
+    else:
+        subsession.treatment ='pgg'
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
 def set_pairs(subsession: Subsession, pair_ids: list):
@@ -313,6 +326,46 @@ class Decision(Page):
     form_model = 'player'
     form_fields = ['contribution','pd_decision']
 
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['pd_only'] == 0 and player.session.config['pgg_only'] == 0
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if player.session.config['easy'] == 1:
+            # if PD in this session is the Easy PD
+            both_cooperate_payoff = C.ez_both_cooperate_payoff
+            betrayed_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betrayed_payoff
+            both_defect_payoff = C.ez_both_defect_payoff
+        else:
+            # if PD in this session is the Difficult PD
+            both_cooperate_payoff = C.dt_both_cooperate_payoff
+            betrayed_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betrayed_payoff
+            both_defect_payoff = C.dt_both_defect_payoff
+        return dict(
+            # cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
+            #     player.subsession.curr_super_game - 1] + 1,
+            cycle_round_number = player.subsession.period,
+            both_cooperate_payoff=both_cooperate_payoff,
+            betrayed_payoff=betrayed_payoff,
+            betray_payoff=betray_payoff,
+            both_defect_payoff=both_defect_payoff,
+            pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
+            pd_selected_match=player.subsession.session.vars['pd_payment_match']
+        )
+
+class Decision_Single(Page):
+    form_model = 'player'
+
+    @staticmethod
+    def get_form_fields(player: Player):
+        if player.subsession.session.config['pd_only'] ==1:
+            form_fields = ['pd_decision']
+        if player.subsession.session.config['pgg_only'] ==1:
+            form_fields = ['contribution']
+
     # @staticmethod
     # def error_message_pd(player):
     #     return 'Please make a choice'
@@ -342,7 +395,6 @@ class Decision(Page):
             pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
             pd_selected_match=player.subsession.session.vars['pd_payment_match']
         )
-
 
 class ResultsWaitPage(WaitPage):
     #set payoffs and roll a die for the whole group
