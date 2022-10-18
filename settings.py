@@ -22,10 +22,10 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=0.00, doc=""
+    real_world_currency_per_point=0.20, participation_fee=5.00, doc="",use_browser_bots=True
 )
-
-PARTICIPANT_FIELDS = ['quiz_num_correct','quiz_earning','progress','selected_round_pgg', 'selected_round_pd',
+# use_browser_bots=True
+PARTICIPANT_FIELDS = ['quiz_num_correct','quiz_earning','progress','selected_match_pgg', 'selected_match_pd',
                       'pgg_earning','pd_earning','chosen_gamble','random_num_gamble','gamble_earning',
                       'selected_round_SVO','role_SVO','SVO_earning']
 SESSION_FIELDS = ['pgg_payment_match','pd_payment_match']

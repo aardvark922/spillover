@@ -45,23 +45,26 @@ class C(BaseConstants):
 
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    COUNT_ROUNDS_PER_SG = [2, 1, 3, 2, 5]
+    # COUNT_ROUNDS_PER_SG = [2, 1, 1, 1, 5]
+    #Dal Bo&Frechette one sequence
+    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
+    # print('number of matches,', NUM_SG)
     # find how many blocks are needed for each supergame
     BLOCKS_PER_SG = numblock(COUNT_ROUNDS_PER_SG, BLOCK_SIZE)
-    # print('BLOCKS_PER_SG is', BLOCKS_PER_SG)
+    # print('BLOCKS_PER_SG isis', BLOCKS_PER_SG)
     # find out how many rounds players have to go through
     # PLAYED_ROUNDS_PER_SG= [i*BLOCK_SIZE for i in BLOCKS_PER_SG]
     PLAYED_ROUNDS_PER_SG = [i * 4 for i in BLOCKS_PER_SG]
     SG_ENDS = cumsum(PLAYED_ROUNDS_PER_SG)
-    print('PLAYED_ROUND_END is', SG_ENDS)
+    # print('PLAYED_ROUND_END is', SG_ENDS)
     PLAYED_ROUND_STARTS = [0] + SG_ENDS[:-1]
-    print('PLAY_STARTS is', PLAYED_ROUND_STARTS)
+    # print('PLAY_STARTS is', PLAYED_ROUND_STARTS)
     PAY_ROUNDS = find_pay_rounds(COUNT_ROUNDS_PER_SG, PLAYED_ROUND_STARTS)
-    print('PAY_ROUNDS are', PAY_ROUNDS)
+    # print('PAY_ROUNDS are', PAY_ROUNDS)
     PAY_ROUNDS_ENDS = [sum(x) for x in zip(COUNT_ROUNDS_PER_SG, PLAYED_ROUND_STARTS)]
-    print('PAY_ROUND_ENDS are', PAY_ROUNDS_ENDS)
+    # print('PAY_ROUND_ENDS are', PAY_ROUNDS_ENDS)
     NUM_ROUNDS = sum(PLAYED_ROUNDS_PER_SG)
 
 
@@ -128,7 +131,7 @@ class Player(BasePlayer):
     pgg_sg_earning = models.FloatField()
     pd_decision = models.StringField(
         initial='NA',
-        choices=[['Action Y', 'Action Y'], ['Action Z', 'Action Z']],
+        choices=[[1, 'Action Y'], [0, 'Action Z']],
         label="""This player's decision""",
         widget=widgets.RadioSelect
     )
@@ -146,7 +149,7 @@ def creating_session(subsession: Subsession):
 
     # Set pairs IDs to identify who is matched with whom
     pair_ids = [n for n in range(1, C.super_group_size // C.group_size + 1)] * C.group_size
-    print('pair ids:', pair_ids)
+    # print('pair ids:', pair_ids)
 
     if subsession.round_number == 1:
         sg = 1
@@ -204,7 +207,7 @@ def creating_session(subsession: Subsession):
         subsession.set_group_matrix(super_groups)
         # Call the set_pairs function
         set_pairs(subsession, pair_ids)
-        print('new pair ids:', pair_ids)
+        # print('new pair ids:', pair_ids)
     else:
         # Set group matrix in oTree based on the matrix of the previous round
         subsession.group_like_round(subsession.round_number - 1)
@@ -261,15 +264,15 @@ def set_pd_payoff(player: Player):
         betray_payoff = C.dt_betrayed_payoff
         both_defect_payoff = C.dt_both_defect_payoff
     payoff_matrix = {
-        'Action Y':
+        '1':
             {
-                'Action Y': both_cooperate_payoff,
-                'Action Z': betrayed_payoff
+                '1': both_cooperate_payoff,
+                '0': betrayed_payoff
             },
-        'Action Z':
+        '0':
             {
-                'Action Y': betray_payoff,
-                'Action Z': both_defect_payoff
+                '1': betray_payoff,
+                '0': both_defect_payoff
             }
     }
     for p in player.group.get_players():
@@ -385,10 +388,11 @@ class BlockEnd(Page):
         subsession = player.subsession
         return subsession.is_bk_last_period == 1
 
+    @staticmethod
     def vars_for_template(player: Player):
         continuation_chance = int(round(C.DELTA * 100))
         sg = player.subsession.sg
-        player_in_end_round=player.in_round(C.PAY_ROUNDS_ENDS[sg-1])
+        player_in_end_round = player.in_round(C.PAY_ROUNDS_ENDS[sg-1])
         end_period=player_in_end_round.subsession.period
 
         if player.subsession.is_sg_last_period:
@@ -401,27 +405,55 @@ class BlockEnd(Page):
             for p in player_in_pay_rounds:
                 pgg_tot_earning += p.pgg_earning
                 pd_tot_earning += p.pd_earning
-            player.pgg_sg_earning=pgg_tot_earning
+            player.pgg_sg_earning= round(pgg_tot_earning,1)
             player.pd_sg_earning=pd_tot_earning
             return dict(pgg_sg_earning= player.pgg_sg_earning,
-                    pd_sg_earning= player.pd_sg_earning)
+                        pd_sg_earning= player.pd_sg_earning,
+                        end_period=end_period,
+                        continuation_chance=continuation_chance,
+                        block_history=get_block_history(player)
+                        )
         return dict(continuation_chance=continuation_chance,
                     die_threshold_plus_one=continuation_chance + 1,
                     block_history=get_block_history(player),
                     end_period=end_period,
                     )
 
-class EndRound(Page):
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        import random
+        participant = player.participant
+        exchange_rate = player.session.config['real_world_currency_per_point']
+        # if it's the last round of this task
+        if player.round_number == C.NUM_ROUNDS:
+            #record selected match earning for pgg
+            pgg_sg= player.session.vars['pgg_payment_match']
+            participant.selected_match_pgg = pgg_sg
+            player_in_end_round_of_selected_match_pgg = player.in_round(C.SG_ENDS[pgg_sg-1])
+            participant.pgg_earning = player_in_end_round_of_selected_match_pgg.pgg_sg_earning
+
+            # record selected match earning for pd
+            pd_sg=player.session.vars['pd_payment_match']
+            participant.selected_match_pd = pd_sg
+            player_in_end_round_of_selected_match_pd = player.in_round(C.SG_ENDS[pd_sg-1])
+            participant.pd_earning = player_in_end_round_of_selected_match_pd.pd_sg_earning
+
+            player.payoff = (participant.pgg_earning + participant.pd_earning)*exchange_rate
+
+class FinalPayment(Page):
+
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number < player.session.vars['last_round'] + 1
+        subsession = player.subsession
+        return subsession.round_number == C.NUM_ROUNDS
+
     @staticmethod
     def vars_for_template(player: Player):
-        continuation_chance = int(round(C.delta * 100))
-        return dict(dieroll=player.dieroll, continuation_chance=continuation_chance,
-                        die_threshold_plus_one=continuation_chance + 1,
-                        cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
-                            player.subsession.curr_super_game - 1] + 1
-                        )
-
-page_sequence = [NewSupergame,Decision, ResultsWaitPage, RoundResults, BlockEnd]
+        #convert points to dollar
+        return dict(
+                    pgg_payment=cu(player.participant.pgg_earning).to_real_world_currency(player.session),
+                    pd_payment= cu(player.participant.pd_earning).to_real_world_currency(player.session),
+                    participation_fee=player.session.config['participation_fee'],
+                    conversion_rate=player.session.config['real_world_currency_per_point']
+                    )
+page_sequence = [NewSupergame,Decision, ResultsWaitPage, RoundResults, BlockEnd, FinalPayment]

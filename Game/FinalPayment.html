@@ -1,0 +1,26 @@
+{{ block title }}
+Summary of earnings
+{{ endblock }}
+
+{{ block content }}
+<p>Below shows a summary of your earnings in this task. The exchange rate is 1 point = ${{conversion_rate}}.</p>
+<h5>Task 1 Earning</h5>
+
+<p>
+<h6>Blue Game Earning:</h6>
+<div> Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
+    {{participant.pgg_earning|to1}}.
+<br>
+ The payoff of your Blue Game choices is therefore
+    <b>{{pgg_payment}}</b>.
+</div></p>
+
+<p><h6>Yellow Game Earning:</h6>
+Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
+    {{participant.pd_earning}}.
+<br>
+The payoff of your Yellow Game choices is <b>{{pd_payment}}</b>.
+</p>
+{{ endblock }}
+
+
