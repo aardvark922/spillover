@@ -6,8 +6,8 @@ SESSION_CONFIGS = [
         app_sequence=['Game'],
         num_demo_participants=4,
         easy=1,
+        sim=1,
         pd_only=0,
-        pgg_only=0,
         doc="""
         This is the oTree program for treatment with both games"""
 
@@ -17,8 +17,8 @@ SESSION_CONFIGS = [
         app_sequence=['Game'],
         num_demo_participants=4,
         easy=1,
+        sim=0,
         pd_only=1,
-        pgg_only=0,
         doc="""
         This is the oTree program for treatment with PD game only"""
     ),
@@ -27,8 +27,8 @@ SESSION_CONFIGS = [
         app_sequence=['Game'],
         num_demo_participants=4,
         easy=1,
+        sim=0,
         pd_only=0,
-        pgg_only=1,
         doc="""
     This is the oTree program for treatment with PD game only"""
     ),
@@ -46,7 +46,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.20, participation_fee=5.00, doc="", use_browser_bots=True
+    real_world_currency_per_point=0.20, participation_fee=5.00, doc="",
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress', 'selected_match_pgg', 'selected_match_pd',

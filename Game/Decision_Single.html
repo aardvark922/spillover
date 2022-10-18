@@ -1,0 +1,41 @@
+{{ extends "global/Page.html" }}
+{{ block title }}
+Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
+{{ endblock }}
+{{ block content }}
+{{if pd_only}}
+ {{ include C.pd_choice_template }}
+
+{{else}}
+        {{ include C.pgg_contribute_template }}
+{{endif}}
+<br>
+<br>
+<button class="otree-btn-next btn btn-primary">Submit</button>
+
+<style>
+
+    .controls {
+        width: 50px;
+        margin-left: 45%;
+        margin-right: 55%;
+    }
+
+    .otree-btn-next {
+        float: right;
+        margin-left: 53.5%;
+        margin-right: 46.5%;
+    }
+
+    .otree-body {
+        max-width: 1400px;
+    }
+
+    .page-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 40px;
+        margin-left: 35%;
+    }
+</style>
+{{ endblock }}

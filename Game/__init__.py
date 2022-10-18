@@ -45,9 +45,9 @@ class C(BaseConstants):
 
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    # COUNT_ROUNDS_PER_SG = [2, 1, 1, 1, 5]
+    COUNT_ROUNDS_PER_SG = [2, 1, 1, 1, 5]
     #Dal Bo&Frechette one sequence
-    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
+    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # print('number of matches,', NUM_SG)
@@ -130,9 +130,9 @@ class Player(BasePlayer):
     # record ss's payoff from PGG
     pgg_earning = models.FloatField()
     pgg_sg_earning = models.FloatField()
-    pd_decision = models.StringField(
+    pd_decision = models.BooleanField(
         initial='NA',
-        choices=[[1, 'Action Y'], [0, 'Action Z']],
+        choices=[[True, 'Action Y'], [False, 'Action Z']],
         label="""This player's decision""",
         widget=widgets.RadioSelect
     )
@@ -222,18 +222,19 @@ def creating_session(subsession: Subsession):
     random_sample = random.sample(range(1,C.NUM_SG+1),2) #randomly pick two different supergames from all supergames
     subsession.session.vars['pgg_payment_match'] = random_sample[0] #select one match of PGG to pay
     subsession.session.vars['pd_payment_match'] = random_sample[1]  #select one match of PD to pay
-    if subsession.session.config['pd_only']==0 and subsession.session.config['pg_only']==0:
+    if subsession.session.config['sim']==1:
         if subsession.session.config['easy']==1:
             subsession.treatment = 'sim_easy'
         else:
             subsession.treatment = 'sim_difficult'
-    elif subsession.session.config['pd_only']==1 and subsession.session.config['pg_only']==0:
-        if subsession.session.config['easy']==1:
-            subsession.treatment = 'pd_easy'
-        else:
-            subsession.treatment = 'pd_difficult'
     else:
-        subsession.treatment ='pgg'
+        if subsession.session.config['pd_only']==1:
+            if subsession.session.config['easy']==1:
+                subsession.treatment = 'pd_easy'
+            else:
+                subsession.treatment = 'pd_difficult'
+        else:
+            subsession.treatment ='pgg'
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
 def set_pairs(subsession: Subsession, pair_ids: list):
@@ -250,12 +251,23 @@ def set_pairs(subsession: Subsession, pair_ids: list):
 # in one function set pgg and pd payoffs
 def set_payoffs(group: Group):
     players = group.get_players()
-    contributions = [p.contribution for p in players]
-    group.total_contribution = sum(contributions)
-    group.individual_share = round(group.total_contribution * C.MPCR, 2)
-    for p in players:
-        p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
-        set_pd_payoff(p)
+    if group.session.config['sim']==1:
+        contributions = [p.contribution for p in players]
+        group.total_contribution = sum(contributions)
+        group.individual_share = round(group.total_contribution * C.MPCR, 2)
+        for p in players:
+            p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
+            set_pd_payoff(p)
+    else:
+        if group.session.config['pd_only']==1:
+            for p in players:
+                set_pd_payoff(p)
+        else:
+            contributions = [p.contribution for p in players]
+            group.total_contribution = sum(contributions)
+            group.individual_share = round(group.total_contribution * C.MPCR, 2)
+            for p in players:
+                p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
 
 # PD functions
@@ -277,16 +289,10 @@ def set_pd_payoff(player: Player):
         betray_payoff = C.dt_betrayed_payoff
         both_defect_payoff = C.dt_both_defect_payoff
     payoff_matrix = {
-        '1':
-            {
-                '1': both_cooperate_payoff,
-                '0': betrayed_payoff
-            },
-        '0':
-            {
-                '1': betray_payoff,
-                '0': both_defect_payoff
-            }
+        (False, True): betray_payoff,
+        (True, True): both_cooperate_payoff,
+        (False, False): both_defect_payoff,
+        (True, False): betrayed_payoff,
     }
     for p in player.group.get_players():
         p.pd_earning = payoff_matrix[p.pd_decision][other_player(p).pd_decision]
@@ -328,7 +334,7 @@ class Decision(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.session.config['pd_only'] == 0 and player.session.config['pgg_only'] == 0
+        return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -358,14 +364,18 @@ class Decision(Page):
 
 class Decision_Single(Page):
     form_model = 'player'
-
+    # form_fields = ['contribution', 'pd_decision']
+    #
     @staticmethod
     def get_form_fields(player: Player):
         if player.subsession.session.config['pd_only'] ==1:
-            form_fields = ['pd_decision']
-        if player.subsession.session.config['pgg_only'] ==1:
-            form_fields = ['contribution']
+            return ['pd_decision']
+        else:
+            return ['contribution']
 
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 0
     # @staticmethod
     # def error_message_pd(player):
     #     return 'Please make a choice'
@@ -393,7 +403,8 @@ class Decision_Single(Page):
             betray_payoff=betray_payoff,
             both_defect_payoff=both_defect_payoff,
             pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
-            pd_selected_match=player.subsession.session.vars['pd_payment_match']
+            pd_selected_match=player.subsession.session.vars['pd_payment_match'],
+            pd_only=player.session.config['pd_only']
         )
 
 class ResultsWaitPage(WaitPage):
@@ -401,6 +412,11 @@ class ResultsWaitPage(WaitPage):
     after_all_players_arrive = set_payoffs
 
 class RoundResults(Page):
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
+
     @staticmethod
     def vars_for_template(player: Player):
         me = player
@@ -425,14 +441,59 @@ class RoundResults(Page):
             'betrayed_payoff': betrayed_payoff,
             'betray_payoff': betray_payoff,
             'both_defect_payoff': both_defect_payoff,
-            'my_decision': me.pd_decision,
-            'opponent_decision': opponent.pd_decision,
+            'my_decision': me.field_display('pd_decision'),
+            'opponent_decision': opponent.field_display('pd_decision'),
             'same_choice': me.pd_decision == opponent.pd_decision,
-            'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
-            'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
-            'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
-            'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
+            'both_cooperate': me.pd_decision == True and opponent.pd_decision == True,
+            'both_defect': me.pd_decision == False and opponent.pd_decision == False,
+            'i_cooperate_he_defects': me.pd_decision == True and opponent.pd_decision == False,
+            'i_defect_he_cooperates': me.pd_decision == False and opponent.pd_decision == True,
         }
+
+class RoundResults_Single(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 0
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if player.session.config['pd_only']==1:
+            me = player
+            opponent = other_player(player)
+            if player.session.config['easy'] == 1:
+                # if PD in this session is the Easy PD
+                both_cooperate_payoff = C.ez_both_cooperate_payoff
+                betrayed_payoff = C.ez_betrayed_payoff
+                betray_payoff = C.ez_betrayed_payoff
+                both_defect_payoff = C.ez_both_defect_payoff
+            else:
+                # if PD in this session is the Difficult PD
+                both_cooperate_payoff = C.dt_both_cooperate_payoff
+                betrayed_payoff = C.dt_betrayed_payoff
+                betray_payoff = C.dt_betrayed_payoff
+                both_defect_payoff = C.dt_both_defect_payoff
+            return {
+                'cycle_round_number': player.subsession.period,
+                #PD relevant variables
+                'both_cooperate_payoff': both_cooperate_payoff,
+                'betrayed_payoff': betrayed_payoff,
+                'betray_payoff': betray_payoff,
+                'both_defect_payoff': both_defect_payoff,
+                'my_decision': me.pd_decision,
+                'opponent_decision': opponent.pd_decision,
+                'same_choice': me.pd_decision == opponent.pd_decision,
+                'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
+                'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
+                'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
+                'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
+                'pd_only': player.session.config['pd_only']
+            }
+        else:
+            return {
+                'cycle_round_number': player.subsession.period,
+                'pgg_private': C.ENDOWMENT - player.contribution,
+                'pd_only': player.session.config['pd_only']
+            }
 
 class BlockEnd(Page):
     @staticmethod
@@ -508,4 +569,4 @@ class FinalPayment(Page):
                     participation_fee=player.session.config['participation_fee'],
                     conversion_rate=player.session.config['real_world_currency_per_point']
                     )
-page_sequence = [NewSupergame,Decision, ResultsWaitPage, RoundResults, BlockEnd, FinalPayment]
+page_sequence = [NewSupergame,Decision,Decision_Single , ResultsWaitPage, RoundResults,RoundResults_Single, BlockEnd, FinalPayment]
