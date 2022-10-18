@@ -50,7 +50,7 @@ class C(BaseConstants):
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # find how many blocks are needed for each supergame
     BLOCKS_PER_SG = numblock(COUNT_ROUNDS_PER_SG, BLOCK_SIZE)
-    print('BLOCKS_PER_SG is', BLOCKS_PER_SG)
+    # print('BLOCKS_PER_SG is', BLOCKS_PER_SG)
     # find out how many rounds players have to go through
     # PLAYED_ROUNDS_PER_SG= [i*BLOCK_SIZE for i in BLOCKS_PER_SG]
     PLAYED_ROUNDS_PER_SG = [i * 4 for i in BLOCKS_PER_SG]
@@ -125,6 +125,7 @@ class Player(BasePlayer):
     )
     # record ss's payoff from PGG
     pgg_earning = models.FloatField()
+    pgg_sg_earning = models.FloatField()
     pd_decision = models.StringField(
         initial='NA',
         choices=[['Action Y', 'Action Y'], ['Action Z', 'Action Z']],
@@ -133,6 +134,7 @@ class Player(BasePlayer):
     )
     # record ss's payoff from PD
     pd_earning = models.FloatField()
+    pd_sg_earning = models.FloatField()
     dieroll = models.IntegerField(min=1, max=100)
 
 
@@ -202,7 +204,6 @@ def creating_session(subsession: Subsession):
         subsession.set_group_matrix(super_groups)
         # Call the set_pairs function
         set_pairs(subsession, pair_ids)
-        # TODO pair_ID 0 needs to be fixed!
         print('new pair ids:', pair_ids)
     else:
         # Set group matrix in oTree based on the matrix of the previous round
@@ -275,12 +276,13 @@ def set_pd_payoff(player: Player):
         p.pd_earning = payoff_matrix[p.pd_decision][other_player(p).pd_decision]
 
 # #roll a die for the whole session
-def get_block_dierolls(player: Player):
+def get_block_history(player: Player):
     block_first_round = player.round_number - C.BLOCK_SIZE + 1
     block = player.in_rounds(block_first_round, player.round_number)
     block_history = []
     for b in block:
-        block_round = dict(round_number=b.subsession.period, dieroll=b.subsession.dieroll)
+        block_round = dict(round_number=b.subsession.period, dieroll=b.subsession.dieroll,
+                           pgg_earning=b.pgg_earning, pd_earning=b.pd_earning)
         block_history.append(block_round)
     return block_history
 
@@ -385,18 +387,28 @@ class BlockEnd(Page):
 
     def vars_for_template(player: Player):
         continuation_chance = int(round(C.DELTA * 100))
-        # TODO: pull out a history of dierolls in this block gettattr()?
-        # write a founction get block die rolls
-        # player.subsession.dieroll
-        # previous_rounds_in_block=
         sg = player.subsession.sg
         player_in_end_round=player.in_round(C.PAY_ROUNDS_ENDS[sg-1])
         end_period=player_in_end_round.subsession.period
 
+        if player.subsession.is_sg_last_period:
+            sg=player.subsession.sg
+            start_round = C.PLAYED_ROUND_STARTS[sg-1]
+            sg_duration = C.COUNT_ROUNDS_PER_SG[sg-1]
+            player_in_pay_rounds=player.in_rounds(start_round+1,start_round+sg_duration)
+            pgg_tot_earning=0
+            pd_tot_earning=0
+            for p in player_in_pay_rounds:
+                pgg_tot_earning += p.pgg_earning
+                pd_tot_earning += p.pd_earning
+            player.pgg_sg_earning=pgg_tot_earning
+            player.pd_sg_earning=pd_tot_earning
+            return dict(pgg_sg_earning= player.pgg_sg_earning,
+                    pd_sg_earning= player.pd_sg_earning)
         return dict(continuation_chance=continuation_chance,
                     die_threshold_plus_one=continuation_chance + 1,
-                    block_history=get_block_dierolls(player),
-                    end_period=end_period
+                    block_history=get_block_history(player),
+                    end_period=end_period,
                     )
 
 class EndRound(Page):
