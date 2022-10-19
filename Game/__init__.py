@@ -289,13 +289,13 @@ def set_pd_payoff(player: Player):
         # if PD in this session is the Easy PD
         both_cooperate_payoff = C.ez_both_cooperate_payoff
         betrayed_payoff = C.ez_betrayed_payoff
-        betray_payoff = C.ez_betrayed_payoff
+        betray_payoff = C.ez_betray_payoff
         both_defect_payoff = C.ez_both_defect_payoff
     else:
         # if PD in this session is the Difficult PD
         both_cooperate_payoff = C.dt_both_cooperate_payoff
         betrayed_payoff = C.dt_betrayed_payoff
-        betray_payoff = C.dt_betrayed_payoff
+        betray_payoff = C.dt_betray_payoff
         both_defect_payoff = C.dt_both_defect_payoff
     payoff_matrix = {
         (False, True): betray_payoff,
@@ -354,13 +354,13 @@ class Decision(Page):
             # if PD in this session is the Easy PD
             both_cooperate_payoff = C.ez_both_cooperate_payoff
             betrayed_payoff = C.ez_betrayed_payoff
-            betray_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betray_payoff
             both_defect_payoff = C.ez_both_defect_payoff
         else:
             # if PD in this session is the Difficult PD
             both_cooperate_payoff = C.dt_both_cooperate_payoff
             betrayed_payoff = C.dt_betrayed_payoff
-            betray_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betray_payoff
             both_defect_payoff = C.dt_both_defect_payoff
         return dict(
             # cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
@@ -401,13 +401,13 @@ class DecisionSingle(Page):
             # if PD in this session is the Easy PD
             both_cooperate_payoff = C.ez_both_cooperate_payoff
             betrayed_payoff = C.ez_betrayed_payoff
-            betray_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betray_payoff
             both_defect_payoff = C.ez_both_defect_payoff
         else:
             # if PD in this session is the Difficult PD
             both_cooperate_payoff = C.dt_both_cooperate_payoff
             betrayed_payoff = C.dt_betrayed_payoff
-            betray_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betray_payoff
             both_defect_payoff = C.dt_both_defect_payoff
         return dict(
             # cycle_round_number=player.round_number - player.session.vars['super_games_start_rounds'][
@@ -442,13 +442,13 @@ class RoundResults(Page):
             # if PD in this session is the Easy PD
             both_cooperate_payoff = C.ez_both_cooperate_payoff
             betrayed_payoff = C.ez_betrayed_payoff
-            betray_payoff = C.ez_betrayed_payoff
+            betray_payoff = C.ez_betray_payoff
             both_defect_payoff = C.ez_both_defect_payoff
         else:
             # if PD in this session is the Difficult PD
             both_cooperate_payoff = C.dt_both_cooperate_payoff
             betrayed_payoff = C.dt_betrayed_payoff
-            betray_payoff = C.dt_betrayed_payoff
+            betray_payoff = C.dt_betray_payoff
             both_defect_payoff = C.dt_both_defect_payoff
         return {
             'cycle_round_number': player.subsession.period,
@@ -482,13 +482,13 @@ class RoundResultsSingle(Page):
                 # if PD in this session is the Easy PD
                 both_cooperate_payoff = C.ez_both_cooperate_payoff
                 betrayed_payoff = C.ez_betrayed_payoff
-                betray_payoff = C.ez_betrayed_payoff
+                betray_payoff = C.ez_betray_payoff
                 both_defect_payoff = C.ez_both_defect_payoff
             else:
                 # if PD in this session is the Difficult PD
                 both_cooperate_payoff = C.dt_both_cooperate_payoff
                 betrayed_payoff = C.dt_betrayed_payoff
-                betray_payoff = C.dt_betrayed_payoff
+                betray_payoff = C.dt_betray_payoff
                 both_defect_payoff = C.dt_both_defect_payoff
             return {
                 'cycle_round_number': player.subsession.period,
