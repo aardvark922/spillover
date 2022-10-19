@@ -4,21 +4,28 @@ Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
 {{ endblock }}
 {{ block content }}
 {{if pd_only}}
+<br><br>
  {{ include C.pd_choice_template }}
 
 {{else}}
-        {{ include C.pgg_contribute_template }}
+    {{ include C.pgg_contribute_template }}
+
 {{endif}}
 <br>
 <br>
 <button class="otree-btn-next btn btn-primary">Submit</button>
 
 <style>
+    .otree-form{
+        margin-left: 25%;
+         margin-right: 25%;
+    }
+
 
     .controls {
         width: 50px;
-        margin-left: 45%;
-        margin-right: 55%;
+        margin-left: 55%;
+        margin-right: 45%;
     }
 
     .otree-btn-next {
