@@ -142,8 +142,8 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect
     )
     # record ss's payoff from PD
-    pd_earning = models.FloatField()
-    pd_sg_earning = models.FloatField()
+    pd_earning = models.IntegerField()
+    pd_sg_earning = models.IntegerField()
     dieroll = models.IntegerField(min=1, max=100)
 
 

@@ -13,14 +13,24 @@ SESSION_CONFIGS = [
 
     ),
     dict(
-        name='main_task_pd',
+        name='main_task_pd_easy',
         app_sequence=['Game'],
         num_demo_participants=4,
         easy=1,
         sim=0,
         pd_only=1,
         doc="""
-        This is the oTree program for treatment with PD game only"""
+        This is the oTree program for treatment with easy PD game only"""
+    ),
+    dict(
+        name='main_task_pd_difficult',
+        app_sequence=['Game'],
+        num_demo_participants=4,
+        easy=0,
+        sim=0,
+        pd_only=1,
+        doc="""
+    This is the oTree program for treatment with easy PD game only"""
     ),
     dict(
         name='main_task_pgg',
