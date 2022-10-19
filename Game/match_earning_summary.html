@@ -1,0 +1,13 @@
+<div>
+  <br>
+<h5>Earning Summary</h5>
+  {{if two_game}}
+<h6 style="color: darkblue"> Blue Game: {{pgg_sg_earning|to1}}</h6>
+<h6 style="color: saddlebrown"> Yellow Game: {{pd_sg_earning}}</h6>
+  {{elif pd_only}}
+  <h6> Your earning in this match is {{pd_sg_earning}}.</h6>
+  {{else}}
+  <h6> Your earning in this match is {{pgg_sg_earning}}.</h6>
+  {{endif}}
+
+</div>

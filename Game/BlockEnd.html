@@ -18,11 +18,7 @@ Hence, only your choices for round {{end_period}} are relevant for payment.
 <p>The table below shows the dierolls of the last 4 rounds.</p>
 {{ include C.block_dierolls_template }}
 
-<br>
-<h5>Earning Summary</h5>
-<h6 style="color: darkblue"> Blue Game: {{pgg_sg_earning|to1}}</h6>
-<h6 style="color: saddlebrown"> Yellow Game: {{pd_sg_earning}}</h6>
-
+{{include C.match_summary_template}}
 
 {{else}}
 <p>The match has <b>not ended</b> in this block and you will play for another block of {{C.BLOCK_SIZE}} rounds.
