@@ -52,7 +52,7 @@ class C(BaseConstants):
 
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    COUNT_ROUNDS_PER_SG = [2, 1, 1, 1, 5]
+    COUNT_ROUNDS_PER_SG = [5, 2, 1, 1, 5]
     # Dal Bo&Frechette one sequence
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
@@ -122,7 +122,7 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    total_contribution = models.FloatField()
+    total_contribution = models.IntegerField()
     individual_share = models.FloatField()
 
 
