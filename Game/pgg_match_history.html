@@ -1,0 +1,54 @@
+<div>
+    <div class="table-pgghistory ">
+        <table>
+            <thead class="fixedHeader">
+            <tr class="alternateRow">
+                <th style="width: 100px;">Round Number</th>
+                <th style="width: 100px;">Private Acc. Token</th>
+                <th style="width: 100px;">Group Acc. Total Token</th>
+                <th style="width: 100px;">My Earning</th>
+            </tr>
+            </thead>
+
+
+            <tbody>
+
+            {{ for pgg in pgg_history }}
+            <tr>
+                <td style="width: 80px;"> {{ pgg.round_number }}</td>
+                <td><span>{{ pgg.pgg_private }}</span></td>
+                <td><span>{{ pgg.pgg_total_contribution }}</span></td>
+                <td><span>{{ pgg.pgg_earning }}</span></td>
+            </tr>
+
+            {{endfor}}
+
+            </tbody>
+
+        </table>
+    </div>
+    <br>
+    Your Total Earning in this match: {{pgg_sg_earning}}
+</div>
+
+<style>
+
+    .table-pgghistory {
+        text-align: center;
+    }
+
+    .table {
+        border-collapse: collapse;
+
+    }
+
+    .table, th, td {
+        border: 1px solid;
+        height: 30px;
+    }
+
+    .table-pgghistory tr:nth-child(even) {
+        background-color: rgba(0, 0, 255, 0.1);
+    }
+
+</style>

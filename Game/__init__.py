@@ -44,7 +44,8 @@ class C(BaseConstants):
     pd_choice_template = 'Game/pd_choice.html'
     pd_results_template = 'Game/pd_results.html'
     block_dierolls_template = 'Game/block_dierolls.html'
-    match_summary_template = 'Game/match_earning_summary.html'
+    pd_summary_template = 'Game/pd_match_history.html'
+    pgg_summary_template = 'Game/pgg_match_history.html'
     game_summary_template = 'Game/game_earning_summary.html'
     PLAYERS_PER_GROUP = 4
     DELTA = 0.75  # discount factor equals to 0.75
@@ -571,63 +572,13 @@ class BlockEnd(Page):
         sg = player.subsession.sg
         player_in_end_round = player.in_round(C.PAY_ROUNDS_ENDS[sg - 1])
         end_period = player_in_end_round.subsession.period
-
-        if player.subsession.is_sg_last_period:
-            sg = player.subsession.sg
-            start_round = C.PLAYED_ROUND_STARTS[sg - 1]
-            sg_duration = C.COUNT_ROUNDS_PER_SG[sg - 1]
-            player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
-            pgg_tot_earning = 0
-            pd_tot_earning = 0
-            pd_history = []
-            pgg_history = []
-            for p in player_in_pay_rounds:
-                pd_other = other_player(p)
-                pgg_tot_earning += p.pgg_earning
-                pd_tot_earning += p.pd_earning
-                if p.session.config['sim']==1:
-                    pd_round_result = dict(pd_decision=p.pd_decision,
-                                           pd_other_decision=pd_other.pd_decicion,
-                                           pd_earning=p.pd_earning)
-                    pgg_round_result = dict(pgg_contribution=p.contribution,
-                                            pgg_total_contribution=p.group.total_contribution,
-                                            pgg_earning=p.pgg_earning)
-                else:
-                    if p.session.config['pd_only']==1:
-                        pd_round_result = dict(pd_decision=p.pd_decision,
-                                               pd_other_decision=pd_other.pd_decicion,
-                                               pd_earning=p.pd_earning)
-                        pgg_round_result = dict(pgg_contribution=0,
-                                                pgg_total_contribution=0,
-                                                pgg_earning=p.pgg_earning)
-                    else:
-                        pd_round_result = dict(pd_decision=0,
-                                               pd_other_decision=0,
-                                               pd_earning=p.pd_earning)
-                        pgg_round_result = dict(pgg_contribution=p.contribution,
-                                                pgg_total_contribution=p.group.total_contribution,
-                                                pgg_earning=p.pgg_earning)
-                pd_history.append(pd_round_result)
-                pgg_history.append(pgg_round_result)
-            player.pgg_sg_earning = round(pgg_tot_earning, 1)
-            player.pd_sg_earning = pd_tot_earning
-
-            return dict(pgg_sg_earning=player.pgg_sg_earning,
-                        pd_sg_earning=player.pd_sg_earning,
-                        end_period=end_period,
-                        continuation_chance=continuation_chance,
-                        block_history=get_block_history(player),
-                        two_game=player.session.config['sim'],
-                        pd_only=player.session.config['pd_only']
-                        )
         return dict(continuation_chance=continuation_chance,
-                    die_threshold_plus_one=continuation_chance + 1,
-                    block_history=get_block_history(player),
-                    end_period=end_period,
-                    two_game=player.session.config['sim'],
-                    pd_only=player.session.config['pd_only']
-                    )
-
+                die_threshold_plus_one=continuation_chance + 1,
+                block_history=get_block_history(player),
+                end_period=end_period,
+                two_game=player.session.config['sim'],
+                pd_only=player.session.config['pd_only']
+                )
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         import random
@@ -648,6 +599,72 @@ class BlockEnd(Page):
             participant.pd_earning = player_in_end_round_of_selected_match_pd.pd_sg_earning
 
             player.payoff = (participant.pgg_earning + participant.pd_earning) * exchange_rate
+
+
+class MatchSummary(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        subsession = player.subsession
+        return subsession.is_sg_last_period == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        sg = player.subsession.sg
+        player_in_end_round = player.in_round(C.PAY_ROUNDS_ENDS[sg - 1])
+        end_period = player_in_end_round.subsession.period
+        sg = player.subsession.sg
+        start_round = C.PLAYED_ROUND_STARTS[sg - 1]
+        sg_duration = C.COUNT_ROUNDS_PER_SG[sg - 1]
+        player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
+        pgg_tot_earning = 0
+        pd_tot_earning = 0
+        pd_history = []
+        pgg_history = []
+        for p in player_in_pay_rounds:
+            pd_other = other_player(p)
+            pgg_tot_earning += p.pgg_earning
+            pd_tot_earning += p.pd_earning
+            if p.session.config['sim'] == 1:
+                pd_round_result = dict(round_number=p.subsession.period,
+                                       pd_decision=p.field_display('pd_decision'),
+                                       pd_other_decision=pd_other.field_display('pd_decision'),
+                                       pd_earning=p.pd_earning)
+                pgg_round_result = dict(round_number=p.subsession.period,
+                                        pgg_private=C.ENDOWMENT-p.contribution,
+                                        pgg_total_contribution=p.group.total_contribution,
+                                        pgg_earning=p.pgg_earning)
+            else:
+                if p.session.config['pd_only'] == 1:
+                    pd_round_result = dict(round_number=p.subsession.period,
+                                           pd_decision=p.field_display('pd_decision'),
+                                           pd_other_decision=pd_other.field_display('pd_decision'),
+                                           pd_earning=p.pd_earning)
+                    pgg_round_result = dict(round_number=p.subsession.period,
+                                            pgg_private=0,
+                                            pgg_total_contribution=0,
+                                            pgg_earning=p.pgg_earning)
+                else:
+                    pd_round_result = dict(round_number=p.subsession.period,
+                                           pd_decision=0,
+                                           pd_other_decision=0,
+                                           pd_earning=p.pd_earning)
+                    pgg_round_result = dict(round_number=p.subsession.period,
+                                            pgg_private=C.ENDOWMENT-p.contribution,
+                                            pgg_total_contribution=p.group.total_contribution,
+                                            pgg_earning=p.pgg_earning)
+            pd_history.append(pd_round_result)
+            pgg_history.append(pgg_round_result)
+        player.pgg_sg_earning = round(pgg_tot_earning, 1)
+        player.pd_sg_earning = pd_tot_earning
+        return dict(pgg_sg_earning=player.pgg_sg_earning,
+                    pd_sg_earning=player.pd_sg_earning,
+                    end_period=end_period,
+                    block_history=get_block_history(player),
+                    two_game=player.session.config['sim'],
+                    pd_only=player.session.config['pd_only'],
+                    pd_history=pd_history,
+                    pgg_history=pgg_history
+                    )
 
 
 class FinalPayment(Page):
@@ -679,4 +696,5 @@ page_sequence = [NewSupergame,
                  RoundResults,
                  RoundResultsSingle,
                  BlockEnd,
+                 MatchSummary,
                  FinalPayment]
