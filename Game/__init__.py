@@ -457,8 +457,8 @@ class DecisionSingle(Page):
 
 
 class ResultsWaitPage(WaitPage):
-    # set payoffs and roll a die for the whole group
     #add the following line of code to wait all players in a subsession
+
     wait_for_all_groups = True
     after_all_players_arrive = set_payoffs
 
@@ -632,5 +632,11 @@ class FinalPayment(Page):
         )
 
 
-page_sequence = [NewSupergame, Decision, DecisionSingle, ResultsWaitPage, RoundResults, RoundResultsSingle, BlockEnd,
+page_sequence = [NewSupergame,
+                 Decision,
+                 DecisionSingle,
+                 ResultsWaitPage,
+                 RoundResults,
+                 RoundResultsSingle,
+                 BlockEnd,
                  FinalPayment]
