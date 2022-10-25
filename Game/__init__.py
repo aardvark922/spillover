@@ -2,7 +2,7 @@ from otree.api import *
 import random
 
 doc = """
-indefinitely repeated public goods game with 4 playes
+simultaneously played Prisoner's Dilemma game and Public Goods game
 """
 
 
@@ -46,7 +46,7 @@ class C(BaseConstants):
     block_dierolls_template = 'Game/block_dierolls.html'
     match_summary_template = 'Game/match_earning_summary.html'
     game_summary_template = 'Game/game_earning_summary.html'
-    PLAYERS_PER_GROUP = None
+    PLAYERS_PER_GROUP = 4
     DELTA = 0.75  # discount factor equals to 0.75
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
@@ -199,29 +199,50 @@ def creating_session(subsession: Subsession):
             else:
                 ss.dieroll = random.randint(continuation_chance + 1, 100)
 
+##------------------------Code for nested group; i.e PD opponent is a member of PGG---------------##
+    # if subsession.period == 1:
+    #     # Get all players in the session and in the current round
+    #     ps = subsession.get_players()
+    #     # Apply in-place permutation
+    #     shuffle(ps)
+    #     # Set list of list, where each sublist is a supergroup
+    #     super_groups = [ps[n:n + C.super_group_size] for n in range(0, len(ps), C.super_group_size)]
+    #     # print('current round number:', subsession.round_number)
+    #     # print('super groups:',super_groups)
+    #     # Set group matrix in oTree based on the supergroups
+    #     subsession.set_group_matrix(super_groups)
+    #     # Call the set_pairs function
+    #     set_pairs(subsession, pair_ids)
+    #     # print('new pair ids:', pair_ids)
+    # else:
+    #     # Set group matrix in oTree based on the matrix of the previous round
+    #     subsession.group_like_round(subsession.round_number - 1)
+    #     super_groups = subsession.get_groups()
+    #     for g in super_groups:
+    #         players = g.get_players()
+    #         for p in players:
+    #             prev_p = p.in_round(p.round_number - 1)
+    #             p.pair_id = prev_p.pair_id
+##---------------------------------------------------------nested_group_codes ends--------------------------##
+
+##--------------------------------different groups design-------------------------------##
     if subsession.period == 1:
         # Get all players in the session and in the current round
         ps = subsession.get_players()
         # Apply in-place permutation
         shuffle(ps)
-        # Set list of list, where each sublist is a supergroup
-        super_groups = [ps[n:n + C.super_group_size] for n in range(0, len(ps), C.super_group_size)]
-        # print('current round number:', subsession.round_number)
-        # print('super groups:',super_groups)
-        # Set group matrix in oTree based on the supergroups
-        subsession.set_group_matrix(super_groups)
-        # Call the set_pairs function
-        set_pairs(subsession, pair_ids)
-        # print('new pair ids:', pair_ids)
+        # regroup players in the first period of each supergame
+        subsession.group_randomly()
+        for p in ps:
+            p.pair_id = p.id_in_group
+    # If the current round is not the first round of a super game, copy group and pair IDs
     else:
         # Set group matrix in oTree based on the matrix of the previous round
         subsession.group_like_round(subsession.round_number - 1)
-        super_groups = subsession.get_groups()
-        for g in super_groups:
-            players = g.get_players()
-            for p in players:
-                prev_p = p.in_round(p.round_number - 1)
-                p.pair_id = prev_p.pair_id
+        ps = subsession.get_players()
+        # Apply in-place permutation
+        for p in ps:
+            p.pair_id = p.id_in_group
 
     random_sample = random.sample(range(1, C.NUM_SG + 1),
                                   2)  # randomly pick two different supergames from all supergames
@@ -255,34 +276,46 @@ def set_pairs(subsession: Subsession, pair_ids: list):
 
 
 # in one function set pgg and pd payoffs
-def set_payoffs(group: Group):
+
+def set_pgg_payoffs(group:Group):
     players = group.get_players()
-    if group.session.config['sim'] == 1:
-        contributions = [p.contribution for p in players]
-        group.total_contribution = sum(contributions)
-        group.individual_share = round(group.total_contribution * C.MPCR, 2)
+    contributions = [p.contribution for p in players]
+    group.total_contribution = sum(contributions)
+    group.individual_share = round(group.total_contribution * C.MPCR, 2)
+    for p in players:
+        p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
+
+def set_payoffs(subsession:Subsession):
+    groups= subsession.get_groups()
+    players = subsession.get_players()
+    ##TODO get groups
+    if subsession.session.config['sim'] == 1:
+        for g in groups:
+            set_pgg_payoffs(g)
         for p in players:
-            p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
             set_pd_payoff(p)
     else:
-        if group.session.config['pd_only'] == 1:
+        if subsession.session.config['pd_only'] == 1:
             for p in players:
                 p.pgg_earning = 0
                 set_pd_payoff(p)
         else:
-            contributions = [p.contribution for p in players]
-            group.total_contribution = sum(contributions)
-            group.individual_share = round(group.total_contribution * C.MPCR, 2)
+            for g in groups:
+                set_pgg_payoffs(g)
             for p in players:
-                p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
                 p.pd_earning = 0
 
 
 # PD functions
-# Get opponent player id
-def other_player(player: Player):
-    return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
+# Get opponent player id ---------------this works for nested group design---------------#
+# def other_player(player: Player):
+#     return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
+#-----------------------------------ends------------------------------------------#
 
+
+#Get opponent id----------------this works for simultaneous two groups design---------------#
+def other_player(player: Player):
+    return [p for p in player.subsession.get_players() if p.pair_id == player.pair_id][0]
 
 def set_pd_payoff(player: Player):
     if player.session.config['easy'] == 1:
@@ -425,6 +458,8 @@ class DecisionSingle(Page):
 
 class ResultsWaitPage(WaitPage):
     # set payoffs and roll a die for the whole group
+    #add the following line of code to wait all players in a subsession
+    wait_for_all_groups = True
     after_all_players_arrive = set_payoffs
 
 

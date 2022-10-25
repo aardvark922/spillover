@@ -2,9 +2,9 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='main_task',
+        name='main_task_sim',
         app_sequence=['Game'],
-        num_demo_participants=4,
+        num_demo_participants=8,
         easy=1,
         sim=1,
         pd_only=0,
@@ -15,7 +15,7 @@ SESSION_CONFIGS = [
     dict(
         name='main_task_pd_easy',
         app_sequence=['Game'],
-        num_demo_participants=4,
+        num_demo_participants=8,
         easy=1,
         sim=0,
         pd_only=1,
@@ -25,7 +25,7 @@ SESSION_CONFIGS = [
     dict(
         name='main_task_pd_difficult',
         app_sequence=['Game'],
-        num_demo_participants=4,
+        num_demo_participants=8,
         easy=0,
         sim=0,
         pd_only=1,
@@ -35,19 +35,19 @@ SESSION_CONFIGS = [
     dict(
         name='main_task_pgg',
         app_sequence=['Game'],
-        num_demo_participants=4,
+        num_demo_participants=8,
         easy=1,
         sim=0,
         pd_only=0,
         doc="""
     This is the oTree program for treatment with PD game only"""
     ),
-    dict(
-        name='Block_Random_Termination',
-        app_sequence=['block_random_termination'],
-        num_demo_participants=1,
-
-    ),
+    # dict(
+    #     name='Block_Random_Termination',
+    #     app_sequence=['block_random_termination'],
+    #     num_demo_participants=1,
+    #
+    # ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
@@ -56,7 +56,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.01, participation_fee=5.00, doc="",
+    real_world_currency_per_point=0.01, participation_fee=5.00, doc="", use_browser_bots=True
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress', 'selected_match_pgg', 'selected_match_pd',

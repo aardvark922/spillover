@@ -10,8 +10,8 @@ class PlayerBot(Bot):
             # yield Decision, dict(contribution= random.randint(1, 25),
             #                      pd_decision= random.randint(0, 1))
             #
-            yield Decision, dict(contribution= 25,
-                                 pd_decision= 1)
+            yield Decision, dict(contribution= random.randint(1, 25),
+                                 pd_decision= random.randint(0, 1))
             yield RoundResults
             if self.player.subsession.is_bk_last_period == 1:
                 yield BlockEnd
@@ -22,7 +22,7 @@ class PlayerBot(Bot):
                 # yield Decision, dict(contribution= random.randint(1, 25),
                 #                      pd_decision= random.randint(0, 1))
                 #
-                yield DecisionSingle, dict(pd_decision=  random.randint(0, 1))
+                yield DecisionSingle, dict(pd_decision= random.randint(0, 1))
                 yield RoundResultsSingle
                 if self.player.subsession.is_bk_last_period == 1:
                     yield BlockEnd

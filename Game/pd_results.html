@@ -1,140 +1,145 @@
 {% if both_cooperate %}
-    <table class='table table-bordered text-center'
-           style='width: auto; margin: auto'>
-        <tr>
-            <th colspan=2 rowspan=2></th>
-            <th colspan=2 style="color: royalblue">The Other Participant</th>
-        </tr>
-        <tr>
-            <th style="color: royalblue; background-color: rgba(0, 0, 255, 0.1)">Action Y</th>
-            <th style="color: royalblue">Action Z</th>
-        </tr>
-        <tr>
-            <th rowspan=2><span style="color: indianred" class="rotate90">You</span></th>
-            <th style="color: indianred; background-color: rgba(255, 0, 0, 0.1)">Action Y</th>
-            <td style=" background-color: rgba(255, 0, 255, 0.1)">
-                <span style="font-weight: bold;color: indianred",>{{both_cooperate_payoff}}</span>,
-                <span style="font-weight: bold;color: royalblue"> {{both_cooperate_payoff}} </span>
-            </td>
+<table class='table table-bordered text-center'
+       style='width: auto; margin: auto'>
+    <tr>
+        <th colspan=2 rowspan=2></th>
+        <th colspan=2 style="color: royalblue">The Other Participant</th>
+    </tr>
+    <tr>
+        <th style="color: royalblue; background-color: rgba(0, 0, 255, 0.1)">Action Y</th>
+        <th style="color: royalblue">Action Z</th>
+    </tr>
+    <tr>
+        <th rowspan=2><span style="color: indianred" class="rotate90">You</span></th>
+        <th style="color: indianred; background-color: rgba(255, 0, 0, 0.1)">Action Y</th>
+        <td style=" background-color: rgba(255, 0, 255, 0.1)">
+            <span style="font-weight: bold;color: indianred">{{both_cooperate_payoff}}</span>,
+            <span style="font-weight: bold;color: royalblue"> {{both_cooperate_payoff}} </span>
+        </td>
 
-            <td style=" background-color: rgba(255, 0, 0, 0.1)">
-                <span style="color: indianred">{{betrayed_payoff }}</span>,
-                <span style="color: royalblue"> {{betray_payoff}}</span>
-            </td>
-        </tr>
-        <tr>
-            <th style="color: indianred">Action Z</th>
-                <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred">{{betray_payoff}}</span>,
-                <span style="color: royalblue"> {{betrayed_payoff }}</span>
-            </td>
-            <td><span style="color: indianred">{{both_defect_payoff}}</span>,
-                <span style="color: royalblue"> {{both_defect_payoff}}</span>
-            </td>
-        </tr>
-    </table>
+        <td style=" background-color: rgba(255, 0, 0, 0.1)">
+            <span style="color: indianred">{{betrayed_payoff }}</span>,
+            <span style="color: royalblue"> {{betray_payoff}}</span>
+        </td>
+    </tr>
+    <tr>
+        <th style="color: indianred">Action Z</th>
+        <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred">{{betray_payoff}}</span>,
+            <span style="color: royalblue"> {{betrayed_payoff }}</span>
+        </td>
+        <td><span style="color: indianred">{{both_defect_payoff}}</span>,
+            <span style="color: royalblue"> {{both_defect_payoff}}</span>
+        </td>
+    </tr>
+</table>
 
 {% elif both_defect %}
-    <table class='table table-bordered text-center'
-           style='width: auto; margin: auto'>
-        <tr>
-            <th colspan=2 rowspan=2></th>
-            <th colspan=2 style="color: royalblue">The Other Participant</th>
-        </tr>
-        <tr>
-            <th style="color: royalblue">Action Y</th>
-            <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Z</th>
-        </tr>
-        <tr>
-            <th rowspan=2><span class="rotate90"; style="color: indianred">You</span></th>
-            <th style="color: indianred">Action Y</th>
-            <td><span style="color: indianred"> {{both_cooperate_payoff }}</span>,
-                <span style="color: royalblue">{{both_cooperate_payoff }}</span>
-                </td>
-            <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred"> {{betrayed_payoff  }}</span>,
-                <span style="color: royalblue">{{betray_payoff }}</span></td>
-        </tr>
-        <tr>
-            <th style="color: indianred;background-color: rgba(255, 0, 0, 0.1)">Action Z</th>
-            <td style="background-color: rgba(255, 0, 0, 0.1)"><span style="color: indianred">{{betray_payoff }}</span>,
-                <span style="color: royalblue">{{betrayed_payoff  }}</span></td>
-            <td bgcolor="#FFFF00" style="font-weight: bold; background-color: rgba(255, 0, 255, 0.1)">
-                <span style="color: indianred">{{both_defect_payoff }}</span>,
-                <span style="color: royalblue">{{both_defect_payoff }}</span>
-            </td>
-        </tr>
-    </table>
+<table class='table table-bordered text-center'
+       style='width: auto; margin: auto'>
+    <tr>
+        <th colspan=2 rowspan=2></th>
+        <th colspan=2 style="color: royalblue">The Other Participant</th>
+    </tr>
+    <tr>
+        <th style="color: royalblue">Action Y</th>
+        <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Z</th>
+    </tr>
+    <tr>
+        <th rowspan=2><span class="rotate90" style="color: indianred">You</span></th>
+        <th style="color: indianred">Action Y</th>
+        <td><span style="color: indianred"> {{both_cooperate_payoff }}</span>,
+            <span style="color: royalblue">{{both_cooperate_payoff }}</span>
+        </td>
+        <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred"> {{betrayed_payoff  }}</span>,
+            <span style="color: royalblue">{{betray_payoff }}</span></td>
+    </tr>
+    <tr>
+        <th style="color: indianred;background-color: rgba(255, 0, 0, 0.1)">Action Z</th>
+        <td style="background-color: rgba(255, 0, 0, 0.1)"><span style="color: indianred">{{betray_payoff }}</span>,
+            <span style="color: royalblue">{{betrayed_payoff  }}</span></td>
+        <td bgcolor="#FFFF00" style="font-weight: bold; background-color: rgba(255, 0, 255, 0.1)">
+            <span style="color: indianred">{{both_defect_payoff }}</span>,
+            <span style="color: royalblue">{{both_defect_payoff }}</span>
+        </td>
+    </tr>
+</table>
 
 {% elif i_cooperate_he_defects %}
-    <table class='table table-bordered text-center'
-           style='width: auto; margin: auto'>
-        <tr>
-            <th colspan=2 rowspan=2></th>
-            <th colspan=2 style="color: royalblue">The Other Participant</th>
-        </tr>
-        <tr>
-            <th style="color: royalblue">Action Y</th>
-            <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Z</th>
-        </tr>
-        <tr>
-            <th rowspan=2><span class="rotate90", style="color: indianred">You</span></th>
-            <th style="color: indianred;background-color: rgba(255, 0, 0, 0.1)">Action Y</th>
-            <td style="background-color: rgba(255, 0, 0, 0.1)"><span style="color: indianred">{{both_cooperate_payoff }}</span>,
-                <span style="color: royalblue">{{both_cooperate_payoff }}</span>
-            </td>
-            <td bgcolor="#FFFF00" style="font-weight: bold;background-color: rgba(255, 0, 255, 0.1)">
-                <span style="color: indianred">{{ betrayed_payoff  }}</span>,
-                <span style="color: royalblue">{{ betray_payoff }}</span>
-            </td>
-        </tr>
-        <tr>
-            <th style="color: indianred">Action Z</th>
-            <td><span style="color: indianred">{{ betray_payoff }}</span>,
-                <span style="color: royalblue">{{ betrayed_payoff  }}</span>
-            </td>
-            <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred">{{ both_defect_payoff }}</span>,
-                <span style="color: royalblue">{{ both_defect_payoff }}</span>
-            </td>
-        </tr>
-    </table>
+<table class='table table-bordered text-center'
+       style='width: auto; margin: auto'>
+    <tr>
+        <th colspan=2 rowspan=2></th>
+        <th colspan=2 style="color: royalblue">The Other Participant</th>
+    </tr>
+    <tr>
+        <th style="color: royalblue">Action Y</th>
+        <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Z</th>
+    </tr>
+    <tr>
+        <th rowspan=2><span class="rotate90" style="color: indianred">You</span></th>
+        <th style="color: indianred;background-color: rgba(255, 0, 0, 0.1)">Action Y</th>
+        <td style="background-color: rgba(255, 0, 0, 0.1)"><span
+                style="color: indianred">{{both_cooperate_payoff }}</span>,
+            <span style="color: royalblue">{{both_cooperate_payoff }}</span>
+        </td>
+        <td bgcolor="#FFFF00" style="font-weight: bold;background-color: rgba(255, 0, 255, 0.1)">
+            <span style="color: indianred">{{ betrayed_payoff  }}</span>,
+            <span style="color: royalblue">{{ betray_payoff }}</span>
+        </td>
+    </tr>
+    <tr>
+        <th style="color: indianred">Action Z</th>
+        <td><span style="color: indianred">{{ betray_payoff }}</span>,
+            <span style="color: royalblue">{{ betrayed_payoff  }}</span>
+        </td>
+        <td style="background-color: rgba(0, 0, 255, 0.1)"><span
+                style="color: indianred">{{ both_defect_payoff }}</span>,
+            <span style="color: royalblue">{{ both_defect_payoff }}</span>
+        </td>
+    </tr>
+</table>
 
 {% else %}
-    <table class='table table-bordered text-center'
-           style='width: auto; margin: auto'>
-        <tr>
-            <th colspan=2 rowspan=2></th>
-            <th colspan=2 style="color: royalblue">The Other Participant</th>
-        </tr>
-        <tr>
-            <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Y</th>
-            <th style="color: royalblue">Action Z</th>
-        </tr>
-        <tr>
-            <th rowspan=2><span class="rotate90"; style="color: indianred">You</span></th>
-            <th style="color: indianred">Action Y</th>
-            <td style="background-color: rgba(0, 0, 255, 0.1)"><span style="color: indianred"> {{ both_cooperate_payoff }}</span>,
-                <span style="color: royalblue"> {{ both_cooperate_payoff }}</span>
-            </td>
-            <td><span style="color: indianred">{{ betrayed_payoff  }}</span>,
-                <span style="color: royalblue">{{ betray_payoff}}</span>
-            </td>
-        </tr>
-        <tr>
-            <th style="color: indianred; background-color: rgba(255, 0, 0, 0.1)">Action Z</th>
-            <td bgcolor="#FFFF00"  style="font-weight: bold;background-color: rgba(255, 0, 255, 0.1)"><span style="color: indianred">{{ betray_payoff }}</span> ,
-                <span style="color: royalblue">{{ betrayed_payoff  }}</span>
-            </td>
-            <td style="background-color: rgba(255, 0, 0, 0.1)"><span style="color: indianred"> {{ both_defect_payoff }}</span>,
-                <span style="color: royalblue">{{ both_defect_payoff }}</span>
-            </td>
-        </tr>
-    </table>
+<table class='table table-bordered text-center'
+       style='width: auto; margin: auto'>
+    <tr>
+        <th colspan=2 rowspan=2></th>
+        <th colspan=2 style="color: royalblue">The Other Participant</th>
+    </tr>
+    <tr>
+        <th style="color: royalblue;background-color: rgba(0, 0, 255, 0.1)">Action Y</th>
+        <th style="color: royalblue">Action Z</th>
+    </tr>
+    <tr>
+        <th rowspan=2><span class="rotate90" style="color: indianred">You</span></th>
+        <th style="color: indianred">Action Y</th>
+        <td style="background-color: rgba(0, 0, 255, 0.1)"><span
+                style="color: indianred"> {{ both_cooperate_payoff }}</span>,
+            <span style="color: royalblue"> {{ both_cooperate_payoff }}</span>
+        </td>
+        <td><span style="color: indianred">{{ betrayed_payoff  }}</span>,
+            <span style="color: royalblue">{{ betray_payoff}}</span>
+        </td>
+    </tr>
+    <tr>
+        <th style="color: indianred; background-color: rgba(255, 0, 0, 0.1)">Action Z</th>
+        <td bgcolor="#FFFF00" style="font-weight: bold;background-color: rgba(255, 0, 255, 0.1)"><span
+                style="color: indianred">{{ betray_payoff }}</span> ,
+            <span style="color: royalblue">{{ betrayed_payoff  }}</span>
+        </td>
+        <td style="background-color: rgba(255, 0, 0, 0.1)"><span
+                style="color: indianred"> {{ both_defect_payoff }}</span>,
+            <span style="color: royalblue">{{ both_defect_payoff }}</span>
+        </td>
+    </tr>
+</table>
 {% endif %}
 <br>
-    <p>
-        {% if same_choice %}
-            Both of you chose {{ my_decision }}.
-        {% else %}
-            You chose {{ my_decision }} and the other participant chose {{ opponent_decision }}.
-        {% endif %}
-    </p>
-  <p style="font-weight: bold">Your earning in this round: {{ player.pd_earning }}</p>
+<p>
+    {% if same_choice %}
+    Both of you chose {{ my_decision }}.
+    {% else %}
+    You chose {{ my_decision }} and the other participant chose {{ opponent_decision }}.
+    {% endif %}
+</p>
+<p style="font-weight: bold">Your earning in this round: {{ player.pd_earning }}</p>
