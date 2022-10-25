@@ -199,8 +199,8 @@ def creating_session(subsession: Subsession):
             else:
                 ss.dieroll = random.randint(continuation_chance + 1, 100)
 
-##------------------------Code for nested group; i.e PD opponent is a member of PGG---------------##
-    if subsession.session.config['same_group']==1:
+    ##------------------------Code for nested group; i.e PD opponent is a member of PGG---------------##
+    if subsession.session.config['same_group'] == 1:
         if subsession.period == 1:
             # Get all players in the session and in the current round
             ps = subsession.get_players()
@@ -224,9 +224,9 @@ def creating_session(subsession: Subsession):
                 for p in players:
                     prev_p = p.in_round(p.round_number - 1)
                     p.pair_id = prev_p.pair_id
-##---------------------------------------------------------nested_group_codes ends--------------------------##
+    ##---------------------------------------------------------nested_group_codes ends--------------------------##
     else:
-##--------------------------------different groups design-------------------------------##
+        ##--------------------------------different groups design-------------------------------##
         if subsession.period == 1:
             # Get all players in the session and in the current round
             ps = subsession.get_players()
@@ -245,23 +245,30 @@ def creating_session(subsession: Subsession):
             for p in ps:
                 p.pair_id = p.id_in_group
 
-    random_sample = random.sample(range(1, C.NUM_SG + 1),
-                                  2)  # randomly pick two different supergames from all supergames
-    subsession.session.vars['pgg_payment_match'] = random_sample[0]  # select one match of PGG to pay
-    subsession.session.vars['pd_payment_match'] = random_sample[1]  # select one match of PD to pay
     if subsession.session.config['sim'] == 1:
+        random_sample = random.sample(range(1, C.NUM_SG + 1),
+                                      2)  # randomly pick two different supergames from all supergames
+        subsession.session.vars['pgg_payment_match'] = random_sample[0]  # select one match of PGG to pay
+        subsession.session.vars['pd_payment_match'] = random_sample[1]  # select one match of PD to pay
+
         if subsession.session.config['easy'] == 1:
             subsession.treatment = 'sim_easy'
         else:
             subsession.treatment = 'sim_difficult'
     else:
         if subsession.session.config['pd_only'] == 1:
+            random_sample = random.choice(range(1, C.NUM_SG + 1))
+            subsession.session.vars['pgg_payment_match'] = 0
+            subsession.session.vars['pd_payment_match'] = random_sample
             if subsession.session.config['easy'] == 1:
                 subsession.treatment = 'pd_easy'
             else:
                 subsession.treatment = 'pd_difficult'
         else:
             subsession.treatment = 'pgg'
+            random_sample = random.choice(range(1, C.NUM_SG + 1))
+            subsession.session.vars['pgg_payment_match'] = random_sample
+            subsession.session.vars['pd_payment_match'] = 0
 
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
@@ -278,7 +285,7 @@ def set_pairs(subsession: Subsession, pair_ids: list):
 
 # in one function set pgg and pd payoffs
 
-def set_pgg_payoffs(group:Group):
+def set_pgg_payoffs(group: Group):
     players = group.get_players()
     contributions = [p.contribution for p in players]
     group.total_contribution = sum(contributions)
@@ -286,8 +293,9 @@ def set_pgg_payoffs(group:Group):
     for p in players:
         p.pgg_earning = C.ENDOWMENT - p.contribution + group.individual_share
 
-def set_payoffs(subsession:Subsession):
-    groups= subsession.get_groups()
+
+def set_payoffs(subsession: Subsession):
+    groups = subsession.get_groups()
     players = subsession.get_players()
     ##TODO get groups
     if subsession.session.config['sim'] == 1:
@@ -311,12 +319,13 @@ def set_payoffs(subsession:Subsession):
 # Get opponent player id ---------------this works for nested group design---------------#
 # def other_player(player: Player):
 #     return [p for p in player.get_others_in_group() if p.pair_id == player.pair_id][0]
-#-----------------------------------ends------------------------------------------#
+# -----------------------------------ends------------------------------------------#
 
 
-#Get opponent id----------------this works for simultaneous two groups design---------------#
+# Get opponent id----------------this works for simultaneous two groups design---------------#
 def other_player(player: Player):
     return [p for p in player.subsession.get_players() if p.pair_id == player.pair_id][0]
+
 
 def set_pd_payoff(player: Player):
     if player.session.config['easy'] == 1:
@@ -458,7 +467,7 @@ class DecisionSingle(Page):
 
 
 class ResultsWaitPage(WaitPage):
-    #add the following line of code to wait all players in a subsession
+    # add the following line of code to wait all players in a subsession
 
     wait_for_all_groups = True
     after_all_players_arrive = set_payoffs
@@ -570,11 +579,39 @@ class BlockEnd(Page):
             player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
             pgg_tot_earning = 0
             pd_tot_earning = 0
+            pd_history = []
+            pgg_history = []
             for p in player_in_pay_rounds:
+                pd_other = other_player(p)
                 pgg_tot_earning += p.pgg_earning
                 pd_tot_earning += p.pd_earning
+                if p.session.config['sim']==1:
+                    pd_round_result = dict(pd_decision=p.pd_decision,
+                                           pd_other_decision=pd_other.pd_decicion,
+                                           pd_earning=p.pd_earning)
+                    pgg_round_result = dict(pgg_contribution=p.contribution,
+                                            pgg_total_contribution=p.group.total_contribution,
+                                            pgg_earning=p.pgg_earning)
+                else:
+                    if p.session.config['pd_only']==1:
+                        pd_round_result = dict(pd_decision=p.pd_decision,
+                                               pd_other_decision=pd_other.pd_decicion,
+                                               pd_earning=p.pd_earning)
+                        pgg_round_result = dict(pgg_contribution=0,
+                                                pgg_total_contribution=0,
+                                                pgg_earning=p.pgg_earning)
+                    else:
+                        pd_round_result = dict(pd_decision=0,
+                                               pd_other_decision=0,
+                                               pd_earning=p.pd_earning)
+                        pgg_round_result = dict(pgg_contribution=p.contribution,
+                                                pgg_total_contribution=p.group.total_contribution,
+                                                pgg_earning=p.pgg_earning)
+                pd_history.append(pd_round_result)
+                pgg_history.append(pgg_round_result)
             player.pgg_sg_earning = round(pgg_tot_earning, 1)
             player.pd_sg_earning = pd_tot_earning
+
             return dict(pgg_sg_earning=player.pgg_sg_earning,
                         pd_sg_earning=player.pd_sg_earning,
                         end_period=end_period,
@@ -629,7 +666,9 @@ class FinalPayment(Page):
             participation_fee=player.session.config['participation_fee'],
             conversion_rate=player.session.config['real_world_currency_per_point'],
             two_game=player.session.config['sim'],
-            pd_only=player.session.config['pd_only']
+            pd_only=player.session.config['pd_only'],
+            pd_match=player.participant.selected_match_pd,
+            pgg_match=player.participant.selected_match_pgg
         )
 
 

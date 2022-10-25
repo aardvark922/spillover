@@ -1,31 +1,41 @@
 <div>
-  <br>
-<h5>Task 1 Earning</h5>
-  {{if two_game}}
-<p>
-<h6>Blue Game Earning:</h6>
-<div> Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
-    {{participant.pgg_earning|to1}}.
-<br>
- The payoff of your Blue Game choices is therefore <b>{{pgg_payment}}</b>.
-</div></p>
+    <br>
+    <h5>Task 1 Earning</h5>
+    {{if two_game}}
 
-<p><h6>Yellow Game Earning:</h6>
-Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
-    {{participant.pd_earning}}.
-<br>
-The payoff of your Yellow Game choices is <b>{{pd_payment}}</b>.
-</p>
-  {{elif pd_only}}
-  <h6> Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
-    {{participant.pd_earning}}.
-<br>
-The payoff of your choices is <b>{{pd_payment}}</b>.</h6>
-  {{else}}
-  <h6>  Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
-    {{participant.pgg_earning|to1}}.
-<br>
- The payoff of your choices is therefore <b>{{pgg_payment}}</b>.</h6>
-  {{endif}}
+    <div>
+        <h6>Blue Game Earning:</h6>
+        <p>Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
+            {{participant.pgg_earning|to1}}.
+            <br>
+            The payoff of your Blue Game choices is therefore <b>{{pgg_payment}}</b>.
+        </p>
+    </div>
+
+    <div>
+        <h6>Yellow Game Earning:</h6>
+        <p>Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
+            {{participant.pd_earning}}.
+            <br>
+            The payoff of your Yellow Game choices is <b>{{pd_payment}}</b>.
+        </p>
+    </div>
+    {{elif pd_only}}
+    <div>
+        <p> Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
+            {{participant.pd_earning}}.
+            <br>
+            The payoff of your choices is <b>{{pd_payment}}</b>.
+        </p>
+    </div>
+    {{else}}
+    <div>
+        <p> Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
+            {{participant.pgg_earning|to1}}.
+            <br>
+            The payoff of your choices is therefore <b>{{pgg_payment}}</b>.
+        </p>
+    </div>
+    {{endif}}
 
 </div>
