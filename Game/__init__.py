@@ -200,49 +200,50 @@ def creating_session(subsession: Subsession):
                 ss.dieroll = random.randint(continuation_chance + 1, 100)
 
 ##------------------------Code for nested group; i.e PD opponent is a member of PGG---------------##
-    # if subsession.period == 1:
-    #     # Get all players in the session and in the current round
-    #     ps = subsession.get_players()
-    #     # Apply in-place permutation
-    #     shuffle(ps)
-    #     # Set list of list, where each sublist is a supergroup
-    #     super_groups = [ps[n:n + C.super_group_size] for n in range(0, len(ps), C.super_group_size)]
-    #     # print('current round number:', subsession.round_number)
-    #     # print('super groups:',super_groups)
-    #     # Set group matrix in oTree based on the supergroups
-    #     subsession.set_group_matrix(super_groups)
-    #     # Call the set_pairs function
-    #     set_pairs(subsession, pair_ids)
-    #     # print('new pair ids:', pair_ids)
-    # else:
-    #     # Set group matrix in oTree based on the matrix of the previous round
-    #     subsession.group_like_round(subsession.round_number - 1)
-    #     super_groups = subsession.get_groups()
-    #     for g in super_groups:
-    #         players = g.get_players()
-    #         for p in players:
-    #             prev_p = p.in_round(p.round_number - 1)
-    #             p.pair_id = prev_p.pair_id
+    if subsession.session.config['same_group']==1:
+        if subsession.period == 1:
+            # Get all players in the session and in the current round
+            ps = subsession.get_players()
+            # Apply in-place permutation
+            shuffle(ps)
+            # Set list of list, where each sublist is a supergroup
+            super_groups = [ps[n:n + C.super_group_size] for n in range(0, len(ps), C.super_group_size)]
+            # print('current round number:', subsession.round_number)
+            # print('super groups:',super_groups)
+            # Set group matrix in oTree based on the supergroups
+            subsession.set_group_matrix(super_groups)
+            # Call the set_pairs function
+            set_pairs(subsession, pair_ids)
+            # print('new pair ids:', pair_ids)
+        else:
+            # Set group matrix in oTree based on the matrix of the previous round
+            subsession.group_like_round(subsession.round_number - 1)
+            super_groups = subsession.get_groups()
+            for g in super_groups:
+                players = g.get_players()
+                for p in players:
+                    prev_p = p.in_round(p.round_number - 1)
+                    p.pair_id = prev_p.pair_id
 ##---------------------------------------------------------nested_group_codes ends--------------------------##
-
-##--------------------------------different groups design-------------------------------##
-    if subsession.period == 1:
-        # Get all players in the session and in the current round
-        ps = subsession.get_players()
-        # Apply in-place permutation
-        shuffle(ps)
-        # regroup players in the first period of each supergame
-        subsession.group_randomly()
-        for p in ps:
-            p.pair_id = p.id_in_group
-    # If the current round is not the first round of a super game, copy group and pair IDs
     else:
-        # Set group matrix in oTree based on the matrix of the previous round
-        subsession.group_like_round(subsession.round_number - 1)
-        ps = subsession.get_players()
-        # Apply in-place permutation
-        for p in ps:
-            p.pair_id = p.id_in_group
+##--------------------------------different groups design-------------------------------##
+        if subsession.period == 1:
+            # Get all players in the session and in the current round
+            ps = subsession.get_players()
+            # Apply in-place permutation
+            shuffle(ps)
+            # regroup players in the first period of each supergame
+            subsession.group_randomly()
+            for p in ps:
+                p.pair_id = p.id_in_group
+        # If the current round is not the first round of a super game, copy group and pair IDs
+        else:
+            # Set group matrix in oTree based on the matrix of the previous round
+            subsession.group_like_round(subsession.round_number - 1)
+            ps = subsession.get_players()
+            # Apply in-place permutation
+            for p in ps:
+                p.pair_id = p.id_in_group
 
     random_sample = random.sample(range(1, C.NUM_SG + 1),
                                   2)  # randomly pick two different supergames from all supergames

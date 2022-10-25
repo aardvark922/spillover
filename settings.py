@@ -8,6 +8,7 @@ SESSION_CONFIGS = [
         easy=1,
         sim=1,
         pd_only=0,
+        same_group=0,
         doc="""
         This is the oTree program for treatment with both games"""
 
@@ -19,6 +20,7 @@ SESSION_CONFIGS = [
         easy=1,
         sim=0,
         pd_only=1,
+        same_group=0,
         doc="""
         This is the oTree program for treatment with easy PD game only"""
     ),
@@ -29,6 +31,7 @@ SESSION_CONFIGS = [
         easy=0,
         sim=0,
         pd_only=1,
+        same_group=0,
         doc="""
     This is the oTree program for treatment with easy PD game only"""
     ),
@@ -39,6 +42,7 @@ SESSION_CONFIGS = [
         easy=1,
         sim=0,
         pd_only=0,
+        same_group=0,
         doc="""
     This is the oTree program for treatment with PD game only"""
     ),
