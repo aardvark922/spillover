@@ -5,7 +5,9 @@ Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
 {{ block content }}
 {{if pd_only}}
 <br><br>
+<div class="round-results">
  {{ include C.pd_results_template }}
+    </div>
 
 {{else}}
 <br><br>
@@ -16,9 +18,8 @@ Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
 <button class="otree-btn-next btn btn-primary">OK</button>
 
 <style>
-    ._otree-content{
-               margin-left: 25%;
-         margin-right: 25%;
+    .round-results{
+        text-align: center;
     }
     .controls {
         width: 50px;
@@ -28,8 +29,8 @@ Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
 
     .otree-btn-next {
         float: right;
-        margin-left: 53.5%;
-        margin-right: 46.5%;
+        margin-left: 52%;
+        margin-right: 48%;
     }
 
     .otree-body {
@@ -40,7 +41,7 @@ Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211;Your choices
         margin-top: 20px;
         margin-bottom: 20px;
         padding-top: 40px;
-        margin-left: 35%;
+        text-align: center;
     }
 </style>
 {{ endblock }}

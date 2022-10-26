@@ -1,40 +1,33 @@
 <div>
     <div class="table-pdhistory ">
         <table>
-            <thead class="fixedHeader">
             <tr class="alternateRow">
-                <th style="width: 100px;">Round Number</th>
+                <th style="width: 100px;">Round</th>
                 <th style="width: 100px;">My Choice</th>
                 <th style="width: 100px;">Match's Choice</th>
                 <th style="width: 100px;">My Earning</th>
-                            </tr>
-            </thead>
+            </tr>
 
+            {{ for pd in pd_history }}
+            <tr>
+                <td style="width: 80px;"> {{ pd.round_number }}</td>
+                <td><span>{{ pd.pd_decision }}</span></td>
+                <td><span>{{ pd.pd_other_decision }}</span></td>
+                <td><span>{{ pd.pd_earning }}</span></td>
+            </tr>
 
-
-            <tbody>
-
-                {{ for pd in pd_history }}
-                <tr>
-                                    <td style="width: 80px;"> {{ pd.round_number }}</td>
-                <td><span >{{ pd.pd_decision }}</span></td>
-                <td><span >{{ pd.pd_other_decision }}</span></td>
-                <td><span >{{ pd.pd_earning }}</span></td>
-                </tr>
-
-                {{endfor}}
-
-            </tbody>
+            {{endfor}}
 
         </table>
     </div>
+    <br>
     <br>
     Your Total Earning in this match: {{pd_sg_earning}}
 </div>
 
 <style>
 
-    .table-pdhistory{
+    .table-pdhistory {
         text-align: center;
     }
 

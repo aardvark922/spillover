@@ -2,9 +2,9 @@
 Match {{ subsession.sg }} - Summary
 {{ endblock }}
 {{ block content }}
-
+{{if two_game}}
 <div class="content-1">
-    <p>Below shows history up to round {{end_period}}.</p>
+    <p>Below shows match history up to round {{end_period}}.</p>
 
     <div class="flex-container">
         <div class="flex-child magenta" style="background-color: aliceblue">
@@ -20,19 +20,41 @@ Match {{ subsession.sg }} - Summary
     </div>
     <br>
     <br>
+    <p>Click Next to start a new match!</p>
+<br>
+    <button class="otree-btn-next btn btn-primary">Next</button>
 </div>
+{{elif pd_only}}
+<div class="content-1">
 
+    <div class="pd-summary">
+        <p>Below shows match history up to round {{end_period}}.</p>
+        {{include C.pd_summary_template}}
+        <br>
+        Click Next to start a new match!
+
+    </div>
 <br>
+    <button class="otree-btn-next btn btn-primary">Next</button>
+</div>
+{{else}}
+<div class="content-1">
+    <div class="pgg-summary">
+        <p>Below shows match history up to round {{end_period}}.</p>
+        {{include C.pgg_summary_template}}
+        <br>
+        <p>Click Next to start a new match!</p>
+
+    </div>
 <br>
-<div class="btn-explain"><p>Click Next to start a new match!</p></div>
-
-<button class="otree-btn-next btn btn-primary">Next</button>
-
+    <button class="otree-btn-next btn btn-primary">Next</button>
+</div>
+{{endif}}
 <style>
 
     .flex-container {
         display: flex;
-        height: 400px;
+        overflow: auto;
     }
 
     .flex-child {
@@ -53,17 +75,20 @@ Match {{ subsession.sg }} - Summary
     }
 
     .content-1 {
-        height: 400px
+        overflow: auto;
     }
 
-    .content-2 {
-        height: 200px
+
+    .pd-summary {
+        margin-left: 25%;
+        margin-right: 25%;
     }
 
-    .btn-explain {
-        float: right;
-        margin-left: 30.5%;
-        margin-right: 40.5%;
+    .page-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 40px;
+        text-align: center;
     }
 
 </style>

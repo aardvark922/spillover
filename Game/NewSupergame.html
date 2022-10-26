@@ -2,8 +2,30 @@
     Match {{ subsession.sg }}
 {{ endblock }}
 {{ block content }}
+<div class="instruction">
+
 
     <p>A new match has started!</p>
-    {{ next_button }}
+    </div>
+    <button class="otree-btn-next btn btn-primary">Next</button>
+<style>
+
+    .instruction{
+text-align: center;
+    }
+        .otree-btn-next {
+        float: right;
+        margin-left: 53%;
+        margin-right: 47%;
+    }
+
+            .page-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 40px;
+        margin-left: 44%;
+    }
+
+</style>
 
 {{ endblock }}
