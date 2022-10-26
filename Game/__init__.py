@@ -53,7 +53,7 @@ class C(BaseConstants):
 
     # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    COUNT_ROUNDS_PER_SG = [5, 2, 1, 1, 5]
+    COUNT_ROUNDS_PER_SG = [10, 2, 1, 1, 5]
     # Dal Bo&Frechette one sequence
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
@@ -259,7 +259,7 @@ def creating_session(subsession: Subsession):
     else:
         if subsession.session.config['pd_only'] == 1:
             random_sample = random.choice(range(1, C.NUM_SG + 1))
-            subsession.session.vars['pgg_payment_match'] = 0
+            subsession.session.vars['pgg_payment_match'] = 1
             subsession.session.vars['pd_payment_match'] = random_sample
             if subsession.session.config['easy'] == 1:
                 subsession.treatment = 'pd_easy'
@@ -269,7 +269,7 @@ def creating_session(subsession: Subsession):
             subsession.treatment = 'pgg'
             random_sample = random.choice(range(1, C.NUM_SG + 1))
             subsession.session.vars['pgg_payment_match'] = random_sample
-            subsession.session.vars['pd_payment_match'] = 0
+            subsession.session.vars['pd_payment_match'] = 1
 
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
