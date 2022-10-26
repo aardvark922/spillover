@@ -20,9 +20,6 @@ Match {{ subsession.sg }} - Summary
     </div>
     <br>
     <br>
-    <p>Click Next to start a new match!</p>
-<br>
-    <button class="otree-btn-next btn btn-primary">Next</button>
 </div>
 {{elif pd_only}}
 <div class="content-1">
@@ -31,11 +28,8 @@ Match {{ subsession.sg }} - Summary
         <p>Below shows match history up to round {{end_period}}.</p>
         {{include C.pd_summary_template}}
         <br>
-        Click Next to start a new match!
-
     </div>
 <br>
-    <button class="otree-btn-next btn btn-primary">Next</button>
 </div>
 {{else}}
 <div class="content-1">
@@ -43,13 +37,12 @@ Match {{ subsession.sg }} - Summary
         <p>Below shows match history up to round {{end_period}}.</p>
         {{include C.pgg_summary_template}}
         <br>
-        <p>Click Next to start a new match!</p>
-
     </div>
 <br>
-    <button class="otree-btn-next btn btn-primary">Next</button>
+
 </div>
 {{endif}}
+<button class="otree-btn-next btn btn-primary">Next Match</button>
 <style>
 
     .flex-container {
@@ -70,8 +63,8 @@ Match {{ subsession.sg }} - Summary
 
     .otree-btn-next {
         float: right;
-        margin-left: 51.5%;
-        margin-right: 48.5%;
+        margin-left: 44.5%;
+        margin-right: 43.5%;
     }
 
     .content-1 {
@@ -83,13 +76,11 @@ Match {{ subsession.sg }} - Summary
         margin-left: 25%;
         margin-right: 25%;
     }
-
     .page-header {
         margin-top: 20px;
         margin-bottom: 20px;
         padding-top: 40px;
         text-align: center;
     }
-
 </style>
 {{ endblock }}

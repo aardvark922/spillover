@@ -2,65 +2,100 @@
 Match {{ subsession.sg }}, Round {{ cycle_round_number }} &#8211; Results
 {{ endblock }}
 {{ block content }}
+{{if two_game}}
+<div class="two-game-results">
+    <div class="flex-container">
 
-<div class="flex-container">
+        <div class="flex-child magenta" style="background-color: aliceblue">
+            <h5 style="color: darkblue; ">Blue Game</h5>
+            <br>
+            <br>
+            {{ include C.pgg_results_template }}
+        </div>
 
-  <div class="flex-child magenta" style="background-color: aliceblue">
-      <h5 style="color: darkblue; " >Blue Game</h5>
-      <br>
-      <br>
-     {{ include C.pgg_results_template }}
-  </div>
+        <div class="flex-child green" style="background-color: rgba(90,179,113,0.1)">
+            <h5 style="color: darkolivegreen">Green Game</h5>
+            <br>
+            {{ include C.pd_results_template }}
+        </div>
 
-  <div class="flex-child green" style="background-color: rgba(90,179,113,0.1)">
-    <h5 style="color: darkolivegreen">Green Game</h5>
-      <br>
-      {{ include C.pd_results_template }}
-  </div>
+    </div>
+    <br>
 
 </div>
-<br>
-<br>
-<button class="otree-btn-next btn btn-primary">OK</button>
 
+{{elif pd_only}}
+<div class="pd-results">
+    {{ include C.pd_results_template }}
+    <br>
+
+</div>
+
+{{else}}
+<div class="pgg-results">
+    {{ include C.pgg_results_template }}
+    <br>
+
+</div>
+
+{{endif}}
+
+{{if block_end}}
+<button class="otree-btn-next-1  btn btn-primary">Next</button>
+{{else}}
+<button class="otree-btn-next-2  btn btn-primary">Next Round</button>
+{{endif}}
 <style>
-.flex-container {
-    display: flex;
-    height: 400px;
-}
+    .flex-container {
+        display: flex;
+        height: 400px;
+    }
 
-.flex-child {
-    flex: 1;
-    padding: 20px;
-    border: 2px solid black;
-  border-radius: 25px;
-}
+    .flex-child {
+        flex: 1;
+        padding: 20px;
+        border: 2px solid black;
+        border-radius: 25px;
+    }
 
-.flex-child:first-child {
-    margin-right: 20px;
-}
-.controls{
-  width: 50px;
-    margin-left:85%;
-  margin-right:15%;
-}
+    .flex-child:first-child {
+        margin-right: 20px;
+    }
 
-.otree-btn-next {
-  float: right;
-  margin-left:51.5%;
-  margin-right:48.5%;
-}
-.otree-body {
-    max-width: 1400px;
-}
+    .controls {
+        width: 50px;
+        margin-left: 85%;
+        margin-right: 15%;
+    }
 
-.page-header {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding-top: 40px;
-  margin-left:35%;
-}
+    .pd-results {
+        text-align: center;
+    }
 
+    .pgg-results {
+        margin-left: 30%;
+    }
+  .otree-btn-next-1 {
+        float: right;
+        margin-left: 41.5%;
+        margin-right: 47.5%;
+    }
+    .otree-btn-next-2 {
+        float: right;
+        margin-left: 43.5%;
+        margin-right: 45.5%;
+    }
+
+    .otree-body {
+        max-width: 1400px;
+    }
+
+    .page-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 40px;
+        text-align: center;
+    }
 </style>
 
 {{ endblock }}

@@ -362,20 +362,6 @@ def get_block_history(player: Player):
         block_history.append(block_round)
     return block_history
 
-
-# def roll_die(group:Group):
-#     continuation_chance = int(round(C.delta * 100))
-#     dieroll_continue = random.randint(1, continuation_chance)
-#     dieroll_end = random.randint(continuation_chance + 1, 100)
-#     for p in group.get_players():
-#         if p.subsession.round_number in p.session.vars['super_games_end_rounds']:
-#             p.dieroll=dieroll_end
-#         else:
-#             p.dieroll = dieroll_continue
-
-# def round_payoff_and_roll_die(group:Group):
-#     roll_die(group)
-#     set_payoffs(group)
 # PAGES
 class NewSupergame(Page):
     @staticmethod
@@ -421,9 +407,6 @@ class Decision(Page):
 
 class DecisionSingle(Page):
     form_model = 'player'
-
-    # form_fields = ['contribution', 'pd_decision']
-    #
     @staticmethod
     def get_form_fields(player: Player):
         if player.subsession.session.config['pd_only'] == 1:
@@ -434,10 +417,6 @@ class DecisionSingle(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.session.config['sim'] == 0
-
-    # @staticmethod
-    # def error_message_pd(player):
-    #     return 'Please make a choice'
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -476,55 +455,17 @@ class ResultsWaitPage(WaitPage):
 
 class RoundResults(Page):
 
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.session.config['sim'] == 1
+    # @staticmethod
+    # def is_displayed(player: Player):
+    #     return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
         me = player
         opponent = other_player(player)
-        if player.session.config['easy'] == 1:
-            # if PD in this session is the Easy PD
-            both_cooperate_payoff = C.ez_both_cooperate_payoff
-            betrayed_payoff = C.ez_betrayed_payoff
-            betray_payoff = C.ez_betray_payoff
-            both_defect_payoff = C.ez_both_defect_payoff
-        else:
-            # if PD in this session is the Difficult PD
-            both_cooperate_payoff = C.dt_both_cooperate_payoff
-            betrayed_payoff = C.dt_betrayed_payoff
-            betray_payoff = C.dt_betray_payoff
-            both_defect_payoff = C.dt_both_defect_payoff
-        return {
-            'cycle_round_number': player.subsession.period,
-            'pgg_private': C.ENDOWMENT - player.contribution,
-            # PD relevant variables
-            'both_cooperate_payoff': both_cooperate_payoff,
-            'betrayed_payoff': betrayed_payoff,
-            'betray_payoff': betray_payoff,
-            'both_defect_payoff': both_defect_payoff,
-            'my_decision': me.field_display('pd_decision'),
-            'opponent_decision': opponent.field_display('pd_decision'),
-            'same_choice': me.pd_decision == opponent.pd_decision,
-            'both_cooperate': me.pd_decision == True and opponent.pd_decision == True,
-            'both_defect': me.pd_decision == False and opponent.pd_decision == False,
-            'i_cooperate_he_defects': me.pd_decision == True and opponent.pd_decision == False,
-            'i_defect_he_cooperates': me.pd_decision == False and opponent.pd_decision == True,
-        }
-
-
-class RoundResultsSingle(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.session.config['sim'] == 0
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        if player.session.config['pd_only'] == 1:
-            me = player
-            opponent = other_player(player)
-            if player.session.config['easy'] == 1:
+        session=player.session
+        if session.config['sim'] == 1:
+            if session.config['easy'] == 1:
                 # if PD in this session is the Easy PD
                 both_cooperate_payoff = C.ez_both_cooperate_payoff
                 betrayed_payoff = C.ez_betrayed_payoff
@@ -538,6 +479,7 @@ class RoundResultsSingle(Page):
                 both_defect_payoff = C.dt_both_defect_payoff
             return {
                 'cycle_round_number': player.subsession.period,
+                'pgg_private': C.ENDOWMENT - player.contribution,
                 # PD relevant variables
                 'both_cooperate_payoff': both_cooperate_payoff,
                 'betrayed_payoff': betrayed_payoff,
@@ -546,18 +488,101 @@ class RoundResultsSingle(Page):
                 'my_decision': me.field_display('pd_decision'),
                 'opponent_decision': opponent.field_display('pd_decision'),
                 'same_choice': me.pd_decision == opponent.pd_decision,
-                'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
-                'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
-                'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
-                'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
-                'pd_only': player.session.config['pd_only']
+                'both_cooperate': me.pd_decision == True and opponent.pd_decision == True,
+                'both_defect': me.pd_decision == False and opponent.pd_decision == False,
+                'i_cooperate_he_defects': me.pd_decision == True and opponent.pd_decision == False,
+                'i_defect_he_cooperates': me.pd_decision == False and opponent.pd_decision == True,
+                'pd_only': player.session.config['pd_only'],
+                'two_game': player.session.config['sim'],
+                'block_end':player.subsession.is_bk_last_period
             }
         else:
-            return {
-                'cycle_round_number': player.subsession.period,
-                'pgg_private': C.ENDOWMENT - player.contribution,
-                'pd_only': player.session.config['pd_only']
-            }
+            if session.config['pd_only'] == 1:
+                if session.config['easy'] == 1:
+                    # if PD in this session is the Easy PD
+                    both_cooperate_payoff = C.ez_both_cooperate_payoff
+                    betrayed_payoff = C.ez_betrayed_payoff
+                    betray_payoff = C.ez_betray_payoff
+                    both_defect_payoff = C.ez_both_defect_payoff
+                else:
+                    # if PD in this session is the Difficult PD
+                    both_cooperate_payoff = C.dt_both_cooperate_payoff
+                    betrayed_payoff = C.dt_betrayed_payoff
+                    betray_payoff = C.dt_betray_payoff
+                    both_defect_payoff = C.dt_both_defect_payoff
+
+                return {
+                    'cycle_round_number': player.subsession.period,
+                    # PD relevant variables
+                    'both_cooperate_payoff': both_cooperate_payoff,
+                    'betrayed_payoff': betrayed_payoff,
+                    'betray_payoff': betray_payoff,
+                    'both_defect_payoff': both_defect_payoff,
+                    'my_decision': me.field_display('pd_decision'),
+                    'opponent_decision': opponent.field_display('pd_decision'),
+                    'same_choice': me.pd_decision == opponent.pd_decision,
+                    'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
+                    'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
+                    'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
+                    'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
+                    'pd_only': player.session.config['pd_only'],
+                    'two_game': player.session.config['sim'],
+                    'block_end': player.subsession.is_bk_last_period
+                }
+            else:
+                return {
+                    'cycle_round_number': player.subsession.period,
+                    'pgg_private': C.ENDOWMENT - player.contribution,
+                    'pd_only': player.session.config['pd_only'],
+                    'two_game': player.session.config['sim'],
+                    'block_end': player.subsession.is_bk_last_period
+                }
+
+
+# class RoundResultsSingle(Page):
+#     # @staticmethod
+#     # def is_displayed(player: Player):
+#     #     return player.session.config['sim'] == 0
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         if player.session.config['pd_only'] == 1:
+#             me = player
+#             opponent = other_player(player)
+#             if player.session.config['easy'] == 1:
+#                 # if PD in this session is the Easy PD
+#                 both_cooperate_payoff = C.ez_both_cooperate_payoff
+#                 betrayed_payoff = C.ez_betrayed_payoff
+#                 betray_payoff = C.ez_betray_payoff
+#                 both_defect_payoff = C.ez_both_defect_payoff
+#             else:
+#                 # if PD in this session is the Difficult PD
+#                 both_cooperate_payoff = C.dt_both_cooperate_payoff
+#                 betrayed_payoff = C.dt_betrayed_payoff
+#                 betray_payoff = C.dt_betray_payoff
+#                 both_defect_payoff = C.dt_both_defect_payoff
+#             return {
+#                 'cycle_round_number': player.subsession.period,
+#                 # PD relevant variables
+#                 'both_cooperate_payoff': both_cooperate_payoff,
+#                 'betrayed_payoff': betrayed_payoff,
+#                 'betray_payoff': betray_payoff,
+#                 'both_defect_payoff': both_defect_payoff,
+#                 'my_decision': me.field_display('pd_decision'),
+#                 'opponent_decision': opponent.field_display('pd_decision'),
+#                 'same_choice': me.pd_decision == opponent.pd_decision,
+#                 'both_cooperate': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Y",
+#                 'both_defect': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Z",
+#                 'i_cooperate_he_defects': me.pd_decision == "Action Y" and opponent.pd_decision == "Action Z",
+#                 'i_defect_he_cooperates': me.pd_decision == "Action Z" and opponent.pd_decision == "Action Y",
+#                 'pd_only': player.session.config['pd_only']
+#             }
+#         else:
+#             return {
+#                 'cycle_round_number': player.subsession.period,
+#                 'pgg_private': C.ENDOWMENT - player.contribution,
+#                 'pd_only': player.session.config['pd_only'],
+#             }
 
 
 class BlockEnd(Page):
@@ -694,7 +719,6 @@ page_sequence = [NewSupergame,
                  DecisionSingle,
                  ResultsWaitPage,
                  RoundResults,
-                 RoundResultsSingle,
                  BlockEnd,
                  MatchSummary,
                  FinalPayment]
