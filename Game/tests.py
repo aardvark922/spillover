@@ -15,6 +15,8 @@ class PlayerBot(Bot):
             yield RoundResults
             if self.player.subsession.is_bk_last_period == 1:
                 yield BlockEnd
+            if self.player.subsession.is_sg_last_period == 1:
+                yield MatchSummary
         else:
             if self.player.session.config['pd_only']==1:
                 if self.player.subsession.period == 1:
@@ -23,9 +25,11 @@ class PlayerBot(Bot):
                 #                      pd_decision= random.randint(0, 1))
                 #
                 yield DecisionSingle, dict(pd_decision= random.randint(0, 1))
-                yield RoundResultsSingle
+                yield RoundResults
                 if self.player.subsession.is_bk_last_period == 1:
                     yield BlockEnd
+                if self.player.subsession.is_sg_last_period == 1:
+                    yield MatchSummary
             else:
                 if self.player.subsession.period == 1:
                     yield NewSupergame
@@ -33,6 +37,8 @@ class PlayerBot(Bot):
                 #                      pd_decision= random.randint(0, 1))
                 #
                 yield DecisionSingle, dict(contribution= random.randint(1, 25))
-                yield RoundResultsSingle
+                yield RoundResults
                 if self.player.subsession.is_bk_last_period == 1:
                     yield BlockEnd
+                if self.player.subsession.is_sg_last_period == 1:
+                    yield MatchSummary
