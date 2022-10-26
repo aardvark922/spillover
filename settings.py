@@ -66,7 +66,7 @@ SESSION_CONFIG_DEFAULTS = dict(
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress', 'selected_match_pgg', 'selected_match_pd',
                       'pgg_earning', 'pd_earning', 'chosen_gamble', 'random_num_gamble', 'gamble_earning',
                       'selected_round_SVO', 'role_SVO', 'SVO_earning']
-SESSION_FIELDS = ['pgg_payment_match', 'pd_payment_match']
+SESSION_FIELDS = ['pgg_payment_match', 'pd_payment_match','pd_only','sim']
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans

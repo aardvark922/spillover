@@ -51,9 +51,8 @@ class C(BaseConstants):
     DELTA = 0.75  # discount factor equals to 0.75
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
-    # supergame_duration = [10, 3, 21, 10, 12]
     # for app building
-    COUNT_ROUNDS_PER_SG = [10, 2, 1, 1, 5]
+    COUNT_ROUNDS_PER_SG = [5, 1]
     # Dal Bo&Frechette one sequence
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
@@ -157,7 +156,8 @@ def creating_session(subsession: Subsession):
     # Set pairs IDs to identify who is matched with whom
     pair_ids = [n for n in range(1, C.super_group_size // C.group_size + 1)] * C.group_size
     # print('pair ids:', pair_ids)
-
+    subsession.session.vars['sim'] = subsession.session.config['sim']
+    subsession.session.vars['pd_only'] = subsession.session.config['pd_only']
     if subsession.round_number == 1:
         sg = 1
         period = 1
@@ -604,26 +604,7 @@ class BlockEnd(Page):
                 two_game=player.session.config['sim'],
                 pd_only=player.session.config['pd_only']
                 )
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        import random
-        participant = player.participant
-        exchange_rate = player.session.config['real_world_currency_per_point']
-        # if it's the last round of this task
-        if player.round_number == C.NUM_ROUNDS:
-            # record selected match earning for pgg
-            pgg_sg = player.session.vars['pgg_payment_match']
-            participant.selected_match_pgg = pgg_sg
-            player_in_end_round_of_selected_match_pgg = player.in_round(C.SG_ENDS[pgg_sg - 1])
-            participant.pgg_earning = player_in_end_round_of_selected_match_pgg.pgg_sg_earning
 
-            # record selected match earning for pd
-            pd_sg = player.session.vars['pd_payment_match']
-            participant.selected_match_pd = pd_sg
-            player_in_end_round_of_selected_match_pd = player.in_round(C.SG_ENDS[pd_sg - 1])
-            participant.pd_earning = player_in_end_round_of_selected_match_pd.pd_sg_earning
-
-            player.payoff = (participant.pgg_earning + participant.pd_earning) * exchange_rate
 
 
 class MatchSummary(Page):
@@ -637,7 +618,6 @@ class MatchSummary(Page):
         sg = player.subsession.sg
         player_in_end_round = player.in_round(C.PAY_ROUNDS_ENDS[sg - 1])
         end_period = player_in_end_round.subsession.period
-        sg = player.subsession.sg
         start_round = C.PLAYED_ROUND_STARTS[sg - 1]
         sg_duration = C.COUNT_ROUNDS_PER_SG[sg - 1]
         player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
@@ -691,6 +671,26 @@ class MatchSummary(Page):
                     pgg_history=pgg_history,
                     )
 
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        import random
+        participant = player.participant
+        exchange_rate = player.session.config['real_world_currency_per_point']
+        # if it's the last round of this task
+        if player.round_number == C.NUM_ROUNDS:
+            # record selected match earning for pgg
+            pgg_sg = player.session.vars['pgg_payment_match']
+            participant.selected_match_pgg = pgg_sg
+            player_in_end_round_of_selected_match_pgg = player.in_round(C.SG_ENDS[pgg_sg - 1])
+            participant.pgg_earning = player_in_end_round_of_selected_match_pgg.pgg_sg_earning
+
+            # record selected match earning for pd
+            pd_sg = player.session.vars['pd_payment_match']
+            participant.selected_match_pd = pd_sg
+            player_in_end_round_of_selected_match_pd = player.in_round(C.SG_ENDS[pd_sg - 1])
+            participant.pd_earning = player_in_end_round_of_selected_match_pd.pd_sg_earning
+
+            player.payoff = (participant.pgg_earning + participant.pd_earning) * exchange_rate
 
 class FinalPayment(Page):
 
@@ -720,5 +720,4 @@ page_sequence = [NewSupergame,
                  ResultsWaitPage,
                  RoundResults,
                  BlockEnd,
-                 MatchSummary,
-                 FinalPayment]
+                 MatchSummary]
