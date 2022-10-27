@@ -1,0 +1,451 @@
+{% extends "otree/Page.html" %}
+{% load staticfiles otree %}
+
+{% block app_styles %}
+    {% include 'DynamicPower_05_Experiment/commonCSS.html' %}
+{% endblock %}
+
+
+
+{% block title %}
+    How to use the Calculator
+	<!-- (P06_Calculator) -->
+{% endblock %}
+
+{% block content %}
+		{% include 'DynamicPower_05_Experiment/commonHTML_Table.html' %}
+ <input type="hidden" name="placeholder" value="," id="id_calculatorHistory"/>
+
+    <div class="card-body" style="text-align: left">
+			<div style="position:relative;left: 20%;width: 60%;background-color: #ffffff">
+
+
+		<p id="line1" > 
+		Click  <input type="button" onclick="event.preventDefault()"  value="Calculator">.
+		This will open the calculator.
+			
+			<button type="button"  id="Next_line2" class="otree-btn-next btn btn-primary" 
+				style="visibility:hidden; left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+				onclick="NextLines(this, 2)" > Next </button>
+			</p>
+			
+		<p id="line2" style="visibility:hidden;">  
+		Specify the choices in the <mark_calculator>  "Stage 1 Choice" </mark_calculator>   column. 
+		Once all of the choices are filled in you will see how much you earn in Stage 1. 
+		
+		
+		<button type="button"  id="Next_line3" class="otree-btn-next btn btn-primary" 
+				style="visibility:hidden; left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+				onclick="NextLines(this, 3)" > Next </button>
+		</p> 
+			
+			
+		
+		<p id="line3" style="visibility:hidden;">
+			{{ if End }} Specify how much is spent in Stage 2 by typing the spends for each participant. 
+			Once all choices and spendings are specified, 
+			the rest of the table will be automatically filled. 
+			{{ else }} The rest of the table will be automatically filled.  {{ endif }} 
+			You will see your payoff for this round and shares in the next round.			
+
+			<button type="button"  id="Next_line4"  class="otree-btn-next btn btn-primary" 
+				style="left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+		onclick="NextLines(this, 4)" > Next </button>
+
+		</p>
+
+		<p id="line4" style="visibility:hidden;">
+			Click
+		<input type="button" onclick="event.preventDefault()"  value="import">. 
+		This will import the <mark_calculator> "New Shares" </mark_calculator> column into 
+		the <mark_calculator> "Current Shares" </mark_calculator>  column.
+			<button type="button"  id="Next_line5"  class="otree-btn-next btn btn-primary" 
+				style="left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+		onclick="NextLines(this, 5)" > Next </button>
+
+
+		</p>
+			
+		<p id="line5" style="visibility:hidden;">
+		Click  <input type="button" onclick="event.preventDefault()"  value="Reset">  
+		This will reset the table.	   
+			<button type="button"  id="Next_line6"  class="otree-btn-next btn btn-primary" 
+				style="left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+		onclick="NextLines(this, 6)" > Next </button>
+
+
+
+		</p>
+		
+		<p id="line6" style="visibility:hidden;">
+		Click  <input type="button" onclick="event.preventDefault()"  value="Hide">.
+		This will hide the table.
+					<button type="button"  id="lastLine"  class="otree-btn-next btn btn-primary" 
+				style="left:5px; bottom:2px; height: 21px; width: 50px; line-height: 15px; padding: 3px; background-color: #1e8f27; border-color: #1e8f27;" 
+		onclick="NextNextButton(this)" > Next </button>
+
+
+	    </p>
+			
+			<center>		
+            <button class="otree-btn-next btn btn-primary" id="NextButton" style="visibility:hidden;">Next</button>
+				</center>
+	</div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    {% include 'DynamicPower_05_Experiment/commonJS.html' %}
+	<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+	setTimeout(
+		function () {
+			alert("Please click 'Next' when you are done reading this page.");
+		},
+		120*1000 // 120 seconds
+	);
+
+	<!-- Added new functions for caculator buttons, need to create on this page -->
+	ShowTables();
+	var Card_div = document.getElementsByClassName("row")[0];
+
+	Card_div.style = "justify-content: center;";
+
+	document.getElementsByClassName('CurrentRound_cell LeftBorder')[0].innerHTML = "Example Round  <input  type='button'  onclick='Calculator_Instruction()' id='CalculatorButton' value='Calculator' > </input>";
+
+		<!-- Disable all buttons in the calculator: -->
+	var allButtons = document.getElementsByClassName("btn btn-primary");
+	for (let i =0 ; i < allButtons.length; i++) {
+		allButtons[i].disabled = true;
+		}
+	var allButtons = document.getElementsByClassName("todisable");
+	for (let i =0 ; i < allButtons.length; i++) {
+		allButtons[i].disabled = true;
+		}
+
+
+
+
+	function highlightColuns(highlights) {
+		highlights[0].className += " top_highlight_instruction left_highlight_instruction right_highlight_instruction";
+		if ( js_vars.Faction_Number_minus1 == 1 ) {
+		highlights[2].className += " bottom_highlight_instruction left_highlight_instruction right_highlight_instruction";
+		highlights[1].className += " left_highlight_instruction right_highlight_instruction";
+		}
+		if ( js_vars.Faction_Number_minus1 != 1 ) {
+		highlights[4].className += " bottom_highlight_instruction left_highlight_instruction right_highlight_instruction";
+		for (let i = 1; i<=3 ; i++) {
+			highlights[i].className += " left_highlight_instruction right_highlight_instruction";
+			}
+		}
+	}
+	
+	function UnhighlightColuns(highlights) {
+		highlights[0].className = highlights[0].className.replace(" top_highlight_instruction left_highlight_instruction right_highlight_instruction","");
+		if ( js_vars.Faction_Number_minus1 == 1 ) {
+		highlights[2].className = highlights[2].className .replace(" bottom_highlight_instruction left_highlight_instruction right_highlight_instruction","");
+		highlights[1].className = highlights[1].className.replace(" left_highlight_instruction right_highlight_instruction","");
+		}
+
+		if ( js_vars.Faction_Number_minus1 != 1 ) {
+		highlights[4].className = highlights[4].className .replace(" bottom_highlight_instruction left_highlight_instruction right_highlight_instruction","");
+		for (let i = 1; i<=3 ; i++) {
+			highlights[i].className = highlights[i].className.replace(" left_highlight_instruction right_highlight_instruction","");
+			}
+		}
+	}
+	
+	function Calculator_Instruction() {
+		Calculator()
+		document.getElementById("Next_line2").style.visibility = "visible" ;
+		document.getElementById("Next_line2").disabled = false; 
+		
+		
+	}
+	
+	
+
+	
+		
+	<!-- Has to copy the highlight function from commonJS.html -->
+	var MyVariables = {clickAgain:1,};
+	
+	function highlight(element) {	
+	
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',' + String(element.id);
+	// A condition to see which row the clicked element is in 
+	if (element.id.includes("1")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_1 != null) {
+            buttonClicked_1.style.color = "grey";
+			buttonClicked_1.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_1 = element;
+      buttonClicked_1.style.color = "black";
+      buttonClicked_1.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_1 = buttonClicked_1.value;
+	  }
+	else if (element.id.includes("2")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_2 != null) {
+            buttonClicked_2.style.color = "grey";
+			buttonClicked_2.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_2 = element;
+      buttonClicked_2.style.color = "black";
+      buttonClicked_2.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_2 = buttonClicked_2.value;
+	  }
+	else if (element.id.includes("3")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_3 != null) {
+            buttonClicked_3.style.color = "grey";
+			buttonClicked_3.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_3 = element;
+      buttonClicked_3.style.color = "black";
+      buttonClicked_3.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_3 = buttonClicked_3.value;
+	  }  
+	else if (element.id.includes("4")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_4 != null) {
+            buttonClicked_4.style.color = "grey";
+			buttonClicked_4.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_4 = element;
+      buttonClicked_4.style.color = "black";
+      buttonClicked_4.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_4 = buttonClicked_4.value;
+	  } 
+	  
+	  <!-- First time the choices are not null: -->
+	MyVariables.clickAgain += 1
+	if ( choice_1!=null && choice_2!=null && js_vars.Faction_Number_minus1 == 1 ||  choice_1!=null && choice_2!=null && choice_3!=null && choice_4!=null && js_vars.Faction_Number_minus1 == 3) {
+		var highlights = document.getElementsByClassName("Calculator_cell col1");
+		UnhighlightColuns(highlights);	
+		var newHighLights = document.getElementsByClassName("Calculator_cell col2");
+		highlightColuns(newHighLights);
+	}
+	else if ( MyVariables.clickAgain >= js_vars.Faction_Number_minus1+1 ) {
+		document.getElementById("Next_line3").style.visibility = "visible" ;
+		document.getElementById("Next_line3").disabled = false ;
+	}
+      <!-- total_club_production(); -->
+	  calc_returns();
+	  
+	  calc_new_powers();
+	  
+}  
+
+
+
+	<!-- For the new power update -->
+function calc_new_powers() {
+	// Firstly, obtain the efforts
+	if (js_vars.Exo ) {
+		if (js_vars.Faction_Number_minus1+1 == 2) {
+			effort_1 = parseInt(document.getElementById("return_1").innerHTML);
+			effort_2 = parseInt(document.getElementById("return_2").innerHTML);
+		}
+		else {
+			effort_1 = parseInt(document.getElementById("return_1").innerHTML);
+			effort_2 = parseInt(document.getElementById("return_2").innerHTML);
+			effort_3 = parseInt(document.getElementById("return_3").innerHTML);
+			effort_4 = parseInt(document.getElementById("return_4").innerHTML);
+
+		}
+	}
+	else {
+		// This is when it is the endogenous case 
+		if (js_vars.Faction_Number_minus1+1 == 2) {
+			effort_1 = parseInt(document.getElementById("myRange_1").value);
+			effort_2 = parseInt(document.getElementById("myRange_2").value);		 
+		}
+		else {
+			effort_1 = parseInt(document.getElementById("myRange_1").value);
+			effort_2 = parseInt(document.getElementById("myRange_2").value);
+			effort_3 = parseInt(document.getElementById("myRange_3").value);
+			effort_4 = parseInt(document.getElementById("myRange_4").value);
+		}
+	}
+	// Secondly, calculate the new power
+	if (js_vars.Faction_Number_minus1+1 == 2) {
+		var	total_effort = effort_1 + effort_2;
+		console.log(total_effort)
+		 if  (!isNaN(total_effort) && total_effort !== 0 ) {
+		 var new_power_1 = effort_1 / total_effort *100 ;
+		 var new_power_2 = effort_2 / total_effort *100 ;
+		 document.getElementById("new_power_1").innerHTML = new_power_1.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = new_power_2.toFixed(0);
+		 }
+		 else if  (!isNaN(total_effort) && total_effort == 0 ) {
+		 equal = 1/2 * 100 ;
+		 document.getElementById("new_power_1").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = equal.toFixed(0);
+		 }
+	}
+	else {
+		 var	total_effort = effort_1 + effort_2 + effort_3 + effort_4;
+		 
+		 if  (!isNaN(total_effort) && total_effort !== 0 ) {
+		 var new_power_1 = effort_1 / total_effort *100 ;
+		 var new_power_2 = effort_2 / total_effort *100 ;
+		 var new_power_3 = effort_3 / total_effort *100 ;
+		 var new_power_4 = effort_4 / total_effort *100 ;
+		 document.getElementById("new_power_1").innerHTML = new_power_1.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = new_power_2.toFixed(0);
+		 document.getElementById("new_power_3").innerHTML = new_power_3.toFixed(0);
+		 document.getElementById("new_power_4").innerHTML = new_power_4.toFixed(0);
+		}
+		 else if  (!isNaN(total_effort) && total_effort == 0 ) {
+		 equal = 1/4 * 100 ;
+		 document.getElementById("new_power_1").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_3").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_4").innerHTML = equal.toFixed(0);
+		 }
+		 
+	 if (!isNaN(total_effort) && !js_vars.Exo) {
+		document.getElementById("Next_line4").style.visibility = "visible" ;
+		document.getElementById("Next_line4").disabled = false
+		}
+}
+
+	
+	  
+}
+	
+
+	function NextLines(ele, i) {
+		ele.style.display = "none" ;
+		document.getElementById("line"+String(i)).style.visibility = "visible";
+		if ( i == 2 ) {
+		var highlights = document.getElementsByClassName("Calculator_cell col1");
+		highlightColuns(highlights);
+		var allButtons = document.getElementsByClassName("todisable");
+		for (let j =0 ; j < allButtons.length; j++) {
+			allButtons[j].disabled = false;
+			}
+		if (js_vars.Exo == false ) {
+			document.getElementById("myRange_1").disabled = true;
+			document.getElementById("myRange_2").disabled = true;
+			if ( js_vars.Faction_Number_minus1 != 1 ) {
+			document.getElementById("myRange_3").disabled = true;
+			document.getElementById("myRange_4").disabled = true;
+			}
+			}
+		}
+		if ( i == 3) {
+			var a = document.getElementsByClassName("Calculator_cell col1");
+			UnhighlightColuns(a);
+			var b = document.getElementsByClassName("Calculator_cell col3");
+			highlightColuns(b);
+			if (js_vars.Exo == false ) {
+				document.getElementById("myRange_1").disabled = false;
+				document.getElementById("myRange_2").disabled = false;
+				if ( js_vars.Faction_Number_minus1 != 1 ) {
+				document.getElementById("myRange_3").disabled = false;
+				document.getElementById("myRange_4").disabled = false;
+				}
+				
+				document.getElementById("Next_line4").style.visibility = "visible" ;
+				document.getElementById("Next_line4").disabled = false
+			}
+			
+			else {
+				document.getElementById("Next_line4").style.visibility = "visible" ;
+				document.getElementById("Next_line4").disabled = false;
+				var a = document.getElementsByClassName("Calculator_cell col2");
+				UnhighlightColuns(a);
+				var a = document.getElementsByClassName("Calculator_cell col3");
+				UnhighlightColuns(a);
+				var b = document.getElementsByClassName("Calculator_cell col4");
+				highlightColuns(b);
+				var b = document.getElementsByClassName("Calculator_cell col5");
+				highlightColuns(b);
+			}
+		}
+		if ( i == 4) {
+		var a = document.getElementsByClassName("Calculator_cell col3");
+		UnhighlightColuns(a);
+		if (js_vars.Exo ) {
+			var a = document.getElementsByClassName("Calculator_cell col4");
+			UnhighlightColuns(a);
+			var a = document.getElementsByClassName("Calculator_cell col5");
+			UnhighlightColuns(a);
+		}
+		else {
+			var a = document.getElementsByClassName("Calculator_cell col2");
+			UnhighlightColuns(a);
+
+		}
+		
+		document.getElementById("import").disabled = false;
+		}
+		if (i==5 ) {
+		document.getElementById("Reset").disabled = false;
+
+		}
+		if (i==6 ) {
+		document.getElementById("CalculatorButton2").disabled = false;
+		document.getElementById("lastLine").style.visibility = "visible";	
+		document.getElementById("lastLine").disabled = false;
+		}
+	}
+	
+	function import_to_power(){
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',P' ;
+
+	document.getElementById("current_power_1").innerHTML =  document.getElementById("new_power_1").innerHTML ;
+	document.getElementById("current_power_2").innerHTML = document.getElementById("new_power_2").innerHTML;
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		document.getElementById("current_power_3").innerHTML =  document.getElementById("new_power_3").innerHTML ;
+		document.getElementById("current_power_4").innerHTML = document.getElementById("new_power_4").innerHTML;
+	}
+	clear_all();
+	document.getElementById("Next_line5").style.visibility = "visible";
+	document.getElementById("Next_line5").disabled = false;
+	}
+
+
+	function import_original_power(){
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',O';
+
+	document.getElementById("current_power_1").innerHTML = js_vars.Current[1][0];
+	document.getElementById("current_power_2").innerHTML =  js_vars.Current[2][0];
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		document.getElementById("current_power_3").innerHTML = js_vars.Current[3][0];
+		document.getElementById("current_power_4").innerHTML =  js_vars.Current[4][0];
+	}
+	clear_all();
+	document.getElementById("Next_line6").style.visibility = "visible";	
+	document.getElementById("Next_line6").disabled = false;
+
+}
+
+	
+		function NextNextButton(ele) {
+		ele.style="display:none";
+		document.getElementById("NextButton").style = "display:block";
+		document.getElementById("NextButton").disabled = false;
+	}
+
+
+
+    </script>
+{% endblock %}
+
+

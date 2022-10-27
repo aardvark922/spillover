@@ -46,6 +46,7 @@ class C(BaseConstants):
     block_dierolls_template = 'Game/block_dierolls.html'
     pd_summary_template = 'Game/pd_match_history.html'
     pgg_summary_template = 'Game/pgg_match_history.html'
+    pgg_calculator_template="Game/pgg_calculator.html"
     game_summary_template = 'Game/game_earning_summary.html'
     PLAYERS_PER_GROUP = 4
     DELTA = 0.75  # discount factor equals to 0.75
@@ -403,6 +404,10 @@ class Decision(Page):
             pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
             pd_selected_match=player.subsession.session.vars['pd_payment_match']
         )
+    @staticmethod
+    def js_vars(player: Player):
+        return dict(Endowment=C.ENDOWMENT,
+                    MPCR= C.MPCR)
 
 
 class DecisionSingle(Page):

@@ -1,0 +1,1308 @@
+{% load otree_tags %}
+
+<script>
+
+
+	
+
+
+    document.addEventListener('keydown', function (event) {
+        if ((event.code == 'KeyR' || event.code == 'KeyF' || event.code == 'KeyS') && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+        }
+        if ((event.code == 'F5')) {
+            event.preventDefault();
+        }
+        if ((event.code == 'Tab')) {
+            event.preventDefault();
+        }
+        if ((event.code == 'Enter')) {
+            event.preventDefault();
+        }
+        if ((event.code == 'NumpadEnter')) {
+            event.preventDefault();
+        }
+        <!-- if ((event.code == 'Space')) { -->
+            <!-- event.preventDefault(); -->
+        <!-- } -->
+        if ((event.code == 'ArrowLeft' || event.code == 'ArrowRight') && (event.code == 'AltLeft' || event.code == 'altRight' || event.altKey || event.metaKey)) {
+            event.preventDefault();
+        }
+    });
+
+<!-- This is used to re-order the tables in each page -->
+var x = js_vars.Table_Rearrange;
+
+<!-- This function is to define the whole table at the begining of each round -->
+    function ShowTables(offset=0) {
+	<!-- Use the period (round) number to decide  -->
+		<!-- If Round == 1:  only Show the current table  -->
+		var Card = document.getElementById("InformationTable");
+		var Card_div = document.createElement('div');
+		Card_div.className = "row";
+		Card.appendChild(Card_div);	
+		
+		
+		var div_c1 =  document.createElement('div');
+		div_c1.className = "closeTable";
+		div_c1.style.width = "50px";
+		div_c1.id = "column1";
+		ShowFirstColumn(div_c1);
+		Card_div.appendChild(div_c1);
+
+		if (js_vars.Round==1 ) {
+			var div_c2 = document.createElement('div');
+			div_c2.className = "closeTable";
+			div_c2.style.width = "300px";
+			div_c2.id = "column2";
+			ShowCurrentTable(div_c2);
+			<!-- ShowCalculator(div_c2); -->
+			Card_div.appendChild(div_c2);
+		}
+		else if (js_vars.Round == 2) {
+
+			var div_c2 = document.createElement('div');
+			div_c2.className = "closeTable";
+			div_c2.style.width = "250px";
+			div_c2.style.position = "relative";
+
+			div_c2.id = "column2";
+			ShowHistoryTable(div_c2);
+			Card_div.appendChild(div_c2);
+			
+			var div_c3 = document.createElement('div');
+			div_c3.className = "closeTable";
+			div_c3.style.width = "300px";
+			div_c3.id = "column3";
+			ShowCurrentTable(div_c3);
+			<!-- ShowCalculator(div_c3); -->
+			Card_div.appendChild(div_c3);
+		}
+		else if (js_vars.Round == 3) {
+
+			var div_c2 = document.createElement('div');
+			div_c2.className = "closeTable ";
+			div_c2.style.width = "500px";
+			div_c2.style.position = "relative";
+			div_c2.style.margin = "0px";
+			div_c2.style.padding = "0px";
+
+			div_c2.id = "column2";
+			ShowHistoryTable(div_c2);
+			Card_div.appendChild(div_c2);
+			
+			var div_c3 = document.createElement('div');
+			div_c3.className = "closeTable";
+			div_c3.style.width = "300px";
+			div_c3.id = "column3";
+			ShowCurrentTable(div_c3);
+			<!-- ShowCalculator(div_c3); -->
+			Card_div.appendChild(div_c3);
+		}
+			
+	<!-- If Round > a certain number: add scrolls -->
+	
+	<!-- The Round, Title, RollHistory Lines can be formatted rather easily -->
+		else {
+			var div_c2 = document.createElement('div');
+			div_c2.className = "closeTable";
+			div_c2.style.width = "500px";
+			div_c2.style.position = "relative";
+			div_c2.style.margin = "0px";
+			div_c2.style.padding = "0px";
+
+			div_c2.id = "column2";
+			<!-- Add this so that the history can have a scroll -->
+			div_c2.className = "inner";
+			ShowHistoryTable(div_c2);
+			Card_div.appendChild(div_c2);
+			
+			var div_c3 = document.createElement('div');
+			div_c3.className = "closeTable";
+			div_c3.style.width = "300px";
+			div_c3.id = "column3";
+			ShowCurrentTable(div_c3);
+			<!-- ShowCalculator(div_c3); -->
+			Card_div.appendChild(div_c3);
+		
+		
+		}
+		
+		var div_c4 = document.createElement('div');
+		div_c4.className = "closeTable";
+		div_c4.style.width = "700px";
+		div_c4.id = "column4";
+		ShowCalculator(div_c4);
+		Card_div.appendChild(div_c4);
+		
+		Card.appendChild(Card_div);	
+		
+
+		
+
+    };
+	
+	function ShowFirstColumn(element) {
+		var tbl = document.createElement('table');
+
+		tbl.className = "table";
+		var tr = document.createElement('tr');
+		tr.className = "HistoryRound_cell";
+		var th = document.createElement('th');
+		th.style = " height: 107px";
+		th.innerHTML = "ID";
+		tr.appendChild(th);
+		tbl.appendChild(tr);
+
+		for (var i = 1; i <= js_vars.Faction_Number_minus1+1; i++) {
+			var tr = document.createElement('tr');
+			tr.className = "HistoryRound_cell";		
+			var th = document.createElement('th');			
+			if (i ==  1) {
+				th.innerHTML = "You";
+				tr.className += " Me";
+				th.style = "font-weight: bold;";
+				}
+			else {
+			th.innerHTML = i;
+			}
+			tr.appendChild(th);
+			tbl.appendChild(tr);	
+			}
+		var tr = document.createElement('tr');
+		var th = document.createElement('th');
+		th.className ="DiceLabel";
+		th.innerHTML = "Dice Roll";
+		tr.appendChild(th);
+		tbl.appendChild(tr);
+		
+		element.appendChild(tbl);
+	
+	};
+	
+function ShowCurrentTable(element) {
+	
+	var tbl = document.createElement('table');
+	tbl.className = "table current_table"; 
+	tbl.id = "current_table";
+	tbl.style.display = "table";
+	
+	
+	var tr = document.createElement('tr');
+	var td = document.createElement('td');
+	td.className="CurrentRound_cell LeftBorder TopBorder RightBorder";
+	td.colSpan = "5";
+	<!-- It was <button> before  -->
+	td.innerHTML="Round "+String(js_vars.Round) + "  <input  type='button'   onclick='Calculator()' id='CalculatorButton' value='Calculator' > </input>";
+	
+	tr.appendChild(td);
+	tbl.appendChild(tr);
+	
+	
+	
+	for (var row = 0; row < js_vars.Faction_Number_minus1+2 ; row++ ) {
+		var tr = document.createElement('tr');
+		<!-- console.log(js_vars.Current[row].length) -->
+		var rowlength = js_vars.Current[row].length;
+		<!-- Each round, there are 5 columns, hard coding here!! -->
+		for (var i = 0; i <5; i++ ) {
+			var td = document.createElement('td');
+			td.className = "CurrentRound_cell ";
+			td.className += "col"+String(i);
+			td.className += " row"+String(row);
+			
+			if (i==0) {
+				td.className += " LeftBorder";
+			}
+			else if (i==4) {
+				td.className += " RightBorder";
+			}
+			
+			if (row== js_vars.Faction_Number_minus1+1) {
+				td.className += " BottomBorder";
+			}
+			if (x[row]== js_vars.MyID) {
+				td.className += " Me";
+			}
+			 
+			<!-- Here the table is created by rows  -->
+			if (i < rowlength) {
+				if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 1) {
+					if (js_vars.Current[x[row]][i] == 1) {
+						td.className += " ChooseC_1";
+						td.innerHTML = "Y";
+						
+					}
+					else if (js_vars.Current[x[row]][i] == 0) {
+						td.className += " ChooseD_0";
+						td.innerHTML = "X";
+					}
+				}
+				// Here is when the earn has the same color as the choice
+				<!-- else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 2) { -->
+					<!-- if (js_vars.Current[x[row]][i-1] == 1) { -->
+						<!-- td.className += " ChooseC_1"; -->
+					<!-- } -->
+					<!-- else if (js_vars.Current[x[row]][i-1] == 0) { -->
+						<!-- td.className += " ChooseD_0"; -->
+					<!-- } -->
+					<!-- td.innerHTML = js_vars.Current[x[row]][i]; -->
+				<!-- } -->
+				else if (x[row]== js_vars.MyID && i == 2) {
+					td.className += " stage1";  
+					td.innerHTML = js_vars.Current[x[row]][i];
+				}
+				else if (x[row]== js_vars.MyID && i == 3) {
+					td.className += " stage2";  
+					td.innerHTML = js_vars.Current[x[row]][i];
+				}
+				else {
+				
+					td.innerHTML = js_vars.Current[x[row]][i];
+				}
+				}
+			else {
+				if (x[row]== js_vars.MyID && i == rowlength) {
+					td.className += " Me_emphasize";
+					td.innerHTML = "?";
+					td.id = "ToBeDecided"+String(i);
+					}
+				else { 
+					td.innerHTML = "";
+					}
+			}
+			tr.appendChild(td);
+		}
+		tbl.appendChild(tr);
+		
+	}
+	element.appendChild(tbl);
+}
+
+
+function ShowCalculator(element) {
+	
+	var tbl = document.createElement('table');
+	tbl.className = "calculator"; 
+	tbl.id = "calculator";
+	tbl.style.display = "none";
+	tbl.style.width = "700px";
+	if (js_vars.Faction_Number_minus1 == 1) {
+		tbl.style.height = "200px";
+	}
+	else {
+		tbl.style.height = "300px";
+	}
+	
+	var tr = document.createElement('tr');
+	var td = document.createElement('td');
+	td.className="Calculator_cell LeftBorder TopBorder RightBorder";
+	td.colSpan = "6";
+	td.innerHTML= "Calculator" + "  <input type='button' class='btn btn-primary' onclick='Calculator()' id='CalculatorButton2' id='Hide' value='Hide' >  </input>" +  "  <input type = 'button' class='btn btn-primary'  id='Reset' value='Reset'onclick='import_original_power()'/>";
+	
+	tr.appendChild(td);
+	tbl.appendChild(tr);
+	
+	
+	
+	for (var row = 0; row < js_vars.Faction_Number_minus1+2 ; row++ ) {
+		
+		var tr = document.createElement('tr');
+		var rowlength = js_vars.Current[row].length;
+		<!-- Each round, there are 6 columns, hard coding here!! -->
+		for (var i = 0; i <6; i++ ) {
+			<!-- This is to skip the cell of payoff, but not used later  -->
+			<!-- if (row >0 && i == 4 && !js_vars.Exo) { -->
+			<!-- } -->
+			<!-- else { -->
+			var td = document.createElement('td');
+			td.className = "Calculator_cell";
+			td.className += " row"+String(row);
+			td.className += " col"+String(i);
+			
+			if (i==0) {
+				td.className += " LeftBorder";
+			}
+			else if (i==5) {
+				td.className += " RightBorder";
+			}
+			
+			if (row== js_vars.Faction_Number_minus1+1) {
+				td.className += " BottomBorder";
+			}
+			if (x[row]== js_vars.MyID) {
+				td.className += " Me";
+			}
+			 
+			<!-- Here the table is created by rows  -->
+			<!-- Here is for each row, the 1st row (add buttons)-->
+			<!-- if (row == 0  && i == 0) { -->
+				<!-- td.innerHTML = js_vars.Current[x[row]][i] + "  <input type = 'button' value='reset'onclick='import_original_power()'/>"; -->
+			<!-- } -->
+		    if (row == 0  && i == 5) {
+				td.innerHTML = "New Shares" + "  <input type = 'button' class='btn btn-primary' id='import' value='import' onclick='import_to_power()'/>";
+			}
+			else if (row == 0  && i == 1) {
+				td.innerHTML = 'Stage 1 Choice' ;			
+				}
+			else if (row == 0  && i == 2) {
+				td.innerHTML = 'Stage 1 Earn' ;			
+				}
+			else if (row == 0  && i == 3) {
+				td.innerHTML = 'Stage 2 Spend' ;			
+				}
+			else if (row == 0  && i == 4) {
+				td.innerHTML = 'Round Payoff' ;			
+				}
+			else if (row == 0 ) {
+				td.innerHTML = js_vars.Current[x[row]][i];
+			}
+		<!-- Here is for the 2nd row and on 	-->
+			<!-- The power starts with the power in the current table 	-->
+			else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 0) {
+				td.id = "current_power_" + String(x[row]) ; 
+				td.innerHTML = js_vars.Current[x[row]][i];
+			}
+			<!-- The choice column contains two buttons with different ids 	-->
+			else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 1) {
+				td.innerHTML = "<input type = 'X_button' class = 'todisable' id='choice_" + String(x[row]) + "_X' value = 'X' onclick='highlight(this)' readonly /> " +
+				"<input type='Y_button' class = 'todisable' id='choice_" + String(x[row]) + "_Y' value='Y' onclick='highlight(this)' readonly />" ;
+			}
+			<!-- The return column has an id 	-->
+			else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 2) {
+				td.id = "return_"+String(x[row]) ;
+			}
+			<!-- The effort column is different depending on the exo/end setting  -->
+			
+			else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 3) {
+				if ( js_vars.Exo) {
+					td.id = "effort_"+String(x[row]) ;
+				}
+				else {
+					<!-- td.colSpan = '2'; -->
+					<!-- td.innerHTML = "<input id='myRange_"+String(x[row])+ "' type='range' min='0'  value='0' class='slider' >  <span id='effort_" +String(x[row])+"' class='effort'> </span>  <span id='payoff_"+String(x[row])+"' class='payoff'> </span>  "; -->
+					td.innerHTML = "<input id='myRange_"+String(x[row])+ "' type='number' class = 'todisable'  min='0'  step='1'  oninput='EffortUpdate(this)'	style='width:100px; text-align:center;' >  ";
+				}
+				
+			}
+			<!-- The payoff column is different depending on the exo/end setting  -->
+			else if (row >0 && row < js_vars.Faction_Number_minus1+2 && i == 4) {
+				
+				if ( js_vars.Exo) {
+					td.id = "payoff_"+String(x[row]) ;
+				}
+				else {
+					td.id = "payoff_cell_"+String(x[row]) ;
+				}
+			}
+			
+			else  {
+				td.id = "new_power_"+String(x[row]) ;
+			}
+			<!-- }	 -->
+			tr.appendChild(td);
+		}
+		tbl.appendChild(tr);
+		
+	}
+	
+	// always append under the current table
+	element.append(tbl);
+}
+
+
+
+		
+function ShowHistoryTable(element) {
+
+	var tbl = document.createElement('table');
+	tbl.className = "table"; 
+	tbl.id = "history_table";
+	tbl.style.width = String(250*(js_vars.Round-1))+"px";
+	
+	var tr = document.createElement('tr');
+	for (var r=1; r < js_vars.Round; r++) {
+		var td = document.createElement('td');
+		td.className="HistoryRound_cell";
+		td.colSpan = "5";
+		td.innerHTML="Round "+String(r);
+		tr.appendChild(td);
+	}
+	tbl.appendChild(tr);
+	
+	
+	
+	for (var row = 0; row < js_vars.Faction_Number_minus1+2 ; row++ ) {
+		var tr = document.createElement('tr');
+		var rowlength = js_vars.History[x[row]].length;
+		for (var i = 0; i < rowlength ; i++ ) {
+			if (x[row] == 0) {
+				var td = document.createElement('td');
+				td.className = "History_title";
+				td.innerHTML = js_vars.History[x[row]][i];
+			}
+			else {
+				var td = document.createElement('td');
+				td.className = "HistoryRound_cell";
+				if (i % 5 == 1) {
+					if (js_vars.History[x[row]][i] == 1) {
+						td.className += " ChooseC_1";
+						td.innerHTML =  "Y";
+					}
+					else if (js_vars.History[x[row]][i] == 0) {
+						td.className += " ChooseD_0";
+						td.innerHTML =  "X";
+					}
+				}
+				<!-- else if ( i % 5 == 2) { -->
+					<!-- if (js_vars.History[x[row]][i-1] == 1) { -->
+						<!-- td.className += " ChooseC_1"; -->
+					<!-- } -->
+					<!-- else if (js_vars.History[x[row]][i-1] == 0) { -->
+						<!-- td.className += " ChooseD_0"; -->
+					<!-- } -->
+					<!-- td.innerHTML = js_vars.History[x[row]][i] ; -->
+				<!-- } -->
+				else if ( i % 5 == 2 && x[row]== js_vars.MyID) {
+					td.className += " stage1";
+					td.innerHTML = js_vars.History[x[row]][i] ;
+				}
+				else if ( i % 5 == 3 && x[row]== js_vars.MyID) {
+					td.className += " stage2";
+					td.innerHTML = js_vars.History[x[row]][i] ;
+				}
+				else {
+					td.innerHTML = js_vars.History[x[row]][i] ;
+				}
+			
+			}
+			tr.appendChild(td);
+		}
+		tbl.appendChild(tr);
+		
+	}
+	
+	<!-- Remember the lottery number is a new tr -->
+	var tr = document.createElement('tr');
+	var rowlength = js_vars.History[js_vars.Faction_Number_minus1+2].length;
+	for ( i = 1; i < rowlength; i++ ) {
+		var td = document.createElement('td');
+		td.className = "DiceLabel";
+		td.colSpan = "5";
+		td.innerHTML = js_vars.History[js_vars.Faction_Number_minus1+2][i];
+		tr.appendChild(td);
+	}	
+	tbl.appendChild(tr);
+	
+	element.appendChild(tbl);
+}
+
+function update_ToBeDecided1() {
+	var tgt = document.getElementById("ToBeDecided1");
+	tgt.className = tgt.className.replace( /(?:^|\s)Me(?!\S)/g , '' )
+	tgt.className = tgt.className.replace( /(?:^|\s)Me_emphasize(?!\S)/g , '' )
+	
+	<!-- tgt.classList.remove("Me"); -->
+	<!-- tgt.classList.remove("Me_emphasize") -->
+	if (js_vars.Choice == 1 ) {
+		tgt.className += " ChooseC_1";
+		tgt.innerHTML = "Y";
+	}
+	else if (js_vars.Choice == 0 ) {
+		tgt.className += " ChooseD_0";
+		tgt.innerHTML = "X";
+	}
+	}
+	
+function update_ToBeDecided3() {		
+	var tgt = document.getElementById("ToBeDecided3");
+	tgt.className = tgt.className.replace( /(?:^|\s)Me(?!\S)/g , '' )
+	tgt.className = tgt.className.replace( /(?:^|\s)Me_emphasize(?!\S)/g , '' )
+	tgt.className += " stage2";
+	<!-- tgt.classList.remove("Me"); -->
+	<!-- tgt.classList.remove("Me_emphasize") -->
+	tgt.innerHTML = js_vars.Effort;
+	
+	var pay = document.getElementsByClassName('CurrentRound_cell RightBorder Me')[0];
+	pay.innerHTML = js_vars.Payoff - js_vars.Effort;
+
+}
+// Functions for the calculator button 
+function Calculator() {
+    // get the calculator and the current table
+    var myCalculator = document.getElementById("calculator");
+    var CurrentTable = document.getElementById("current_table"	);
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + "C,";
+		// get the current value of the display properties
+    var displaySetting = myCalculator.style.display;
+    var display2 = CurrentTable.style.display;
+
+    // also get the calculator button, so we can change what it says
+    var CalculatorButton = document.getElementById('CalculatorButton');
+
+    // now toggle the calculator and the button text, depending on current state
+    if (displaySetting == 'table' && display2 == 'table') {
+      // calculator is visible. hide it
+      myCalculator.style.display = 'none';
+      CurrentTable.style.display = 'table';
+      // change button text
+      CalculatorButton.innerHTML = 'Calculator';
+    }
+    else
+	if  (displaySetting == 'none' && display2 == 'table') {
+      // calculator is hidden. show it
+      myCalculator.style.display = 'table';
+      CurrentTable.style.display = 'table';
+      // change button text
+      CalculatorButton.innerHTML = 'Hide';
+    }
+  }
+
+// Functions for the calculator (cell innerhtml update)
+
+
+for (var id = 1; id < js_vars.Faction_Number_minus1+2 ; id++ ) {
+
+	// create null variables 
+	eval("var choice_" + String(id) + " = null ;");
+	eval("var return_" + String(id) + " = null ;");
+	eval("var buttonClicked_" + String(id) + " = null ;");
+	
+	// define the function that highlights each button
+}
+
+function highlight(element) {	
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',' + String(element.id);
+	// A condition to see which row the clicked element is in 
+	if (element.id.includes("1")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_1 != null) {
+            buttonClicked_1.style.color = "grey";
+			buttonClicked_1.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_1 = element;
+      buttonClicked_1.style.color = "black";
+      buttonClicked_1.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_1 = buttonClicked_1.value;
+	  }
+	else if (element.id.includes("2")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_2 != null) {
+            buttonClicked_2.style.color = "grey";
+			buttonClicked_2.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_2 = element;
+      buttonClicked_2.style.color = "black";
+      buttonClicked_2.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_2 = buttonClicked_2.value;
+	  }
+	else if (element.id.includes("3")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_3 != null) {
+            buttonClicked_3.style.color = "grey";
+			buttonClicked_3.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_3 = element;
+      buttonClicked_3.style.color = "black";
+      buttonClicked_3.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_3 = buttonClicked_3.value;
+	  }  
+	else if (element.id.includes("4")) {
+		// if some button in this row has been clicked, change the previously clicked button to grey 
+		if (buttonClicked_4 != null) {
+            buttonClicked_4.style.color = "grey";
+			buttonClicked_4.style.fontWeight =  "normal";
+		  }
+	  // for the clicked button, record which button was clicked 
+      buttonClicked_4 = element;
+      buttonClicked_4.style.color = "black";
+      buttonClicked_4.style.fontWeight =  "1000";
+	  // change the corresponding row of choice to the new value; re-run the production,return, power functions
+      choice_4 = buttonClicked_4.value;
+	  } 
+      <!-- total_club_production(); -->
+	  calc_returns();
+	  
+	  
+	  calc_new_powers();
+		
+}  
+  
+function total_club_production(total_C) {
+  var b = js_vars.b;
+  var kappa = js_vars.kappa ;
+  var X = total_C; 
+  var X0 = js_vars.N * js_vars.x0; 
+  
+  return   b * X**kappa / (X**kappa + X0**kappa) 
+  }
+
+var c = js_vars.c;
+var r_0 = js_vars.r_0;
+
+
+function calc_returns() {
+	var power_1 = parseFloat(document.getElementById("current_power_1").innerHTML)/100;
+	var power_2 = parseFloat(document.getElementById("current_power_2").innerHTML)/100;
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		var power_3 = parseFloat(document.getElementById("current_power_3").innerHTML)/100;
+		var power_4 = parseFloat(document.getElementById("current_power_4").innerHTML)/100;
+
+	}
+	
+	if (js_vars.Faction_Number_minus1+1 == 2) {
+		// if Faction number ==2
+		if (choice_1 != null && choice_2 != null){
+		  if (choice_1 == 'X' && choice_2 == 'X'){
+			return_1 = r_0;
+			return_2 = r_0;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'Y'){
+			return_1 = r_0;
+			return_2 = r_0 + total_club_production(1) - c;
+		  }
+		 else if (choice_1 == 'Y' && choice_2 == 'X'){
+			return_1 = r_0 + total_club_production(1) - c;
+			return_2 = r_0;
+		  }
+		 else {
+			return_1 = r_0 + power_1 * total_club_production(2) - c;
+			return_2 = r_0 + power_2 * total_club_production(2) - c;
+		 
+		  }
+		  
+		  var returns = [return_1, return_2];
+		  for (let i = 0; i < 2; i++) {
+			document.getElementById("return_"+String(i+1)).innerHTML = Math.round(returns[i]);
+			update_cells_i(i+1, Math.round(returns[i]));
+		  }
+				  
+		}
+	}
+	else {
+		// if Faction number == 4 
+		if (choice_1 != null && choice_2 != null && choice_3 != null && choice_4 != null){
+			// worry nested loops are too ugly
+		  if (choice_1 == 'X' && choice_2 == 'X' && choice_3 == 'X' && choice_4 == 'X'){
+			return_1 = r_0;
+			return_2 = r_0;
+			return_3 = r_0;
+			return_4 = r_0;
+		  }
+		  // X=1 , no power involved
+		  else if (choice_1 == 'X' && choice_2 == 'X' && choice_3 == 'X' && choice_4 == 'Y'){
+			return_1 = r_0;
+			return_2 = r_0;
+			return_3 = r_0;
+			return_4 = r_0 + total_club_production(1) - c;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'X' && choice_3 == 'Y' && choice_4 == 'X'){
+			return_1 = r_0;
+			return_2 = r_0;
+			return_3 = r_0 + total_club_production(1) - c;
+			return_4 = r_0;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'Y' && choice_3 == 'X' && choice_4 == 'X'){
+			return_1 = r_0;
+			return_2 = r_0 + total_club_production(1) - c;
+			return_3 = r_0;
+			return_4 = r_0;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'X' && choice_3 == 'X' && choice_4 == 'X'){
+			return_1 = r_0 + total_club_production(1) - c;
+			return_2 = r_0;
+			return_3 = r_0;
+			return_4 = r_0;
+		  }
+		  // X=2 
+		  else if (choice_1 == 'Y' && choice_2 == 'Y' && choice_3 == 'X' && choice_4 == 'X'){
+			total_power = power_1 + power_2;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_1 = 1
+				power_2 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power * 100)/100 * total_club_production(2) - c;
+			return_2 = r_0 + Math.round(power_2/ total_power * 100)/100 * total_club_production(2) - c;
+			return_3 = r_0;
+			return_4 = r_0;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'X' && choice_3 == 'Y' && choice_4 == 'X'){
+			total_power = power_1 + power_3;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_1 = 1
+				power_3 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power*100)/100 * total_club_production(2) - c;
+			return_2 = r_0 ;
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(2) - c;
+			return_4 = r_0;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'X' && choice_3 == 'X' && choice_4 == 'Y'){
+			total_power = power_1 + power_4;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_1 = 1
+				power_4 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power*100)/100 * total_club_production(2) - c;
+			return_2 = r_0 ;
+			return_3 = r_0 ;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(2) - c;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'Y' && choice_3 == 'Y' && choice_4 == 'X'){
+		    total_power = power_2 + power_3;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_2 = 1
+				power_3 = 1
+			}			
+			return_1 = r_0;
+			return_2 = r_0 + Math.round(power_2/ total_power*100)/100 * total_club_production(2) - c;
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(2) - c;
+			return_4 = r_0;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'Y' && choice_3 == 'X' && choice_4 == 'Y'){
+		    total_power = power_2 + power_4;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_2 = 1
+				power_4 = 1
+			}
+			return_1 = r_0;
+			return_2 = r_0 + Math.round(power_2/ total_power*100)/100 * total_club_production(2) - c;
+			return_3 = r_0 ;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(2) - c;
+		  }
+		  else if (choice_1 == 'X' && choice_2 == 'X' && choice_3 == 'Y' && choice_4 == 'Y'){
+		    total_power = power_4 + power_3;
+			if (total_power == 0 ) {
+				total_power = 2
+				power_3 = 1
+				power_4 = 1
+			}
+			return_1 = r_0;
+			return_2 = r_0 ;
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(2) - c;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(2) - c;
+		  }
+		  // X=3
+		  else if (choice_1 == 'X' && choice_2 == 'Y' && choice_3 == 'Y' && choice_4 == 'Y'){
+		    total_power = power_4 + power_3 + power_2;
+			if (total_power == 0 ) {
+				total_power = 3
+				power_4 = 1
+				power_3 = 1
+				power_2 = 1
+			}
+			return_1 = r_0;
+			return_2 = r_0 + Math.round(power_2/ total_power*100)/100 * total_club_production(3) - c;
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(3) - c;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(3) - c;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'X' && choice_3 == 'Y' && choice_4 == 'Y'){
+		    total_power = power_4 + power_3 + power_1;
+			if (total_power == 0 ) {
+				total_power = 3
+				power_4 = 1
+				power_3 = 1
+				power_1 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power*100)/100 * total_club_production(3) - c;
+			return_2 = r_0 ; 
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(3) - c;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(3) - c;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'Y' && choice_3 == 'X' && choice_4 == 'Y'){
+		    total_power = power_4 + power_2 + power_1;
+			if (total_power == 0 ) {
+				total_power = 3
+				power_4 = 1
+				power_2 = 1
+				power_1 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power*100)/100 * total_club_production(3) - c;
+			return_2 = r_0 + Math.round(power_2/ total_power*100)/100 * total_club_production(3) - c; 
+			return_3 = r_0 ;
+			return_4 = r_0 + Math.round(power_4/ total_power*100)/100 * total_club_production(3) - c;
+		  }
+		  else if (choice_1 == 'Y' && choice_2 == 'Y' && choice_3 == 'Y' && choice_4 == 'X'){
+		    total_power = power_3 + power_2 + power_1;
+			if (total_power == 0 ) {
+				total_power = 3
+				power_1 = 1
+				power_3 = 1
+				power_2 = 1
+			}
+			return_1 = r_0 + Math.round(power_1/ total_power*100)/100 * total_club_production(3) - c;
+			return_2 = r_0 + Math.round(power_2/ total_power*100)/100 * total_club_production(3) - c; 
+			return_3 = r_0 + Math.round(power_3/ total_power*100)/100 * total_club_production(3) - c;
+			return_4 = r_0 ;
+		  }
+		  else  {
+			return_1 = r_0 + power_1 * total_club_production(4) - c;
+			return_2 = r_0 + power_2 * total_club_production(4) - c; 
+			return_3 = r_0 + power_3 * total_club_production(4) - c;
+			return_4 = r_0 + power_4 * total_club_production(4) - c;
+		  }
+		  var returns = [return_1, return_2, return_3, return_4];
+		  for (let i = 0; i < 4; i++) {
+			document.getElementById("return_"+String(i+1)).innerHTML = Math.round(returns[i]);
+			update_cells_i(i+1, Math.round(returns[i]));
+		  }
+				  
+		 		}
+	}
+}
+  
+const fixed_ratio = js_vars.fixed_ratio;  
+
+
+function EffortUpdate(ele) {
+		var payoff_cell = document.getElementById(ele.id.replace("myRange_","payoff_cell_"));
+		<!-- var error =  document.getElementById(ele.id.replace("myRange_","error_")); -->
+		var tempElem = document.getElementById('id_calculatorHistory');
+		if ( ele.value >= 0 && ele.value <= parseInt(ele.max) ) {
+			payoff_cell.innerHTML = ele.max - ele.value;
+		}
+		else if ( ele.value < 0)  {
+			<!-- error.innerHTML = "Must be an integer between 0 and "+String(ele.max)+"."; -->
+			ele.focus();
+			ele.value = 0 ;
+			payoff_cell.innerHTML = ele.max - ele.value;
+		}
+		else if ( ele.value  > parseInt(ele.max))  {
+			<!-- error.innerHTML = "Must be an integer between 0 and "+String(ele.max)+"."; -->
+			ele.focus();
+			ele.value = parseInt(ele.max) ;
+			payoff_cell.innerHTML = ele.max - ele.value;
+		}
+		calc_new_powers();
+		tempElem.value = tempElem.value + ','+ele.id.replace("myRange_","E")+',' + String( ele.value);
+	
+}
+
+function update_cells_i(i, return_i ){
+	
+	if (js_vars.Exo) {
+	// if it is the exogeneous case: 
+		var effort_i = Math.round(fixed_ratio * return_i);
+		document.getElementById("effort_"+String(i)).innerHTML = effort_i ;
+		document.getElementById("payoff_"+String(i)).innerHTML = return_i - effort_i;	
+	}
+	else {
+	// if it is endogenous power revisoin
+		var slider = document.getElementById("myRange_"+String(i));
+		var payoff_c = document.getElementById("payoff_cell_"+String(i));
+		var error =  document.getElementById("error_"+String(i));
+
+		var tempElem = document.getElementById('id_calculatorHistory');
+
+		slider.max = return_i ;
+		if ( slider.value != '' &&  slider.value <= parseInt(return_i) ) {
+			payoff_c.innerHTML = return_i - slider.value;
+		    tempElem.value = tempElem.value + ',C'+String(i)+',' + String( return_i);
+		}
+		else if ( slider.value != '' &&  slider.value > parseInt(return_i) ) {
+			
+			slider.value = parseInt(return_i);
+			payoff_c.innerHTML = return_i - slider.value;
+			tempElem.value = tempElem.value + ',C'+String(i)+',' + String( return_i);
+		}
+		else if ( slider.value != '' &&  slider.value < 0 ) {
+			slider.value = 0;
+			payoff_c.innerHTML = return_i - slider.value;
+			tempElem.value = tempElem.value + ',C'+String(i)+',' + String( return_i);
+		}
+	}
+	 
+}
+
+
+const epsilon = js_vars.epsilon;  
+ 
+function calc_new_powers() {
+	// Firstly, obtain the efforts
+	if (js_vars.Exo ) {  // since not going to run exo case, not change here
+		if (js_vars.Faction_Number_minus1+1 == 2) {
+			effort_1 = Math.round(parseInt(document.getElementById("return_1").innerHTML)*js_vars.fixed_ratio);
+			effort_2 = Math.round(parseInt(document.getElementById("return_2").innerHTML)*js_vars.fixed_ratio);
+		}
+		else {
+			effort_1 = Math.round(parseInt(document.getElementById("return_1").innerHTML)*js_vars.fixed_ratio);
+			effort_2 = Math.round(parseInt(document.getElementById("return_2").innerHTML)*js_vars.fixed_ratio);
+			effort_3 = Math.round(parseInt(document.getElementById("return_3").innerHTML)*js_vars.fixed_ratio);
+			effort_4 = Math.round(parseInt(document.getElementById("return_4").innerHTML)*js_vars.fixed_ratio);
+
+		}
+	}
+	else {
+	// This is when it is the endogenous case 
+		power_s1 = 1 - epsilon + epsilon*document.getElementById("current_power_1").innerHTML/100;
+		power_s2 = 1 - epsilon + epsilon*document.getElementById("current_power_2").innerHTML/100;
+		
+		
+		eff_s1 = parseInt(document.getElementById("myRange_1").value);
+		eff_s2 = parseInt(document.getElementById("myRange_2").value);
+		
+		effort_1 = power_s1 * eff_s1;
+		effort_2 = power_s2 * eff_s2 ;		 
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		power_s3 = 1 - epsilon + epsilon*document.getElementById("current_power_3").innerHTML/100;
+		power_s4 = 1 - epsilon + epsilon*document.getElementById("current_power_4").innerHTML/100;
+		
+		eff_s3 = parseInt(document.getElementById("myRange_3").value);
+		eff_s4 = parseInt(document.getElementById("myRange_4").value);
+		
+		effort_3 = power_s3 * eff_s3;
+		effort_4 = power_s4 * eff_s4;		 
+	}
+	}
+	// Secondly, calculate the new power
+	if (js_vars.Faction_Number_minus1+1 == 2) {
+		var	total_effort = effort_1 + effort_2;
+		 
+		 if  (!isNaN(total_effort) && total_effort !== 0 ) {
+		 var new_power_1 = effort_1 / total_effort *100 ;
+		 var new_power_2 = effort_2 / total_effort *100 ;
+		 document.getElementById("new_power_1").innerHTML = new_power_1.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = new_power_2.toFixed(0);
+		 }
+		 else if  (!isNaN(total_effort) && total_effort == 0 ) {
+		 equal = 1/2 * 100 ;
+		 document.getElementById("new_power_1").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = equal.toFixed(0);
+		 }
+	}
+	else {
+		 var	total_effort = effort_1 + effort_2 + effort_3 + effort_4;
+		 
+		 if  (!isNaN(total_effort) && total_effort !== 0 ) {
+		 var new_power_1 = effort_1 / total_effort *100 ;
+		 var new_power_2 = effort_2 / total_effort *100 ;
+		 var new_power_3 = effort_3 / total_effort *100 ;
+		 var new_power_4 = effort_4 / total_effort *100 ;
+		 document.getElementById("new_power_1").innerHTML = new_power_1.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = new_power_2.toFixed(0);
+		 document.getElementById("new_power_3").innerHTML = new_power_3.toFixed(0);
+		 document.getElementById("new_power_4").innerHTML = new_power_4.toFixed(0);
+		}
+		 else if  (!isNaN(total_effort) && total_effort == 0 ) {
+		 equal = 1/4 * 100 ;
+		 document.getElementById("new_power_1").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_2").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_3").innerHTML = equal.toFixed(0);
+		 document.getElementById("new_power_4").innerHTML = equal.toFixed(0);
+		 }
+	}
+	
+	  
+}	
+	
+function import_original_power(){
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',O';
+
+	document.getElementById("current_power_1").innerHTML = js_vars.Current[1][0];
+	document.getElementById("current_power_2").innerHTML =  js_vars.Current[2][0];
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		document.getElementById("current_power_3").innerHTML = js_vars.Current[3][0];
+		document.getElementById("current_power_4").innerHTML =  js_vars.Current[4][0];
+	}
+	clear_all();
+}
+
+function import_to_power(){
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',P' ;
+
+	document.getElementById("current_power_1").innerHTML =  document.getElementById("new_power_1").innerHTML ;
+	document.getElementById("current_power_2").innerHTML = document.getElementById("new_power_2").innerHTML;
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+		document.getElementById("current_power_3").innerHTML =  document.getElementById("new_power_3").innerHTML ;
+		document.getElementById("current_power_4").innerHTML = document.getElementById("new_power_4").innerHTML;
+	}
+	clear_all();
+}
+
+
+
+function clear_all() {
+	var tempElem = document.getElementById('id_calculatorHistory');
+	tempElem.value = tempElem.value + ',cl' ;
+
+	// clear the choice
+	if (buttonClicked_1!=null) {
+	buttonClicked_1.style.color = "grey";
+	buttonClicked_1.style.fontWeight =  "normal";
+	}
+	if (buttonClicked_2!= null ) {
+	buttonClicked_2.style.color = "grey";
+	buttonClicked_2.style.fontWeight =  "normal";
+	}
+
+	document.getElementById("return_1").innerHTML = null ;
+	document.getElementById("return_2").innerHTML = null ;
+	choice_1 = null;
+	choice_2 = null;
+
+	document.getElementById("new_power_1").innerHTML = null ;
+	document.getElementById("new_power_2").innerHTML = null ;
+
+	effort_1 = null; 
+	effort_2 = null;
+	
+	if (!js_vars.Exo) {
+	document.getElementById("myRange_1").value = "";
+	document.getElementById("myRange_2").value = "";
+	document.getElementById("myRange_1").max = 0;
+	document.getElementById("myRange_2").max = 0;
+	document.getElementById("payoff_cell_1").innerHTML = null ;
+	document.getElementById("payoff_cell_2").innerHTML = null ;
+
+
+	}
+	else {
+		document.getElementById("effort_1").innerHTML = null ;
+		document.getElementById("effort_2").innerHTML = null ;
+		document.getElementById("payoff_1").innerHTML = null ;
+		document.getElementById("payoff_2").innerHTML = null ;
+	}
+	
+
+
+	if (js_vars.Faction_Number_minus1+1 == 4) {
+	
+		if (buttonClicked_3!=null) {
+		buttonClicked_3.style.color = "grey";
+		buttonClicked_3.style.fontWeight =  "normal";
+		}
+		if (buttonClicked_4!= null ) {
+		buttonClicked_4.style.color = "grey";
+		buttonClicked_4.style.fontWeight =  "normal";
+		}
+
+		document.getElementById("return_3").innerHTML = null ;
+		document.getElementById("return_4").innerHTML = null ;
+		choice_3 = null;
+		choice_4 = null;
+
+		document.getElementById("new_power_3").innerHTML = null ;
+		document.getElementById("new_power_4").innerHTML = null ;
+
+		effort_3 = null; 
+		effort_4 = null;
+		if (!js_vars.Exo) {
+		document.getElementById("myRange_3").value = "";
+		document.getElementById("myRange_4").value = "";
+		document.getElementById("myRange_3").max = 0;
+		document.getElementById("myRange_4").max = 0;
+		document.getElementById("payoff_cell_3").innerHTML = null ;
+		document.getElementById("payoff_cell_4").innerHTML = null ;
+
+		
+		}
+		else {
+		document.getElementById("effort_3").innerHTML = null ;
+		document.getElementById("effort_4").innerHTML = null ;
+		document.getElementById("payoff_3").innerHTML = null ;
+		document.getElementById("payoff_4").innerHTML = null ;
+
+		}
+
+	}
+	
+}
+
+
+function myBelief(ele) {
+	var belief_Y = document.getElementById(ele.id.replace("X","Y"));
+	if ( ele.value >= 0 && ele.value <= 100 ) {
+		belief_Y.value = 100 - ele.value;
+		var error = document.getElementById(ele.id.replace("X","_error"));
+
+		error.innerHTML = ""
+	}
+	else {
+		var error = document.getElementById(ele.id.replace("X","_error"));
+		error.innerHTML = "Must be an integer between 0 and 100."
+		ele.focus()
+		return false
+	}
+}
+
+
+function answerTermination(percent) {
+
+	var terminationProb = Math.round(100*(10-{{ CutoffRoll|json }}+1)/10);
+
+	if(percent == terminationProb){
+		updateText('quizMessage','Correct.');
+		show('NextButton');
+	} else {
+
+		updateText('quizMessage','That is incorrect. Please try again. Hint: The match ends if the computer rolls a {{ CutoffRoll|json }}.');
+
+		hide('NextButton');
+	}
+
+};
+
+function answerContinuation(percent) {
+
+	var continuationProb = Math.round(100*({{ CutoffRoll|json }}-1)/10);
+
+	if(percent == continuationProb){
+		updateText('quizMessage','Correct.');
+		show('NextButton');
+		var tempElem = document.getElementById('id_testingHistory');
+		tempElem.value = tempElem.value + "T,";
+	} else {
+
+		updateText('quizMessage','That is incorrect. Please try again. Hint: The match continues if the computer rolls a number less than {{ CutoffRoll|json }}.');
+
+		hide('NextButton');
+		var tempElem = document.getElementById('id_testingHistory');
+		tempElem.value = tempElem.value + "F,";
+	}
+
+};
+
+
+function correctAnswer(text) {
+	updateText('quizMessage',text);
+	show('NextButton');
+	var tempElem = document.getElementById('id_testingHistory');
+	tempElem.value = tempElem.value + "T,";
+
+};
+
+function incorrectAnswer(text) {
+	updateText('quizMessage',text);
+	hide('NextButton');
+	var tempElem = document.getElementById('id_testingHistory');
+	tempElem.value = tempElem.value + "F,";
+};
+
+    function showText(target, someText) {
+        var x = document.getElementById(target);
+        x.style.display = "block";
+        x.innerHTML = someText;
+    };
+
+    function updateText(target, someText) {
+        var x = document.getElementById(target);
+        x.innerHTML = someText;
+    };
+
+    function hide(target) {
+        var x = document.getElementById(target);
+        x.style.display = "none";
+    };
+
+    function disableButton(target) {
+        var x = document.getElementById(target);
+        x.style.borderColor = "gray";
+        x.style.backgroundColor = "gray";
+        x.style.pointerEvents = "none";
+    };
+
+    function enableButton(target) {
+        var x = document.getElementById(target);
+        x.style.borderColor = "#1e8f27";
+        x.style.backgroundColor = "#1e8f27";
+        x.style.pointerEvents = "all";
+    };
+
+    function disableScroll(target) {
+        var x = document.getElementById(target);
+        x.style.overflowX = 'hidden';
+    };
+
+    function enableScroll(target) {
+        var x = document.getElementById(target);
+        x.style.overflowX = 'scroll';
+        {#x.style.direction = 'rtl';#}
+    };
+
+    function show(target) {
+        var x = document.getElementById(target);
+		var temp = document.getElementById('id_testingHistory');
+        if (x.style.display == "none") {
+			x.style.display = "block";
+			temp += "C,";
+		}
+		else {
+			x.style.display = "none";
+			temp += "H,";
+		}
+    };
+	function showHide(ele,target) {
+		ele.style.display = "none";
+        var x = document.getElementById(target);
+		var temp = document.getElementById('id_testingHistory');
+        if (x.style.display == "none") {
+			x.style.display = "block";
+			temp += "C,";
+		}
+		else {
+			x.style.display = "none";
+			temp += "H,";
+		}
+    };
+
+    function showInline(target) {
+        var x = document.getElementById(target);
+        x.style.display = "inline-block";
+    };
+
+    function showFlex(target) {
+        var x = document.getElementById(target);
+        x.style.display = "flex";
+    };
+
+    function deleteElement(elementID) {
+        var element = document.getElementById(elementID);
+        element.parentNode.removeChild(element);
+    };
+
+
+function SubmitFunction() {
+	<!-- # submit all forms; validify each entry  -->
+	var x = document.getElementsByClassName('quiz')
+	var tempElem = document.getElementById('id_testingHistory');
+	for (let i = 0; i < x.length; i++) {
+		var error_message = document.getElementById(x[i].id + "_error")
+		if ( x[i].value == "" )  {
+		  error_message.innerHTML = "This field is required."
+		  x[i].focus()
+		  
+		  tempElem.value = tempElem.value + "R,";
+		  return false
+		}
+		else if ( x[i].value == js_vars[x[i].id])  {
+		  error_message.innerHTML = "This is correct."
+		  tempElem.value = tempElem.value + "T,"+ String(i) +",";
+		}
+		else {
+		  error_message.innerHTML = js_vars.error_message+ js_vars[x[i].id]
+		  x[i].focus()
+		  tempElem.value = tempElem.value + "F, Q" + String(i) + "," + String(x[i].value) + ",";
+		  return false
+		}
+	}
+	<!-- # if all correct, show the "Continue" button -->
+	show('NextButton');
+
+}
+
+</script>
