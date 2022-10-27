@@ -1,26 +1,39 @@
 <div class="dropdown">
-    <button id="myBtn" class="dropbtn" type="button">Payoff Calculator</button>
+    <button id="myBtn" class="dropbtn" type="button" onclick="showCalculator()">Payoff Calculator</button>
     <div id="myDropdown" class="dropdown-content">
-        <a># tokens I move to Group Account <input type="number" id="calc-contribution" max="25" min="0"></a>
-        <a># tokens others move Group Account <input type="number" id="calc-groupOther" max="75" min="0"></a>
-        <a>My earnings <span id="projection"></span></a>
+        <a># tokens I move to <i>Group Account</i>: <input type="number" id="calc-contribution" max="25" min="0"></a>
+        <a># tokens others move <i>Group Account</i>: <input type="number" id="calc-groupOther" max="75" min="0"></a>
+        <a style="text-decoration: underline">My <i>Private Account</i> earnings: <span id="private-earn"></span></a>
+        <a style="text-decoration: underline">My <i>Group Account</i> earnings: <span id="group-earn"></span> </a>
+        <a style="font-weight: bold">My total earnings: <span id="projection"></span></a>
     </div>
 </div>
 
 <script>
     // Get the button, and when the user clicks on it, execute myFunction
-    document.getElementById("myBtn").onclick = function () {
-        showCalculator()
-    };
+    // document.getElementById("myBtn").onclick = function () {
+    //     showCalculator()
+    // };
 
     /* myFunction toggles between adding and removing the show class, which is used to hide and show the dropdown content */
     function showCalculator() {
         document.getElementById("myDropdown").classList.toggle("show");
     }
 
+  //   function showCalculator() {
+  // var x = document.getElementById("myDropdown");
+  // if (x.style.display === "none") {
+  //   x.style.display = "block";
+  // } else {
+  //   x.style.display = "none";
+  // }
+
+
     let contributionInput = document.getElementById('calc-contribution');
     let groupOthersInput = document.getElementById('calc-groupOther');
     let projectionEle = document.getElementById('projection');
+    let privateEle = document.getElementById('private-earn');
+    let groupEle = document.getElementById('group-earn');
 
     function recalc() {
         let contribution = parseInt(contributionInput.value);
@@ -29,11 +42,16 @@
         // isNaN is the javascript function that checks whether the value is a valid
         // number. need to check this because the field might be empty or
         // the user might have typed something other than a number.
-        if (isNaN(amount) || isNaN(numYears)) {
+        if (isNaN(contribution) || isNaN(groupOthers)) {
             projectionEle.innerText = '';
         } else {
             let projection = js_vars.Endowment - contribution + js_vars.MPCR * (contribution + groupOthers);
-            projectionEle.innerText = projection;
+            // let projection = contribution + groupOthers;
+            projectionEle.innerText = Math.round(projection*100.0)/100.0;
+            let private_earn = js_vars.Endowment - contribution;
+            privateEle.innerText= private_earn;
+            let group_earn= js_vars.MPCR * (contribution + groupOthers);
+            groupEle.innerText= Math.round(group_earn*100.0)/100.0
         }
     }
 
@@ -49,7 +67,7 @@
         padding: 16px;
         font-size: 16px;
         border: none;
-        border-radius: 15px;
+        border-radius: 0.5rem;
         cursor: pointer;
     }
 
@@ -69,6 +87,7 @@
         width: 350px;
         overflow: auto;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        border-radius: 0.5rem;
     }
 
     .dropdown-content a {
@@ -77,7 +96,6 @@
         text-decoration: none;
         display: block;
     }
-
 
 
     .show {
