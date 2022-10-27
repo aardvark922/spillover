@@ -1,11 +1,11 @@
 <div class="dropdown">
     <button id="myBtn" class="dropbtn" type="button" onclick="showCalculator()">Payoff Calculator</button>
     <div id="myDropdown" class="dropdown-content">
-        <a># tokens I move to <i>Group Account</i>: <input type="number" id="calc-contribution" max="25" min="0"></a>
-        <a># tokens others move <i>Group Account</i>: <input type="number" id="calc-groupOther" max="75" min="0"></a>
+        <a># tokens I move to the <i>Group Account</i>: <input type="number" id="calc-contribution" max="25" min="0"></a>
+        <a># tokens the other 3 move to the <i>Group Account</i>: <input type="number" id="calc-groupOther" max="75" min="0"></a>
         <a style="text-decoration: underline">My <i>Private Account</i> earnings: <span id="private-earn"></span></a>
         <a style="text-decoration: underline">My <i>Group Account</i> earnings: <span id="group-earn"></span> </a>
-        <a style="font-weight: bold">My total earnings: <span id="projection"></span></a>
+        <a style="font-weight: bold">My total earnings: <span id="projection" style="font-size: larger"></span> </a>
     </div>
 </div>
 
@@ -64,7 +64,7 @@
     .dropbtn {
         background-color: cornflowerblue;
         color: white;
-        padding: 16px;
+        padding: 10px;
         font-size: 16px;
         border: none;
         border-radius: 0.5rem;
@@ -84,15 +84,16 @@
         display: none;
         position: absolute;
         background-color: #f9f9f9;
-        width: 350px;
+        width: 430px;
         overflow: auto;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         border-radius: 0.5rem;
+        line-height: 75%;
     }
 
     .dropdown-content a {
         color: black;
-        padding: 12px 16px;
+        padding: 12px 12px;
         text-decoration: none;
         display: block;
     }
