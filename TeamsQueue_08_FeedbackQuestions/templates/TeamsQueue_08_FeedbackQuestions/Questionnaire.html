@@ -1,0 +1,74 @@
+{% extends "DynamicQueue_08_FeedbackQuestions/myPage.html" %}
+{% load staticfiles otree %}
+
+
+{% block scripts %}
+
+    <!-- define a script -->
+    <script>
+
+
+
+
+    </script>
+
+{% endblock %}
+
+
+{% block title %}
+
+    Questionnaire
+
+{% endblock %}
+
+{% block content %}
+
+    <p style="text-align: center">
+        Your feedback about the experiment is valuable to us.
+        You may skip questions, however the survey is anonymous and none of your
+        answers are linked to you.
+    </p>
+
+    <div class="row">
+        <div class="column" style="background-color:white; text-align: center">
+            <p style="text-align: center">
+                {% formfield player.understandingSelect %}
+            </p>
+
+            <p style="text-align: center">
+                {% formfield player.explainedText %}
+            </p>
+
+            <p style="text-align: center">
+                {% formfield player.strategy0Text %}
+            </p>
+
+            <p style="text-align: center">
+                {% formfield player.strategy1Text %}
+            </p>
+
+        </div>
+
+        <div class="column" style="background-color:white; text-align: center">
+            <p style="text-align: center">
+                {% formfield player.strategy2Text %}
+            </p>
+
+            <p style="text-align: center">
+                {% formfield player.strategy3Text %}
+            </p>
+
+
+            <p style="text-align: center">
+                {% formfield player.strategy4Text %}
+            </p>
+
+            <p style="text-align: center">
+                <button class="otree-btn-next btn btn-primary" id="NextButton" style="display:inline-block;">Submit</button>
+            </p>
+        </div>
+    </div>
+
+
+
+{% endblock %}

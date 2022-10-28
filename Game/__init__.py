@@ -132,7 +132,7 @@ class Player(BasePlayer):
     contribution = models.IntegerField(
         min=0,
         max=C.ENDOWMENT,
-        label="Token you choose to move to the Group Account:"
+        label="Token(s) you choose to move to the Group Account:"
     )
     # record ss's payoff from PGG
     pgg_earning = models.FloatField()

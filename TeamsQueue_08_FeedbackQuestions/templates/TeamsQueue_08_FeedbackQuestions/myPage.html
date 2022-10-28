@@ -1,0 +1,81 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block app_styles %}
+
+<style type="text/css">
+
+
+
+.otree-body {
+
+    font-family: Proxima Nova;
+    font-size: 18px;
+    position: absolute;
+    width: 1678px;
+    height: 1048px;
+    max-width: 1678px;
+    max-height: 1048px;
+    border: solid darkgreen;
+}
+
+.otree-title {
+    background: white;
+    font-family: Proxima Nova;
+    text-align: center;
+}
+
+.otree-title.page-header {
+    font-family: Proxima Nova;
+    text-align: center;
+    padding: 0px;
+}
+
+.card-body {
+    background: white;
+    font-family: Proxima Nova;
+    font-size: 18px;
+}
+
+.card.bg-light.instructions{
+    padding: 0;
+    border: none;
+}
+
+.form-control{
+    background-color: #fff3bc;
+    width: 600px;
+    max-width: 600px;
+    display: inline-block;
+}
+
+textarea.form-control {
+    max-width: 600px;
+}
+
+.row {
+    display: flex;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+    flex: 50%;
+    padding: 50px;
+
+}
+
+
+</style>
+
+{% endblock %}
+
+
+
+
+{% block app_scripts %}
+
+<script>
+
+</script>
+
+{% endblock %}

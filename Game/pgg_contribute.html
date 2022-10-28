@@ -1,6 +1,15 @@
-
 <div>
+    <div class="dropdown">
+    <button id="myBtn" class="dropbtn" type="button" onclick="showInstruction()">Rules</button>
+    <div id="pgg-instructions" class="instruction-content">
+        <a><i>At the start of each round, each individual will be endowed with <b>25</b> tokens. In each round, each individual must
+        decide how to divide their tokens between the Private Account and a Group Account. <b>Each person</b> in the group has
+        a Private Account, however, there is only <b>one</b> Group Account for the entire group.</i></a>
+    </div>
+</div>
+    <br>
     <p>
+        <br>
         Your tokens to divide between private account and group account :
         <span style="font-weight: bold">{{ C.ENDOWMENT }}</span>
     </p>
@@ -9,3 +18,34 @@
     {{ formfield 'contribution' }}
 
 </div>
+
+<style>
+    .instruction-pgg{
+        border: 1px solid black;
+        padding: 1px
+    }
+
+        .instruction-content{
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        width: 430px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        border-radius: 0.5rem;
+        line-height: normal;
+    }
+
+    .instruction-content a {
+        color: black;
+        padding: 12px 12px;
+        text-decoration: none;
+        display: block;
+    }
+</style>
+
+<script>
+        function showInstruction() {
+        document.getElementById("pgg-instructions").classList.toggle("show");
+    }
+</script>
