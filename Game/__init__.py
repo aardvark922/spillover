@@ -361,7 +361,7 @@ def get_block_history(player: Player):
     block_history = []
     for b in block:
         block_round = dict(round_number=b.subsession.period, dieroll=b.subsession.dieroll,
-                           pgg_earning=b.pgg_earning, pd_earning=b.pd_earning)
+                           pgg_earning=b.pgg_earning, pd_earning=b.pd_earning, pay_end =b.subsession.round_number in C.PAY_ROUNDS_ENDS,)
         block_history.append(block_round)
     return block_history
 

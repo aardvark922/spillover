@@ -5,16 +5,25 @@
     <tr class="alternateRow">
         <th  style="width: 80px;">Round</th>
       {{ for b in block_history }}
-        <td style="width: 60px;"> {{ b.round_number }} </td>{{endfor}}
+      {{if b.pay_end}}
+        <td style="width: 60px;font-weight: bold"> {{ b.round_number }} </td>
+      {{else}}
+      <td style="width: 60px;"> {{ b.round_number }}
+      {{endif}}
+      {{endfor}}
     </tr>
     </thead>
     <tbody>
 
     <tr>
-      <th>Dieroll</th>
+      <th>Random Number</th>
       {{ for b in block_history }}
       {{if b.dieroll > continuation_chance}}
-        <td > <span style="color: indianred">{{ b.dieroll }}</span> </td>
+      {{if b.pay_end}}
+        <td > <span style="color: indianred;font-weight: bold">{{ b.dieroll }}</span> </td>
+      {{else}}
+      <td > <span style="color: indianred">{{ b.dieroll }}</span> </td>
+      {{endif}}
       {{else}}
       <td ><span style="color: forestgreen">{{ b.dieroll }}</span> </td>
       {{endif}}
