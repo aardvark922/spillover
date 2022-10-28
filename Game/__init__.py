@@ -198,8 +198,10 @@ def creating_session(subsession: Subsession):
             is_pay_round_end = ss.round_number in C.PAY_ROUNDS_ENDS
             if ss.is_pay_relevant and not is_pay_round_end:
                 ss.dieroll = random.randint(1, continuation_chance)
-            else:
+            elif is_pay_round_end:
                 ss.dieroll = random.randint(continuation_chance + 1, 100)
+            else:
+                ss.dieroll=random.randint(1,100)
 
     ##------------------------Code for nested group; i.e PD opponent is a member of PGG---------------##
     if subsession.session.config['same_group'] == 1:
