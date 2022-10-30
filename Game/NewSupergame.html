@@ -1,31 +1,67 @@
 {{ block title }}
-    Match {{ subsession.sg }}
+Match {{ subsession.sg }}
 {{ endblock }}
 {{ block content }}
 <div class="instruction">
 
 
     <p>A new match has started!</p>
+    {{if two_game}}
+    <p>You have been randomly matched with four participants.
+        <br>
+        You will interact with three of them in the Blue Game, and remaining one of them in the Green Game.</p>
+
+    <div class="flex-container">
+        <div class="flex-child magenta" style="background-color: aliceblue">
+            <h5 style="color: darkblue; ">Blue Game</h5>
+            <br>
+            <p>There are four participants in this game, you and the three participants you matched with.</p>
+        </div>
+        <div class="flex-child green" style="background-color: rgba(90,179,113,0.1)">
+            <h5 style="color: darkolivegreen">Green Game</h5>
+            <br>
+            <p>There are two participants in this game, you and the other participant you matched with.</p>
+
+        </div>
     </div>
-    <button class="otree-btn-next btn btn-primary">Next</button>
+    {{endif}}
+</div>
+<br>
+<button class="otree-btn-next btn btn-primary">Next</button>
 <style>
 
-    .instruction{
-text-align: center;
+    .instruction {
+        text-align: left;
     }
-        .otree-btn-next {
+
+    .otree-btn-next {
         float: right;
         margin-left: 53%;
         margin-right: 47%;
     }
 
-            .page-header {
+    .page-header {
         margin-top: 20px;
         margin-bottom: 20px;
         padding-top: 40px;
         margin-left: 44%;
     }
 
+    .flex-container {
+        display: flex;
+        height: 200px;
+    }
+
+    .flex-child {
+        flex: 1;
+        padding: 20px;
+        border: 2px solid black;
+        border-radius: 25px;
+    }
+
+    .flex-child:first-child {
+        margin-right: 20px;
+    }
 </style>
 
 {{ endblock }}

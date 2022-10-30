@@ -53,7 +53,7 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
-    COUNT_ROUNDS_PER_SG = [5, 1]
+    COUNT_ROUNDS_PER_SG = [1, 4, 4]
     # Dal Bo&Frechette one sequence
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
@@ -250,29 +250,18 @@ def creating_session(subsession: Subsession):
                 p.pair_id = p.id_in_group
 
     if subsession.session.config['sim'] == 1:
-        random_sample = random.sample(range(1, C.NUM_SG + 1),
-                                      2)  # randomly pick two different supergames from all supergames
-        subsession.session.vars['pgg_payment_match'] = random_sample[0]  # select one match of PGG to pay
-        subsession.session.vars['pd_payment_match'] = random_sample[1]  # select one match of PD to pay
-
         if subsession.session.config['easy'] == 1:
             subsession.treatment = 'sim_easy'
         else:
             subsession.treatment = 'sim_difficult'
     else:
         if subsession.session.config['pd_only'] == 1:
-            random_sample = random.choice(range(1, C.NUM_SG + 1))
-            subsession.session.vars['pgg_payment_match'] = 1
-            subsession.session.vars['pd_payment_match'] = random_sample
             if subsession.session.config['easy'] == 1:
                 subsession.treatment = 'pd_easy'
             else:
                 subsession.treatment = 'pd_difficult'
         else:
             subsession.treatment = 'pgg'
-            random_sample = random.choice(range(1, C.NUM_SG + 1))
-            subsession.session.vars['pgg_payment_match'] = random_sample
-            subsession.session.vars['pd_payment_match'] = 1
 
 
 # Within each supergroup, randomly assign a paird ID, excluding the last player who will be an observer
@@ -372,6 +361,9 @@ class NewSupergame(Page):
         subsession = player.subsession
         return subsession.period == 1
 
+    def vars_for_template(player: Player):
+        return dict(two_game = player.session.config['sim'])
+
 
 class Decision(Page):
     form_model = 'player'
@@ -403,8 +395,8 @@ class Decision(Page):
             betrayed_payoff=betrayed_payoff,
             betray_payoff=betray_payoff,
             both_defect_payoff=both_defect_payoff,
-            pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
-            pd_selected_match=player.subsession.session.vars['pd_payment_match']
+            # pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
+            # pd_selected_match=player.subsession.session.vars['pd_payment_match']
         )
     @staticmethod
     def js_vars(player: Player):
@@ -447,8 +439,8 @@ class DecisionSingle(Page):
             betrayed_payoff=betrayed_payoff,
             betray_payoff=betray_payoff,
             both_defect_payoff=both_defect_payoff,
-            pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
-            pd_selected_match=player.subsession.session.vars['pd_payment_match'],
+            # pgg_selected_match=player.subsession.session.vars['pgg_payment_match'],
+            # pd_selected_match=player.subsession.session.vars['pd_payment_match'],
             pd_only=player.session.config['pd_only']
         )
 
@@ -685,17 +677,14 @@ class MatchSummary(Page):
         exchange_rate = player.session.config['real_world_currency_per_point']
         # if it's the last round of this task
         if player.round_number == C.NUM_ROUNDS:
-            # record selected match earning for pgg
-            pgg_sg = player.session.vars['pgg_payment_match']
-            participant.selected_match_pgg = pgg_sg
-            player_in_end_round_of_selected_match_pgg = player.in_round(C.SG_ENDS[pgg_sg - 1])
-            participant.pgg_earning = player_in_end_round_of_selected_match_pgg.pgg_sg_earning
-
-            # record selected match earning for pd
-            pd_sg = player.session.vars['pd_payment_match']
-            participant.selected_match_pd = pd_sg
-            player_in_end_round_of_selected_match_pd = player.in_round(C.SG_ENDS[pd_sg - 1])
-            participant.pd_earning = player_in_end_round_of_selected_match_pd.pd_sg_earning
+            pgg_earnings=0
+            pd_earnings=0
+            for sg in range(len(C.SG_ENDS)):
+                player_in_end_round_of_sg=player.in_round(C.SG_ENDS[sg])
+                pgg_earnings+= player_in_end_round_of_sg.pgg_earning
+                pd_earnings+= player_in_end_round_of_sg.pd_earning
+            participant.pgg_earning = pgg_earnings
+            participant.pd_earning = pd_earnings
 
             player.payoff = (participant.pgg_earning + participant.pd_earning) * exchange_rate
 
@@ -708,6 +697,12 @@ class FinalPayment(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        sg_history = []
+        for sg in range(len(C.SG_ENDS)):
+            player_in_end_round_of_sg = player.in_round(C.SG_ENDS[sg])
+            sg_results = dict(match=sg + 1, pgg_sg_earnings=player_in_end_round_of_sg.pgg_earning,
+                              pd_sg_earnings=player_in_end_round_of_sg.pd_earning)
+            sg_history.append(sg_results)
         # convert points to dollar
         return dict(
             pgg_payment=cu(player.participant.pgg_earning).to_real_world_currency(player.session),
@@ -716,8 +711,7 @@ class FinalPayment(Page):
             conversion_rate=player.session.config['real_world_currency_per_point'],
             two_game=player.session.config['sim'],
             pd_only=player.session.config['pd_only'],
-            pd_match=player.participant.selected_match_pd,
-            pgg_match=player.participant.selected_match_pgg
+            sg_history = sg_history
         )
 
 
@@ -727,4 +721,5 @@ page_sequence = [NewSupergame,
                  ResultsWaitPage,
                  RoundResults,
                  BlockEnd,
-                 MatchSummary]
+                 MatchSummary,
+                 FinalPayment]

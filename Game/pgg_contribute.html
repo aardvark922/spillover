@@ -1,12 +1,14 @@
 <div>
     <div class="dropdown">
-    <button id="myBtn" class="dropbtn" type="button" onclick="showInstruction()">Rules</button>
-    <div id="pgg-instructions" class="instruction-content">
-        <a><i>At the start of each round, each individual will be endowed with <b>25</b> tokens. In each round, each individual must
-        decide how to divide their tokens between the Private Account and a Group Account. <b>Each person</b> in the group has
-        a Private Account, however, there is only <b>one</b> Group Account for the entire group.</i></a>
+        <button id="myBtn" class="dropbtn" type="button" onclick="showInstruction()">Rules</button>
+        <div id="pgg-instructions" class="instruction-content">
+            <a><i>You are in a group of 4 participants, you and the 3 participants in your match. At the start of each
+                round, each individual will be endowed with <b>25</b> tokens. In each round, each individual must
+                decide how to divide their tokens between the Private Account and a Group Account. <b>Each person</b> in
+                the group has
+                a Private Account, however, there is only <b>one</b> Group Account for the entire group.</i></a>
+        </div>
     </div>
-</div>
     <br>
     <p>
         <br>
@@ -20,12 +22,12 @@
 </div>
 
 <style>
-    .instruction-pgg{
+    .instruction-pgg {
         border: 1px solid black;
         padding: 1px
     }
 
-        .instruction-content{
+    .instruction-content {
         display: none;
         position: absolute;
         background-color: #f9f9f9;
@@ -45,7 +47,7 @@
 </style>
 
 <script>
-        function showInstruction() {
+    function showInstruction() {
         document.getElementById("pgg-instructions").classList.toggle("show");
     }
 </script>

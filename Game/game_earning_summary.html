@@ -5,8 +5,27 @@
 
     <div>
         <h6>Blue Game Earning:</h6>
-        <p>Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
-            {{participant.pgg_earning|to1}}.
+        <div>
+    <div class="table-pggmatchhistory ">
+        <table>
+            <tr class="alternateRow">
+                <th style="width: 100px;">Match</th>
+                <th style="width: 100px;">Your Payoffs</th>
+            </tr>
+         {{ for sg in sg_history }}
+            <tr>
+                <td style="width: 80px;"> {{ sg.match }}</td>
+                <td><span>{{ sg.pgg_sg_earnings }}</span></td>
+            </tr>
+
+            {{endfor}}
+        </table>
+    </div>
+    <br>
+    <br>
+    Your Total Earnings: {{pgg_earning}}
+</div>
+        <p>
             <br>
             The payoff of your Blue Game choices is therefore <b>{{pgg_payment}}</b>.
         </p>
@@ -14,23 +33,21 @@
 
     <div>
         <h6>Yellow Game Earning:</h6>
-        <p>Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
-            {{participant.pd_earning}}.
+        <p>
             <br>
             The payoff of your Yellow Game choices is <b>{{pd_payment}}</b>.
         </p>
     </div>
     {{elif pd_only}}
     <div>
-        <p> Match {{ participant.selected_match_pd }} is randomly selected and your earning in this Match was
-            {{participant.pd_earning}}.
+        <p>
             <br>
             The payoff of your choices is <b>{{pd_payment}}</b>.
         </p>
     </div>
     {{else}}
     <div>
-        <p> Match {{ participant.selected_match_pgg }} is randomly selected and your earning in this Match was
+        <p>
             {{participant.pgg_earning|to1}}.
             <br>
             The payoff of your choices is therefore <b>{{pgg_payment}}</b>.
