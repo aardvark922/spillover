@@ -1,11 +1,11 @@
 <div>
-    <div class="table-pdhistory ">
+    <div class="table-pdhistory">
         <table>
             <tr class="alternateRow">
-                <th style="width: 100px;">Round</th>
-                <th style="width: 100px;">My Choice</th>
+                <th style="width: 15%;">Round</th>
+                <th style="width: 100px;">Your Choice</th>
                 <th style="width: 100px;">Match's Choice</th>
-                <th style="width: 100px;">My Payoffs</th>
+                <th style="width: 100px;">Your Payoffs</th>
             </tr>
 
             {{ for pd in pd_history }}
@@ -22,17 +22,19 @@
     </div>
     <br>
     <br>
-    Your Total Earnings in this match: {{pd_sg_earning}}
+    Your total earnings in this match: {{pd_sg_earning}}
 </div>
 
 <style>
 
     .table-pdhistory {
         text-align: center;
+
     }
 
     .table {
         border-collapse: collapse;
+
 
     }
 

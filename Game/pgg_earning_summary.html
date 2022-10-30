@@ -1,0 +1,16 @@
+<div class="table-pggmatchhistory ">
+    <table>
+        <tr class="alternateRow">
+            <th style="width: 100px;">Match</th>
+            <th style="width: 100px;">Your Payoffs</th>
+        </tr>
+        {{ for sg in sg_history }}
+        <tr>
+            <td style="width: 80px;"> {{ sg.match }}</td>
+            <td><span>{{ sg.pgg_sg_earnings }}</span></td>
+        </tr>
+        {{endfor}}
+    </table>
+</div>
+<p>
+    Your total earnings: {{participant.pgg_earning|to1}}.</p>
