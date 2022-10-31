@@ -60,7 +60,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.01, participation_fee=5.00, doc="",use_browser_bots=True
+    real_world_currency_per_point=0.01, participation_fee=5.00, doc="",
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',
@@ -77,6 +77,20 @@ LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = True
 
+ROOMS = [
+    dict(
+        name='SO1',
+        display_name='Spillover_Session1',
+        participant_label_file='_rooms/lab.txt',
+        # use_secure_urls=True
+    ),
+    dict(
+        name='SO2',
+        display_name='Spillover_Session2',
+        participant_label_file='_rooms/lab.txt',
+        # use_secure_urls=True
+    )
+]
 ADMIN_USERNAME = 'admin'
 # for security, best to set admin password in an environment variable
 ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')

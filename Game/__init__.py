@@ -54,9 +54,10 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
+    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2]
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9]
     # Dal Bo&Frechette one sequence
-    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
+    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # print('number of matches,', NUM_SG)
@@ -147,6 +148,7 @@ class Player(BasePlayer):
     pd_earning = models.IntegerField()
     pd_sg_earning = models.IntegerField()
     dieroll = models.IntegerField(min=1, max=100)
+    calculator_history= models.StringField()
 
 
 # FUNCTIONS
