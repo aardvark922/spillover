@@ -1,16 +1,75 @@
-<div class="table-pggmatchhistory ">
-    <table>
-        <tr class="alternateRow">
-            <th style="width: 100px;">Match</th>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  margin-left:-5px;
+  margin-right:-5px;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: center;
+    height: 30px;
+}
+
+.pgg-earning tr:nth-child(even) {
+ background-color: rgba(0, 0, 255, 0.1);
+}
+</style>
+<div class="row">
+<div class="column">
+    <table class="pgg-earning">
+        <tr >
+            <th style="width: 40%;">Match</th>
             <th style="width: 100px;">Your Payoffs</th>
         </tr>
         {{ for sg in sg_history }}
+        {{if sg.match < half_match_plus_one}}
         <tr>
             <td style="width: 80px;"> {{ sg.match }}</td>
             <td><span>{{ sg.pgg_sg_earnings }}</span></td>
         </tr>
+        {{endif}}
         {{endfor}}
     </table>
 </div>
+    <div class="column">
+    <table  class="pgg-earning">
+        <tr >
+            <th style="width: 40%;">Match</th>
+            <th style="width: 100px;">Your Payoffs</th>
+        </tr>
+        {{ for sg in sg_history }}
+        {{if sg.match > half_match}}
+        <tr>
+            <td style="width: 80px;"> {{ sg.match }}</td>
+            <td><span>{{ sg.pgg_sg_earnings }}</span></td>
+        </tr>
+        {{endif}}
+        {{endfor}}
+    </table>
+</div>
+    </div>
 <p>
-    Your total earnings: {{participant.pgg_earning|to1}}.</p>
+    Your total earnings: {{participant.pgg_earning|to1}}</b></p>

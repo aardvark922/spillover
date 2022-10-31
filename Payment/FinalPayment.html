@@ -5,11 +5,37 @@ Summary of earnings
 {{ block content }}
 <p>Below shows a summary of your earnings in each task.</p>
 <h5>Quiz Earning</h5>
-<p>You have correctly answered {{quiz_num_correct}} questions. Your earning from the quiz is
+<p>You have correctly answered {{quiz_num_correct}} questions. Your earnings from the quiz is
     <b>${{quiz_earning|to2}}</b>.
 </p>
-<h5>Task 1 Earning</h5>
-{{include C.game_summary_template}}
+<div class="task1">
+    <h5>Task 1 Earning</h5>
+    {{if two_game}}
+    <div class="flex-container">
+        <div class="flex-child magenta" style="background-color: aliceblue">
+            <h5 style="color: darkblue; ">Blue Game</h5>
+            {{include C.pgg_earnings_template}}
+        </div>
+        <div class="flex-child green" style="background-color: rgba(90,179,113,0.1)">
+            <h5 style="color: darkolivegreen">Green Game</h5>
+            {{include C.pd_earnings_template}}
+        </div>
+    </div>
+
+    {{elif pd_only}}
+    <div>
+        {{include C.pd_earnings_template}}
+    </div>
+
+    {{else}}
+    <div>
+        {{include C.pgg_earnings_template}}
+    </div>
+    {{endif}}
+    <br>
+    Your total earnings in Task 1 is therefore {{task1_earnings|to1}}.
+     <br>The exchange rate is 1 point = ${{conversion_rate}}.So, your earnings for Task 1 is <b>{{task1_payment}}</b>.
+</div>
 <h5>Task 2 Earning</h5>
 <p>You chose option {{participant.chosen_gamble}}. The random number was {{participant.random_num_gamble}}.
 
@@ -22,6 +48,24 @@ Summary of earnings
 <br>
 <h4>Total</h4>
 <u><p>Your final payment including the <b>{{participation_fee}} </b> participation fee is <b>{{payment}}</b>.</p></u>
+
+<style>
+    .flex-container {
+        display: flex;
+        height: auto;
+    }
+
+    .flex-child {
+        flex: 1;
+        padding: 15px 15px 0px 15px;
+        border: 2px solid black;
+        border-radius: 25px;
+    }
+
+    .flex-child:first-child {
+        margin-right: 20px;
+    }
+</style>
 {{ endblock }}
 
 

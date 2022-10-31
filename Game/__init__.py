@@ -54,9 +54,9 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
-    COUNT_ROUNDS_PER_SG = [1, 4, 4]
+    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9]
     # Dal Bo&Frechette one sequence
-    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
+    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # print('number of matches,', NUM_SG)
@@ -160,6 +160,7 @@ def creating_session(subsession: Subsession):
     # print('pair ids:', pair_ids)
     subsession.session.vars['sim'] = subsession.session.config['sim']
     subsession.session.vars['pd_only'] = subsession.session.config['pd_only']
+    subsession.session.vars['num_match'] = C.NUM_SG
     if subsession.round_number == 1:
         sg = 1
         period = 1
@@ -683,14 +684,19 @@ class MatchSummary(Page):
         if player.round_number == C.NUM_ROUNDS:
             pgg_earnings = 0
             pd_earnings = 0
+            sg_history = []
             for sg in range(len(C.SG_ENDS)):
                 player_in_end_round_of_sg = player.in_round(C.SG_ENDS[sg])
                 pgg_earnings += player_in_end_round_of_sg.pgg_earning
                 pd_earnings += player_in_end_round_of_sg.pd_earning
+                sg_results = dict(match=sg + 1, pgg_sg_earnings=player_in_end_round_of_sg.pgg_earning,
+                                  pd_sg_earnings=player_in_end_round_of_sg.pd_earning)
+                sg_history.append(sg_results)
+            player.participant.task1_history = sg_history
             participant.pgg_earning = pgg_earnings
             participant.pd_earning = pd_earnings
 
-            player.payoff = (participant.pgg_earning + participant.pd_earning) * exchange_rate
+            player.payoff = participant.pgg_earning + participant.pd_earning
 
 
 class FinalPayment(Page):
@@ -702,23 +708,21 @@ class FinalPayment(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        sg_history = []
-        for sg in range(len(C.SG_ENDS)):
-            player_in_end_round_of_sg = player.in_round(C.SG_ENDS[sg])
-            sg_results = dict(match=sg + 1, pgg_sg_earnings=player_in_end_round_of_sg.pgg_earning,
-                              pd_sg_earnings=player_in_end_round_of_sg.pd_earning)
-            sg_history.append(sg_results)
         pgg_payment = cu(player.participant.pgg_earning).to_real_world_currency(player.session)
         pd_payment = cu(player.participant.pd_earning).to_real_world_currency(player.session)
+        player.participant.payoff = player.participant.pgg_earning + player.participant.pd_earning
+        num_sg =player.subsession.session.vars['num_match']
         # convert points to dollar
         return dict(
             participation_fee=player.session.config['participation_fee'],
             conversion_rate=player.session.config['real_world_currency_per_point'],
             two_game=player.session.config['sim'],
             pd_only=player.session.config['pd_only'],
-            sg_history=sg_history,
+            sg_history=player.participant.task1_history,
             task1_earnings=player.participant.pd_earning + player.participant.pgg_earning,
-            task1_payment=pgg_payment + pd_payment
+            task1_payment=pgg_payment + pd_payment,
+            half_match=num_sg/2,
+            half_match_plus_one=num_sg/2+1
         )
 
 

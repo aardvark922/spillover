@@ -60,14 +60,15 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.01, participation_fee=5.00, doc="",
+    real_world_currency_per_point=0.01, participation_fee=5.00, doc="",use_browser_bots=True
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',
-                      'pgg_earning', 'pd_earning', 'chosen_gamble', 'random_num_gamble', 'gamble_earning',
+                      'pgg_earning', 'pd_earning', 'task1_history','chosen_gamble', 'random_num_gamble', 'gamble_earning',
                       'selected_round_SVO', 'role_SVO', 'SVO_earning']
-SESSION_FIELDS = ['pgg_payment_match', 'pd_payment_match','pd_only','sim']
 #'selected_match_pgg', 'selected_match_pd',
+SESSION_FIELDS = ['pd_only','sim','num_match']
+#'pgg_payment_match', 'pd_payment_match',
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans
 LANGUAGE_CODE = 'en'
