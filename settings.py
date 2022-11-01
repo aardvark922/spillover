@@ -2,7 +2,7 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='main_task_sim',
+        name='main_task_sim_easy',
         app_sequence=['Game'],
         num_demo_participants=8,
         easy=1,
@@ -12,6 +12,17 @@ SESSION_CONFIGS = [
         doc="""
         This is the oTree program for treatment with both games"""
 
+    ),
+    dict(
+        name='quiz_sim_easy',
+        app_sequence=['Quiz'],
+        num_demo_participants=1,
+        easy=0,
+        sim=1,
+        pd_only=0,
+        same_group=0,
+        doc="""
+     This is the oTree program for treatment with both games"""
     ),
     dict(
         name='main_task_pd_easy',

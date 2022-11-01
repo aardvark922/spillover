@@ -1,0 +1,48 @@
+<div class="table-dieroll ">
+    <table>
+        <thead class="fixedHeader">
+        <tr class="alternateRow">
+            <th style="width: 80px;">Round</th>
+            <td style="width: 60px;"> {{ 9}}
+            <td style="width: 60px;font-weight: bold"> {{ 10}}</td>
+            <td style="width: 60px;"> {{ 11 }}
+            <td style="width: 60px;"> {{ 12 }}
+        </thead>
+        <tbody>
+
+        <tr>
+            <th>Random Number</th>
+            <td><span style="color: forestgreen">21</span></td>
+            <td><span style="color: indianred;font-weight: bold">{{77}}</span></td>
+            <td><span style="color: forestgreen">{{ 35 }}</span></td>
+            <td><span style="color: indianred">{{ 78}}</span></td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+</div>
+
+
+<style>
+
+    .table-dieroll {
+        text-align: center;
+    }
+
+    .table {
+        border-collapse: collapse;
+
+    }
+
+    .table, th, td {
+        border: 1px solid;
+        height: 60px;
+    }
+
+    .table-dieroll td:nth-child(even), th:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+</style>

@@ -15,7 +15,10 @@
 {{ block content }}
 {{ include Constants.progress_template }}
     {{ formfields }}
-
+<div class="dieroll">
+  {{include Constants.die_roll_template}}
+</div>
+<br>
 <div class="container">
   <div class="btn-holder">
     <button class="otree-btn-next btn btn-primary">Submit</button>

@@ -6,16 +6,22 @@
 {{ include Constants.progress_template }}
 <h5>Result</h5>
 {{ formfields }}
+<div class="dieroll">
+  {{include Constants.die_roll_template}}
+</div>
+<br>
 {{ if show_solutions }}
 {{ if player.Q5_correct}}
 <p class="solution-correct">
     Your answer is correct.<br>
-    {{ Q5.explanation }}
+    As mentioned in the instructions:<br>
+    <i>"{{ Q5.explanation }}"</i>
 </p>
 {{ else }}
 <p class="solution-incorrect">
-    Your answer is incorrect. The correct answer is c.<br>
-    {{ Q5.explanation }}
+    Your answer is incorrect. The correct answer is b.<br>
+    As mentioned in the instructions:<br>
+    <i>"{{ Q5.explanation }}"</i>
 </p>
 {{ endif }}
 {{ endif }}
