@@ -4,6 +4,9 @@
 {{ block content }}
 {{ include Constants.progress_template }}
 <h5>Result</h5>
+{{if sim}}
+<span style="color: darkblue;background-color: aliceblue">Blue Game</span> question
+{{endif}}
 {{ formfields }}
 {{ if show_solutions }}
 {{ if player.Q6_correct}}

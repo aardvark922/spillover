@@ -14,6 +14,9 @@
 {{ endblock }}
 {{ block content }}
 {{ include Constants.progress_template }}
+{{if sim}}
+<span style="color: darkblue;background-color: aliceblue">Blue Game</span> question
+{{endif}}
     {{ formfields }}
 
 <div class="container">

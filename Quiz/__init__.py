@@ -156,7 +156,7 @@ class Player(BasePlayer):
                                       choices=Constants.true_false_choices)
     Q3_correct = models.BooleanField()
     Q4_response = models.BooleanField(
-        label="True/False: You will submit your choices for the Blue Game and the Green Game at the same time.",
+        label="True/False: You will submit your choices for the <b>Blue Game</b> and the <b>Green Game</b> at the same time.",
         choices=Constants.true_false_choices)
     Q4_correct = models.BooleanField()
     Q5_response = models.IntegerField(
@@ -172,7 +172,7 @@ class Player(BasePlayer):
     )
     Q5_correct = models.BooleanField()
     Q6_response = models.IntegerField(
-        label="Blue Game: Suppose in one round, you move 5 tokens to the Group Account while the other"
+        label="Suppose in one round, you move 5 tokens to the Group Account while the other"
               " 3 participants move 40 tokens to the Group Account. What is your total payoff in this round?",
         choices=[
             [1, "a. 20 points"],
@@ -195,7 +195,7 @@ class Player(BasePlayer):
     # )
     Q6_correct = models.BooleanField()
     Q7_response = models.IntegerField(
-        label="Green Game: Suppose in one round, you choose action Y while "
+        label="Suppose in one round, you choose action Y while "
               "the other participant choose action Z. What is your payoff in this round?",
         # choices=[
         #     [1, "a. 48 points"],
@@ -541,7 +541,7 @@ class Q6(Page):
     @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
-        return dict(fields=fields, show_solutions=False)
+        return dict(fields=fields, show_solutions=False, sim=player.session.config['sim'])
 
     @staticmethod
     def before_next_page(player, timeout_happened):
@@ -565,7 +565,7 @@ class Q6Result(Page):
     @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
-        return dict(show_solutions=True, Q6=fields[5])
+        return dict(show_solutions=True, Q6=fields[5],sim=player.session.config['sim'])
 
     @staticmethod
     def error_message(player: Player, values):
@@ -638,7 +638,7 @@ class Q7(Page):
     @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
-        return dict(fields=fields, show_solutions=False)
+        return dict(fields=fields, show_solutions=False, sim=player.session.config['sim'])
 
     @staticmethod
     def before_next_page(player, timeout_happened):
@@ -676,7 +676,8 @@ class Q7Result(Page):
                     both_cooperate_payoff=both_cooperate_payoff,
                     betrayed_payoff=betrayed_payoff,
                     betray_payoff=betray_payoff,
-                    both_defect_payoff=both_defect_payoff
+                    both_defect_payoff=both_defect_payoff,
+                    sim=player.session.config['sim']
                     )
 
     @staticmethod

@@ -3,6 +3,9 @@
 {{ endblock }}
 {{ block content }}
 {{ include Constants.progress_template }}
+{{if sim}}
+<span style="color:  darkolivegreen;background-color: rgba(90,179,113,0.1)">Green Game</span> question
+{{endif}}
     {{ formfields }}
 <div class="container">
   <div class="btn-holder">

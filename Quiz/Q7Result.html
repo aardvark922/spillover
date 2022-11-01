@@ -5,6 +5,9 @@ Quiz Questions
 {{ block content }}
 {{ include Constants.progress_template }}
 <h5>Result </h5>
+{{if sim}}
+<span style="color:  darkolivegreen;background-color: rgba(90,179,113,0.1)">Green Game</span> question
+{{endif}}
 {{ formfields }}
 
 {{ if show_solutions }}
@@ -24,7 +27,7 @@ Quiz Questions
     {{include Constants.pd_explanation_template}}
 </div>
 <br>
-<button class="otree-btn-next btn btn-primary">Next Question</button>
+<button class="otree-btn-next btn btn-primary">Next</button>
 
 <style>
     /* we use this instead of setting 'disabled' because disabled inputs don't get
