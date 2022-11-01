@@ -17,12 +17,19 @@ SESSION_CONFIGS = [
         name='quiz_sim_easy',
         app_sequence=['Quiz'],
         num_demo_participants=1,
-        easy=0,
+        easy=1,
         sim=1,
         pd_only=0,
         same_group=0,
-        doc="""
-     This is the oTree program for treatment with both games"""
+    ),
+    dict(
+        name='quiz_pgg',
+        app_sequence=['Quiz'],
+        num_demo_participants=1,
+        easy=0,
+        sim=0,
+        pd_only=0,
+        same_group=0,
     ),
     dict(
         name='main_task_pd_easy',
@@ -71,7 +78,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.01, participation_fee=5.00, doc=""
+    real_world_currency_per_point=0.0025, participation_fee=5.00, doc="",use_browser_bots=True
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',

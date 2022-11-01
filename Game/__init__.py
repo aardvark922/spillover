@@ -54,10 +54,10 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
-    COUNT_ROUNDS_PER_SG = [5, 1, 4, 1, 2]
+    # COUNT_ROUNDS_PER_SG = [5, 1, 4, 1, 2]
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9]
     # Dal Bo&Frechette one sequence
-    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
+    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # print('number of matches,', NUM_SG)
@@ -701,10 +701,10 @@ class MatchSummary(Page):
             sg_history = []
             for sg in range(len(C.SG_ENDS)):
                 player_in_end_round_of_sg = player.in_round(C.SG_ENDS[sg])
-                pgg_earnings += player_in_end_round_of_sg.pgg_earning
-                pd_earnings += player_in_end_round_of_sg.pd_earning
-                sg_results = dict(match=sg + 1, pgg_sg_earnings=player_in_end_round_of_sg.pgg_earning,
-                                  pd_sg_earnings=player_in_end_round_of_sg.pd_earning)
+                pgg_earnings += player_in_end_round_of_sg.pgg_sg_earning
+                pd_earnings += player_in_end_round_of_sg.pd_sg_earning
+                sg_results = dict(match=sg + 1, pgg_sg_earnings=player_in_end_round_of_sg.pgg_sg_earning,
+                                  pd_sg_earnings=player_in_end_round_of_sg.pd_sg_earning)
                 sg_history.append(sg_results)
             player.participant.task1_history = sg_history
             participant.pgg_earning = pgg_earnings

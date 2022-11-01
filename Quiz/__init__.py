@@ -113,28 +113,23 @@ def get_quiz_data():
 def get_quiz_data_additional():
     return [
         dict(
-            name='Q2_fixed',
-            solution=False,
-            explanation="At the beginning of this task each group of 8 will be divided into 4 pairs. "
-                        "Neither of you will ever know who the other person in your pair is, "
-                        "but the person you are paired with will remain the same in every period.",
+            name='Q2_pgg',
+            solution=True,
+            explanation="During each match, you will be asked to make decisions with the <b>same three</b> participants"
+                        " over a sequence of rounds.",
         ),
         dict(
-            name='Q6_24',
-            solution=2,
-            explanation="The relationship between the effort chosen by the B’s in the group and A’s earnings is such "
-                        "that: if the sum of the effort levels chosen by all 4 B’s in the group is equal to or greater "
-                        "than 24, the effort threshold is met. In this case the total revenue earned by A’s is shown "
-                        "in column 3 above. However, if group effort threshold is not met, A’s earnings are reduced by "
-                        "half for all effort choices of B, as shown in column 4.",
-        )
-
+            name='Q2_pd',
+            solution=True,
+            explanation="During each match, you will be asked to make decisions with the <b>same</b> participant"
+                        " over a sequence of rounds.",
+        ),
     ]
 
 
 class Subsession(BaseSubsession):
-    both_cooperate_payoff= models.IntegerField()
-
+    both_cooperate_payoff = models.IntegerField()
+    max_progress = models.IntegerField()
 
 
 class Group(BaseGroup):
@@ -151,6 +146,12 @@ class Player(BasePlayer):
                                             "the participant(s) you interact with for "
                                             "either the Blue Game or the Green Game will remain the same.",
                                       choices=Constants.true_false_choices)
+    Q2_pgg_response = models.BooleanField(label="True/False: During any match, "
+                                                "the three participants you interact with will remain the same.",
+                                          choices=Constants.true_false_choices)
+    Q2_pd_response = models.BooleanField(label="True/False: During any match, "
+                                               "the participant you interact with will remain the same.",
+                                         choices=Constants.true_false_choices)
     Q2_correct = models.BooleanField()
     Q3_response = models.BooleanField(label="True/False: The length of a match is the same for all 20 matches.",
                                       choices=Constants.true_false_choices)
@@ -230,12 +231,18 @@ def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         participant = player.participant
         participant.progress = 1
+    if subsession.session.config['sim'] == 1:
+        subsession.max_progress = 7
+    else:
+        if subsession.session.config['pd_only'] == 0:
+            subsession.max_progress = 4
     if subsession.session.config['easy'] == 1:
         subsession.both_cooperate_payoff = Constants.ez_both_cooperate_payoff
     else:
         subsession.both_cooperate_payoff = Constants.dt_both_cooperate_payoff
 
-#choices of Q7 changes according to easy PD and difficult PD
+
+# choices of Q7 changes according to easy PD and difficult PD
 def Q7_response_choices(player):
     both_cooperate_payoff = player.subsession.both_cooperate_payoff
     choices = [[1, "a. {} points".format(both_cooperate_payoff)],
@@ -243,6 +250,8 @@ def Q7_response_choices(player):
                [3, "c. 50 points"],
                [4, "d. 25 points"]]
     return choices
+
+
 def get_quiz_results(player: Player):
     exchange_rate = player.session.config['real_world_currency_per_point']
     correct_answers = player.num_correct
@@ -267,6 +276,10 @@ class Q1(Page):
     form_fields = ['Q1_response']
 
     @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
+
+    @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
         return dict(fields=fields, show_solutions=False, Q1=fields[0],
@@ -285,6 +298,10 @@ class Q1(Page):
 class Q1Result(Page):
     form_model = 'player'
     form_fields = ['Q1_response']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -308,10 +325,18 @@ class Q2(Page):
     form_model = 'player'
     form_fields = ['Q2_response']
 
-    # Only show this question to ss if they are in random matching treatment
-    # @staticmethod
-    # def is_displayed(player: Player):
-    #     return player.session.config['fixed_matching'] == 0
+    @staticmethod
+    def get_form_fields(player: Player):
+        session_config=player.session.config
+        if session_config['sim']==1:
+            return ['Q2_response']
+        else:
+            if session_config['pd_only']==1:
+                return['Q2_pd_response']
+            else:
+                return['Q2_pgg_response']
+    #TODO: pgg, pd, sim treatment specific questions
+
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -452,6 +477,10 @@ class Q4(Page):
     form_fields = ['Q4_response']
 
     @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
+
+    @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
         return dict(fields=fields, show_solutions=False)
@@ -469,6 +498,10 @@ class Q4(Page):
 class Q4Result(Page):
     form_model = 'player'
     form_fields = ['Q4_response']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -533,10 +566,10 @@ class Q6(Page):
     form_model = 'player'
     form_fields = ['Q6_response']
 
-    # show this Q6 is threshold is 28
-    # @staticmethod
-    # def is_displayed(player: Player):
-    #     return player.session.config['threshold'] == 28
+    # show this question for sim treatment and pgg only treamtent
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1 or player.session.config['pd_only'] == 0
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -557,15 +590,15 @@ class Q6Result(Page):
     form_model = 'player'
     form_fields = ['Q6_response']
 
-    # show this Q6 is threshold is 28
-    # @staticmethod
-    # def is_displayed(player: Player):
-    #     return player.session.config['threshold'] == 28
+    # show this question for sim treatment and pgg only treamtent
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1 or player.session.config['pd_only'] == 0
 
     @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
-        return dict(show_solutions=True, Q6=fields[5],sim=player.session.config['sim'])
+        return dict(show_solutions=True, Q6=fields[5], sim=player.session.config['sim'])
 
     @staticmethod
     def error_message(player: Player, values):
@@ -635,6 +668,11 @@ class Q7(Page):
     form_model = 'player'
     form_fields = ['Q7_response']
 
+    # show this question for sim treatment and pd only treamtent
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1 or player.session.config['pd_only'] == 1
+
     @staticmethod
     def vars_for_template(player: Player):
         fields = get_quiz_data()
@@ -653,6 +691,11 @@ class Q7(Page):
 class Q7Result(Page):
     form_model = 'player'
     form_fields = ['Q7_response']
+
+    # show this question for sim treatment and pd only treamtent
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1 or player.session.config['pd_only'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
