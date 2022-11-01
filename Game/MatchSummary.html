@@ -4,7 +4,8 @@ Match {{ subsession.sg }} - Summary
 {{ block content }}
 {{if two_game}}
 <div class="content-1">
-    <p>Below shows match history up to round {{end_period}}.</p>
+    <p>Below shows the match history. The current match ended at <b>round {{end_period}}</b>. The round(s) after that
+        are not relevant for payment.</p>
 
     <div class="flex-container">
         <div class="flex-child magenta" style="background-color: aliceblue">
@@ -28,7 +29,7 @@ Match {{ subsession.sg }} - Summary
         {{include C.pd_summary_template}}
         <br>
     </div>
-<br>
+    <br>
 </div>
 {{else}}
 <div class="content-1">
@@ -37,7 +38,7 @@ Match {{ subsession.sg }} - Summary
         {{include C.pgg_summary_template}}
         <br>
     </div>
-<br>
+    <br>
 
 </div>
 {{endif}}
@@ -75,6 +76,7 @@ Match {{ subsession.sg }} - Summary
         margin-left: 25%;
         margin-right: 25%;
     }
+
     .page-header {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -82,8 +84,8 @@ Match {{ subsession.sg }} - Summary
         text-align: center;
     }
 
-        .otree-body {
-        max-width: 1400px;
+    .otree-body {
+        max-width: 1200px;
     }
 
 </style>

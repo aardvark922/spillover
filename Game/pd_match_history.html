@@ -9,20 +9,29 @@
             </tr>
 
             {{ for pd in pd_history }}
-            <tr>
+            {{if pd.is_pay_relevant}}
+            <tr class="pay-relevant">
                 <td style="width: 80px;"> {{ pd.round_number }}</td>
                 <td><span>{{ pd.pd_decision }}</span></td>
                 <td><span>{{ pd.pd_other_decision }}</span></td>
                 <td><span>{{ pd.pd_earning }}</span></td>
             </tr>
+            {{else}}
 
+                <tr class="not-pay-relevant">
+                <td style="width: 80px; color: darkgrey"> {{ pd.round_number }}</td>
+                <td style="color: darkgrey"><span>{{ pd.pd_decision }}</span></td>
+                <td style="color: darkgrey"><span>{{ pd.pd_other_decision }}</span></td>
+                <td style="color: darkgrey"><span>{{ pd.pd_earning }}</span></td>
+            </tr>
+            {{endif}}
             {{endfor}}
 
         </table>
     </div>
     <br>
     <br>
-    Your total earnings in this match: {{pd_sg_earning}}
+    <p>Your total earnings in this match: {{pd_sg_earning}}</p>
 </div>
 
 <style>
@@ -43,8 +52,12 @@
         height: 30px;
     }
 
-    .table-pdhistory tr:nth-child(even) {
+    .table-pdhistory tr.pay-relevant:nth-child(even) {
         background-color: rgba(0, 100, 0, 0.1);
+    }
+
+        .table-pdhistory tr.not-pay-relevant:nth-child(even) {
+        background-color: rgba(211, 211, 211, 0.1);
     }
 
 </style>

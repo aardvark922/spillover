@@ -54,7 +54,7 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
-    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2]
+    COUNT_ROUNDS_PER_SG = [5, 1, 4, 1, 2]
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9]
     # Dal Bo&Frechette one sequence
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
@@ -321,7 +321,7 @@ def set_payoffs(subsession: Subsession):
 
 # Get opponent id----------------this works for simultaneous two groups design---------------#
 def other_player(player: Player):
-    return [p for p in player.subsession.get_players() if p.pair_id == player.pair_id][0]
+    return [p for p in player.get_others_in_subsession() if p.pair_id == player.pair_id][0]
 
 
 def set_pd_payoff(player: Player):
@@ -343,8 +343,10 @@ def set_pd_payoff(player: Player):
         (False, False): both_defect_payoff,
         (True, False): betrayed_payoff,
     }
-    for p in player.group.get_players():
-        p.pd_earning = payoff_matrix[(p.pd_decision, other_player(p).pd_decision)]
+    other = other_player(player)
+    player.pd_earning = payoff_matrix[(player.pd_decision, other.pd_decision)]
+    # print("me", player)
+    # print("other", other)
 
 
 # #roll a die for the whole session
@@ -501,7 +503,8 @@ class RoundResults(Page):
                 'i_defect_he_cooperates': me.pd_decision == False and opponent.pd_decision == True,
                 'pd_only': player.session.config['pd_only'],
                 'two_game': player.session.config['sim'],
-                'block_end': player.subsession.is_bk_last_period
+                'block_end': player.subsession.is_bk_last_period,
+                'opponent': opponent
             }
         else:
             if session.config['pd_only'] == 1:
@@ -625,44 +628,53 @@ class MatchSummary(Page):
         player_in_end_round = player.in_round(C.PAY_ROUNDS_ENDS[sg - 1])
         end_period = player_in_end_round.subsession.period
         start_round = C.PLAYED_ROUND_STARTS[sg - 1]
+        sg_end_round = C.SG_ENDS[sg-1]
         sg_duration = C.COUNT_ROUNDS_PER_SG[sg - 1]
-        player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
+        # player_in_pay_rounds = player.in_rounds(start_round + 1, start_round + sg_duration)
+        player_in_sg_prev_rounds=player.in_rounds(start_round+1, sg_end_round)
         pgg_tot_earning = 0
         pd_tot_earning = 0
         pd_history = []
         pgg_history = []
-        for p in player_in_pay_rounds:
+        for p in player_in_sg_prev_rounds:
             pd_other = other_player(p)
-            pgg_tot_earning += p.pgg_earning
-            pd_tot_earning += p.pd_earning
+            if p.subsession.is_pay_relevant:
+                pgg_tot_earning += p.pgg_earning
+                pd_tot_earning += p.pd_earning
             if p.session.config['sim'] == 1:
                 pd_round_result = dict(round_number=p.subsession.period,
                                        pd_decision=p.field_display('pd_decision'),
                                        pd_other_decision=pd_other.field_display('pd_decision'),
-                                       pd_earning=p.pd_earning)
+                                       pd_earning=p.pd_earning,
+                                       is_pay_relevant= p.subsession.is_pay_relevant)
                 pgg_round_result = dict(round_number=p.subsession.period,
                                         pgg_private=C.ENDOWMENT - p.contribution,
                                         pgg_total_contribution=p.group.total_contribution,
-                                        pgg_earning=p.pgg_earning)
+                                        pgg_earning=p.pgg_earning,
+                                        is_pay_relevant= p.subsession.is_pay_relevant)
             else:
                 if p.session.config['pd_only'] == 1:
                     pd_round_result = dict(round_number=p.subsession.period,
                                            pd_decision=p.field_display('pd_decision'),
                                            pd_other_decision=pd_other.field_display('pd_decision'),
-                                           pd_earning=p.pd_earning)
+                                           pd_earning=p.pd_earning,
+                                           is_pay_relevant= p.subsession.is_pay_relevant)
                     pgg_round_result = dict(round_number=p.subsession.period,
                                             pgg_private=0,
                                             pgg_total_contribution=0,
-                                            pgg_earning=p.pgg_earning)
+                                            pgg_earning=p.pgg_earning,
+                                            is_pay_relevant= p.subsession.is_pay_relevant)
                 else:
                     pd_round_result = dict(round_number=p.subsession.period,
                                            pd_decision=0,
                                            pd_other_decision=0,
-                                           pd_earning=p.pd_earning)
+                                           pd_earning=p.pd_earning,
+                                           is_pay_relevant= p.subsession.is_pay_relevant)
                     pgg_round_result = dict(round_number=p.subsession.period,
                                             pgg_private=C.ENDOWMENT - p.contribution,
                                             pgg_total_contribution=p.group.total_contribution,
-                                            pgg_earning=p.pgg_earning)
+                                            pgg_earning=p.pgg_earning,
+                                            is_pay_relevant= p.subsession.is_pay_relevant)
             pd_history.append(pd_round_result)
             pgg_history.append(pgg_round_result)
         player.pgg_sg_earning = round(pgg_tot_earning, 1)

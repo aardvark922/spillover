@@ -10,20 +10,28 @@
 
 
             {{ for pgg in pgg_history }}
-            <tr>
+            {{if pgg.is_pay_relevant}}
+            <tr class="pay-relevant">
                 <td style="width: 80px;"> {{ pgg.round_number }}</td>
                 <td><span>{{ pgg.pgg_private }}</span></td>
                 <td><span>{{ pgg.pgg_total_contribution }}</span></td>
                 <td><span>{{ pgg.pgg_earning }}</span></td>
             </tr>
-
+            {{else}}
+            <tr class="not-pay-relevant">
+                <td style="width: 80px;color: darkgrey"> {{ pgg.round_number }}</td>
+                <td style="color: darkgrey"><span>{{ pgg.pgg_private }}</span></td>
+                <td style="color: darkgrey"><span>{{ pgg.pgg_total_contribution }}</span></td>
+                <td style="color: darkgrey"><span>{{ pgg.pgg_earning }}</span></td>
+            </tr>
+            {{endif}}
             {{endfor}}
 
         </table>
     </div>
     <br>
-    <br>
-    Your total earnings in this match: {{pgg_sg_earning}}
+    <p>Your total earnings in this match: {{pgg_sg_earning}}</p>
+
 </div>
 
 <style>
@@ -42,8 +50,12 @@
         height: 30px;
     }
 
-    .table-pgghistory tr:nth-child(even) {
+    .table-pgghistory tr.pay-relevant:nth-child(even) {
         background-color: rgba(0, 0, 255, 0.1);
+    }
+
+    .table-pgghistory tr.not-pay-relevant:nth-child(even) {
+        background-color: rgba(211, 211, 211, 0.1);
     }
 
 </style>
