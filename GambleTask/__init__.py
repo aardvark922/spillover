@@ -119,9 +119,11 @@ class Stimuli(Page):
         else:
             player.participant.gamble_earning = selected_trial.lottery_low
         player.payoff = player.participant.gamble_earning/exchange_rate
+        pp = player.participant
+        pp.payoff = pp.quiz_earning/exchange_rate + pp.pgg_earning + pp.pd_earning + pp.gamble_earning/exchange_rate
 
 class WaitGambleTask(WaitPage):
-    body_text = "Waiting for other participants to finish their Task 2... Task 3 will start once everyone completes Task 2."
+    body_text = "Waiting for other participants to finish their Part 2... The next part will start once everyone completes Part 2."
     wait_for_all_groups = True  # Wait everyone to finish quiz questions
 
 class Results(Page):

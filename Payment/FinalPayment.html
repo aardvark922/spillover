@@ -11,7 +11,7 @@ Summary of earnings
 
 <div class="task1">
     <h5>Task 1 Earning</h5>
-    <p>Below shows a summary of your earnings in this task. The exchange rate is ${{conversion_rate}} points = $1.</p>
+    <p>Below shows a summary of your earnings in this task. The exchange rate is {{conversion_rate}} points = $1.</p>
     {{if two_game}}
     <div class="flex-container">
         <div class="flex-child magenta" style="background-color: aliceblue">
@@ -37,6 +37,7 @@ Summary of earnings
     <br>
     Your total earnings in Task 1 is therefore {{task1_earnings|to1}} and your payment for Task 1 is <b>{{task1_payment}}</b>.
 </div>
+<br>
 <h5>Task 2 Earning</h5>
 <p>You chose option {{participant.chosen_gamble}}. The random number was {{participant.random_num_gamble}}.
 
@@ -45,7 +46,7 @@ Summary of earnings
 
 <br>
 <h4>Total</h4>
-<u><p>Your final payment including the <b>{{participation_fee}} </b> participation fee is <b>{{payment}}</b>.</p></u>
+<u><p>Your final payment is <b>{{payment}}</b>.</p></u>
 
 <style>
     .flex-container {

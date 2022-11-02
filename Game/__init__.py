@@ -716,7 +716,7 @@ class MatchSummary(Page):
             participant.pgg_earning = pgg_earnings
             participant.pd_earning = pd_earnings
 
-            player.payoff = participant.pgg_earning + participant.pd_earning
+            # player.payoff = participant.pgg_earning + participant.pd_earning
 
 
 class FinalPayment(Page):
@@ -753,5 +753,5 @@ page_sequence = [Instructions,
                  ResultsWaitPage,
                  RoundResults,
                  BlockEnd,
-                 MatchSummary,
-                 FinalPayment]
+                 MatchSummary]
+                 # FinalPayment]

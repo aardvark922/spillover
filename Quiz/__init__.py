@@ -661,8 +661,20 @@ class Q6Result(Page):
 
     @staticmethod
     def before_next_page(player, timeout_happened):
-        participant = player.participant
-        participant.progress += 1
+        config=player.session.config
+        if config['sim']==1:
+            participant = player.participant
+            participant.progress += 1
+        elif config['pd_only']==0:
+            exchange_rate = player.session.config['real_world_currency_per_point']
+            correct_answers = player.num_correct
+            # store number of correct answers in participant field
+            player.participant.quiz_num_correct = correct_answers
+            dollar_payoff = correct_answers * Constants.quiz_payoff
+            player.payoff = dollar_payoff / exchange_rate
+            player.participant.payoff=dollar_payoff / exchange_rate
+            player.participant.quiz_earning = dollar_payoff
+
 
 
 class Q6_24(Page):
@@ -784,8 +796,13 @@ class Q7Result(Page):
 
     @staticmethod
     def before_next_page(player, timeout_happened):
-        participant = player.participant
-        participant.progress += 1
+        exchange_rate = player.session.config['real_world_currency_per_point']
+        correct_answers = player.num_correct
+        # store number of correct answers in participant field
+        player.participant.quiz_num_correct = correct_answers
+        dollar_payoff = correct_answers * Constants.quiz_payoff
+        player.payoff = dollar_payoff / exchange_rate
+        player.participant.quiz_earning = dollar_payoff
 
 
 class Q8(Page):
@@ -890,7 +907,7 @@ class Q9Result(Page):
 
 
 class WaitQuiz(WaitPage):
-    body_text = "Waiting for other participants to finish their quiz questions... Task 1 will start once everyone completes the quiz."
+    body_text = "Waiting for other participants to finish their quiz questions... Part 1 will start once everyone completes the quiz."
     wait_for_all_groups = True  # Wait everyone to finish quiz questions
 
     @staticmethod
