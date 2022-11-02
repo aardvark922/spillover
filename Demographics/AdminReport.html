@@ -1,0 +1,25 @@
+{% load otree static %}
+
+{% block title %}
+    Admin Report
+{% endblock %}
+
+{% block content %}
+
+
+
+    Here is the list of subjects and their payoffs <br><br>
+
+    {% for player in payoffs %}
+        {% for L in labels %}
+            {% if forloop.counter == forloop.parentloop.counter %}
+                Subject: {{ L }} <br>
+                Payoffs  then total: {{ player }} <br><br>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    <br><br>
+
+
+{% endblock %}

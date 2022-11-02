@@ -32,7 +32,8 @@ SESSION_CONFIGS = [
     dict(
         name='demographics',
         app_sequence=['Demographics'],
-        num_demo_participants=1
+        num_demo_participants=1,
+        sim=0,
     ),
     # dict(
     #     name='quiz_sim_easy',

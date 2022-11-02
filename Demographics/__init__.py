@@ -116,7 +116,33 @@ class Player(BasePlayer):
     understandingSelect = models.StringField(
         choices=['Clear', 'Somewhat Clear', 'Somewhat Confusing',
                  'Confusing'],
-        verbose_name='Clarity of Part 1 Instructions:', blank=True,
+        label='Clarity of Part 1 Instructions:', blank=True,
+    )
+    explainedText = models.LongStringField(
+        label='What could have been explained better?', blank=True, )
+
+    strategy0 = models.LongStringField(
+        blank=True,
+        label='What was your strategy during the experiment? (Please be specific)',
+    )
+    strategy1 = models.LongStringField(
+        blank=True,
+        label='Were your strategies in the first few matches different from the strategies '
+              'in the last few matches? If so, in what ways were they different? (Please be specific)',
+    )
+    strategy2 = models.LongStringField(
+        blank=True,
+        label='Were your strategies in Blue game influenced by your experience in the Green game (or the other way '
+              'around)?  (Please be specific)',
+    )
+    strategy3 = models.LongStringField(
+        blank=True,
+        label='Where you surprised by any of the decisions by the participants you were matched with? '
+                     '(Please be specific)',
+    )
+    review = models.LongStringField(
+        blank=True,
+        label='If you have any comments about this experiment, please enter below.'
     )
 
 
@@ -133,18 +159,41 @@ def vars_for_admin_report(subsession: Subsession):
 # PAGES
 class Demographics(Page):
     form_model = 'player'
-    form_fields = [
-        'age',
-        'gender',
-        'field_of_study',
-        'country',
-        'length_in_US',
-        'race',
-        'gpa',
-        'years_at_uni',
-        'num_exper',
-        'understandingSelect'
-    ]
+
+    def get_form_fields(player: Player):
+        if player.session.config['sim'] == 1:
+            return ['age',
+                    'gender',
+                    'field_of_study',
+                    'country',
+                    'length_in_US',
+                    'race',
+                    'gpa',
+                    'years_at_uni',
+                    'num_exper',
+                    'understandingSelect',
+                    'explainedText',
+                    'strategy0',
+                    'strategy1',
+                    'strategy2',
+                    'strategy3',
+                    'review']
+        else:
+            return ['age',
+                    'gender',
+                    'field_of_study',
+                    'country',
+                    'length_in_US',
+                    'race',
+                    'gpa',
+                    'years_at_uni',
+                    'num_exper',
+                    'understandingSelect',
+                    'explainedText',
+                    'strategy0',
+                    'strategy1',
+                    'strategy3',
+                    'review']
 
     ## this doesn't work...
     # def length_in_US_choices(self):

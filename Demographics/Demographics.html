@@ -7,17 +7,7 @@
 
 {% block content %}
 
-    {% formfield player.age %}
-    {% formfield player.gender %}
-    {% formfield player.field_of_study %}
-    {% formfield player.country %}
-    {% formfield player.length_in_US %}
-    {% formfield player.race %}
-    {% formfield player.gpa %}
-    {% formfield player.years_at_uni %}
-    {% formfield player.num_exper %}
-{{formfield player.understandingSelect}}
-
+{{formfields}}
     {% next_button %}
 <style>
     .otree-btn-next {
