@@ -15,7 +15,7 @@ class Constants(BaseConstants):
     pd_explanation_template = __name__ + '/pd_question_explanation.html'
     die_roll_template = __name__ + '/block_dierolls_example.html'
     true_false_choices = [(1, 'True'), (0, 'False')]
-    quiz_payoff = 0.25  # each correct answer worths 0.5USD
+    quiz_payoff = 0.5  # each correct answer worths 0.5USD
     error_message = "Error message: You are not supposed to change your selection of choice at result page. The change of selection" \
                     " won't change your earning from quiz. If you see this error message, please change your answer back " \
                     "to your original one."
@@ -234,8 +234,7 @@ def creating_session(subsession: Subsession):
     if subsession.session.config['sim'] == 1:
         subsession.max_progress = 7
     else:
-        if subsession.session.config['pd_only'] == 0:
-            subsession.max_progress = 4
+        subsession.max_progress = 4
     if subsession.session.config['easy'] == 1:
         subsession.both_cooperate_payoff = Constants.ez_both_cooperate_payoff
     else:
@@ -323,20 +322,11 @@ class Q1Result(Page):
 
 class Q2(Page):
     form_model = 'player'
-    # form_fields = ['Q2_response']
+    form_fields = ['Q2_response']
 
     @staticmethod
-    def get_form_fields(player: Player):
-        session_config=player.session.config
-        if session_config['sim']==1:
-            return ['Q2_response']
-        else:
-            if session_config['pd_only']==1:
-                return['Q2_pd_response']
-            else:
-                return['Q2_pgg_response']
-    #TODO: pgg, pd, sim treatment specific questions
-
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -346,37 +336,34 @@ class Q2(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         fields = get_quiz_data()
-        fields_additional = get_quiz_data_additional()
         session_config=player.session.config
-        if session_config['sim']==1:
-            if player.Q2_response == fields[1]['solution']:
-                player.Q2_correct = True
-                player.num_correct += 1
-            else:
-                player.Q2_correct = False
+        if player.Q2_response == fields[1]['solution']:
+            player.Q2_correct = True
+            player.num_correct += 1
         else:
-            if session_config['pd_only']==0:
-                if player.Q2_pgg_response == fields[0]['solution']:
-                    player.Q2_correct = True
-                    player.num_correct += 1
-                else:
-                    player.Q2_correct = False
-            else:
-                if player.Q2_pd_response == fields[1]['solution']:
-                    player.Q2_correct = True
-                    player.num_correct += 1
-                else:
-                    player.Q2_correct = False
+            player.Q2_correct = False
+        # else:
+        #     if session_config['pd_only']==0:
+        #         if player.Q2_pgg_response == fields[0]['solution']:
+        #             player.Q2_correct = True
+        #             player.num_correct += 1
+        #         else:
+        #             player.Q2_correct = False
+        #     else:
+        #         if player.Q2_pd_response == fields[1]['solution']:
+        #             player.Q2_correct = True
+        #             player.num_correct += 1
+        #         else:
+        #             player.Q2_correct = False
 
 
 class Q2Result(Page):
     form_model = 'player'
     form_fields = ['Q2_response']
 
-    # Only show this question to ss if they are in random matching treatment
-    # @staticmethod
-    # def is_displayed(player: Player):
-    #     return player.session.config['fixed_matching'] == 0
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim'] == 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -396,14 +383,14 @@ class Q2Result(Page):
         participant.progress += 1
 
 
-class Q2_Fixed(Page):
+class Q2_Pgg(Page):
     form_model = 'player'
-    form_fields = ['Q2_response']
+    form_fields = ['Q2_pgg_response']
 
     # Only show this question to ss if they are in random matching treatment
     @staticmethod
     def is_displayed(player: Player):
-        return player.session.config['fixed_matching'] == 1
+        return player.session.config['sim']==0 and player.session.config['pd_only'] == 0
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -413,21 +400,21 @@ class Q2_Fixed(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         fields = get_quiz_data_additional()
-        if player.Q2_response == fields[0]['solution']:
+        if player.Q2_pgg_response == fields[0]['solution']:
             player.Q2_correct = True
             player.num_correct += 1
         else:
             player.Q2_correct = False
 
 
-class Q2Result_Fixed(Page):
+class Q2Result_Pgg(Page):
     form_model = 'player'
-    form_fields = ['Q2_response']
+    form_fields = ['Q2_pgg_response']
 
     # Only show this question to ss if they are in random matching treatment
     @staticmethod
     def is_displayed(player: Player):
-        return player.session.config['fixed_matching'] == 1
+        return player.session.config['sim']==0 and player.session.config['pd_only'] == 0
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -446,6 +433,55 @@ class Q2Result_Fixed(Page):
         participant = player.participant
         participant.progress += 1
 
+class Q2_Pd(Page):
+    form_model = 'player'
+    form_fields = ['Q2_pd_response']
+
+    # Only show this question to ss if they are in random matching treatment
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim']==0 and player.session.config['pd_only'] == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        fields = get_quiz_data_additional()
+        return dict(fields=fields, show_solutions=False)
+
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        fields = get_quiz_data_additional()
+        if player.Q2_pd_response == fields[1]['solution']:
+            player.Q2_correct = True
+            player.num_correct += 1
+        else:
+            player.Q2_correct = False
+
+
+class Q2Result_Pd(Page):
+    form_model = 'player'
+    form_fields = ['Q2_pd_response']
+
+    # Only show this question to ss if they are in random matching treatment
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.session.config['sim']==0 and player.session.config['pd_only'] == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        fields = get_quiz_data_additional()
+        return dict(show_solutions=True, Q2=fields[1])
+
+    @staticmethod
+    def error_message(player: Player, values):
+        # show error message if subject attempt to change their answer
+        for field in values:
+            if getattr(player, field) != values[field]:
+                return Constants.error_message
+
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        participant = player.participant
+        participant.progress += 1
 
 class Q3(Page):
     form_model = 'player'
@@ -865,11 +901,11 @@ class WaitQuiz(WaitPage):
 page_sequence = [Instructions,
                  Q1, Q1Result,
                  Q2, Q2Result,
-                 # Q2_Fixed, Q2Result_Fixed,
+                 Q2_Pgg, Q2Result_Pgg,
+                 Q2_Pd, Q2Result_Pd,
                  Q3, Q3Result,
                  Q4, Q4Result,
                  Q5, Q5Result,
                  Q6, Q6Result,
-                 # Q6_24, Q6Result_24,
                  Q7, Q7Result,
                  WaitQuiz]
