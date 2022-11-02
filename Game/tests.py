@@ -14,7 +14,7 @@ class PlayerBot(Bot):
             # yield Decision, dict(contribution= random.randint(1, 25),
             #                      pd_decision= random.randint(0, 1))
             #
-            yield Decision, dict(contribution=random.randint(15, 20),
+            yield Decision, dict(contribution=random.randint(15, 23),
                                  # bots choose 1 with 80% probability
                                  pd_decision=random.choices([0, 1], weights=(20, 80), k=1)[0])
             yield RoundResults
