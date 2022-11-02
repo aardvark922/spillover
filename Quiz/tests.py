@@ -11,10 +11,12 @@ class PlayerBot(Bot):
         config=self.player.session.config
         yield Instructions
         if config['sim'] == 1:
-            yield (Q1, {'Q1_response': random.randint(0, 1)})
+            # yield (Q1, {'Q1_response': random.randint(0, 1)})
+            yield (Q1, {'Q1_response': 0})
             yield (Q1Result)
         if config['sim']==1:
-            yield (Q2, {'Q2_response': random.randint(0, 1)})
+            # yield (Q2, {'Q2_response': random.randint(0, 1)})
+            yield (Q2, {'Q2_response': 1})
             yield (Q2Result)
         elif config['sim']==0 and config['pd_only']==0:
             yield (Q2_Pgg, {'Q2_pgg_response': random.randint(0, 1)})
@@ -22,10 +24,12 @@ class PlayerBot(Bot):
         else:
             yield (Q2_Pd, {'Q2_pd_response': random.randint(0, 1)})
             yield (Q2Result_Pd)
-        yield (Q3, {'Q3_response': random.randint(0, 1)})
+        # yield (Q3, {'Q3_response': random.randint(0, 1)})
+        yield (Q3, {'Q3_response': 1})
         yield (Q3Result)
         if config['sim'] == 1:
-            yield (Q4, {'Q4_response': random.randint(0, 1)})
+            # yield (Q4, {'Q4_response': random.randint(0, 1)})
+            yield (Q4, {'Q4_response': 1})
             yield (Q4Result)
         yield (Q5, {'Q5_response': random.randint(1, 4)})
         yield (Q5Result)

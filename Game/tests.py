@@ -14,9 +14,9 @@ class PlayerBot(Bot):
             # yield Decision, dict(contribution= random.randint(1, 25),
             #                      pd_decision= random.randint(0, 1))
             #
-            yield Decision, dict(contribution=random.randint(5, 13),
+            yield Decision, dict(contribution=random.randint(15, 20),
                                  # bots choose 1 with 80% probability
-                                 pd_decision=random.choices([0, 1], weights=(40, 60), k=1)[0])
+                                 pd_decision=random.choices([0, 1], weights=(20, 80), k=1)[0])
             yield RoundResults
             if self.player.subsession.is_bk_last_period == 1:
                 yield BlockEnd
