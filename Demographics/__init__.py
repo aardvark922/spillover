@@ -152,7 +152,7 @@ def vars_for_admin_report(subsession: Subsession):
     payoffs = []
     for p in subsession.get_players():
         labels.append(p.participant.label)
-        payoffs.append(p.participant.vars['payoffs'])
+        payoffs.append(p.participant.payoffs)
     return dict(labels=labels, payoffs=payoffs)
 
 

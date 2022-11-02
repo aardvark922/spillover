@@ -127,6 +127,7 @@ def get_quiz_data_additional():
     ]
 
 
+
 class Subsession(BaseSubsession):
     both_cooperate_payoff = models.IntegerField()
     max_progress = models.IntegerField()
@@ -240,6 +241,20 @@ def creating_session(subsession: Subsession):
     else:
         subsession.both_cooperate_payoff = Constants.dt_both_cooperate_payoff
 
+# def vars_for_admin_report(subsession: Subsession):
+#     labels = []
+#     payoffs = []
+#     for p in subsession.get_players():
+#         labels.append(p.participant.label)
+#         payoffs.append(p.participant.payoffs)
+#     return dict(labels=labels, payoffs=payoffs)
+#
+# def vars_for_admin_report(subsession):
+#     payoffs = sorted([p.payoff for p in subsession.get_players()])
+#     labels = []
+#     for p in subsession.get_players():
+#         labels.append(p.participant.label)
+#     return dict(payoffs=payoffs, labels = labels)
 
 # choices of Q7 changes according to easy PD and difficult PD
 def Q7_response_choices(player):

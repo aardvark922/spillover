@@ -24,44 +24,44 @@ SESSION_CONFIGS = [
         doc="""program for simultaneous treatment with easy pd"""
 
     ),
-    dict(
-        name='gamble_task',
-        app_sequence=['GambleTask'],
-        num_demo_participants=1
-    ),
-    dict(
-        name='demographics',
-        app_sequence=['Demographics'],
-        num_demo_participants=1,
-        sim=0,
-    ),
-    dict(
-        name='quiz_sim_easy',
-        app_sequence=['Quiz'],
-        num_demo_participants=1,
-        easy=1,
-        sim=1,
-        pd_only=0,
-        same_group=0,
-    ),
-    dict(
-        name='quiz_pgg',
-        app_sequence=['Quiz'],
-        num_demo_participants=1,
-        easy=0,
-        sim=0,
-        pd_only=0,
-        same_group=0,
-    ),
-    dict(
-        name='quiz_pd',
-        app_sequence=['Quiz'],
-        num_demo_participants=1,
-        easy=0,
-        sim=0,
-        pd_only=1,
-        same_group=0,
-    ),
+    # dict(
+    #     name='gamble_task',
+    #     app_sequence=['GambleTask'],
+    #     num_demo_participants=1
+    # ),
+    # dict(
+    #     name='demographics',
+    #     app_sequence=['Demographics'],
+    #     num_demo_participants=1,
+    #     sim=0,
+    # ),
+    # dict(
+    #     name='quiz_sim_easy',
+    #     app_sequence=['Quiz'],
+    #     num_demo_participants=1,
+    #     easy=1,
+    #     sim=1,
+    #     pd_only=0,
+    #     same_group=0,
+    # ),
+    # dict(
+    #     name='quiz_pgg',
+    #     app_sequence=['Quiz'],
+    #     num_demo_participants=1,
+    #     easy=0,
+    #     sim=0,
+    #     pd_only=0,
+    #     same_group=0,
+    # # ),
+    # dict(
+    #     name='quiz_pd',
+    #     app_sequence=['Quiz'],
+    #     num_demo_participants=1,
+    #     easy=0,
+    #     sim=0,
+    #     pd_only=1,
+    #     same_group=0,
+    # ),
     dict(
         name='main_task_pd_easy',
         app_sequence=['Game'],
@@ -109,7 +109,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=0.00, doc="",use_browser_bots=True
+    real_world_currency_per_point=0.0025, participation_fee=0.00, doc=""
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',
