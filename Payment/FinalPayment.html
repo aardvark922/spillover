@@ -8,8 +8,10 @@ Summary of earnings
 <p>You have correctly answered {{quiz_num_correct}} questions. Your earnings from the quiz is
     <b>${{quiz_earning|to2}}</b>.
 </p>
+
 <div class="task1">
     <h5>Task 1 Earning</h5>
+    <p>Below shows a summary of your earnings in this task. The exchange rate is ${{conversion_rate}} points = $1.</p>
     {{if two_game}}
     <div class="flex-container">
         <div class="flex-child magenta" style="background-color: aliceblue">
@@ -33,8 +35,7 @@ Summary of earnings
     </div>
     {{endif}}
     <br>
-    Your total earnings in Task 1 is therefore {{task1_earnings|to1}}.
-     <br>The exchange rate is 1 point = ${{conversion_rate}}.So, your earnings for Task 1 is <b>{{task1_payment}}</b>.
+    Your total earnings in Task 1 is therefore {{task1_earnings|to1}} and your payment for Task 1 is <b>{{task1_payment}}</b>.
 </div>
 <h5>Task 2 Earning</h5>
 <p>You chose option {{participant.chosen_gamble}}. The random number was {{participant.random_num_gamble}}.
@@ -42,9 +43,6 @@ Summary of earnings
     So your payoff is <b>${{gamble_payment|to2}}</b>.
 </p>
 
-<h5>Task 3 Earning</h5>
-<p>Decision {{participant.selected_round_SVO}} is randomly chosen and your role was {{participant.role_SVO}}. Your
-    payoff for that decision is <b>${{SVO_payment|to2}}</b>.</p>
 <br>
 <h4>Total</h4>
 <u><p>Your final payment including the <b>{{participation_fee}} </b> participation fee is <b>{{payment}}</b>.</p></u>

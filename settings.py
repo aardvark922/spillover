@@ -15,7 +15,7 @@ SESSION_CONFIGS = [
     ),
     dict(
         name='treatment_sim_easy',
-        app_sequence=['Quiz','Game'],
+        app_sequence=['Quiz','Game','GambleTask','Demographics','Payment'],
         num_demo_participants=8,
         easy=1,
         sim=1,
@@ -109,7 +109,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=5.00, doc=""
+    real_world_currency_per_point=0.0025, participation_fee=5.00, doc="",use_browser_bots=True
 )
 # use_browser_bots=True
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',
