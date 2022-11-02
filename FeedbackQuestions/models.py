@@ -13,7 +13,7 @@ Post-experimental Questionnaire.
 
 
 class Constants(BaseConstants):
-    name_in_url = 'TeamsQueue_08_FeedbackQuestions'
+    name_in_url = 'FeedbackQuestions'
     players_per_group = None
     num_rounds = 1
 

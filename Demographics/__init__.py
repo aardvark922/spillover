@@ -1,6 +1,5 @@
 from otree.api import *
 
-
 author = 'Your name here'
 doc = """
 Simple Demographic Questionnaire
@@ -114,6 +113,12 @@ class Player(BasePlayer):
         label='How many economics experiments have you participated in before this one?',
     )
 
+    understandingSelect = models.StringField(
+        choices=['Clear', 'Somewhat Clear', 'Somewhat Confusing',
+                 'Confusing'],
+        verbose_name='Clarity of Part 1 Instructions:', blank=True,
+    )
+
 
 # FUNCTIONS
 def vars_for_admin_report(subsession: Subsession):
@@ -138,7 +143,9 @@ class Demographics(Page):
         'gpa',
         'years_at_uni',
         'num_exper',
+        'understandingSelect'
     ]
+
     ## this doesn't work...
     # def length_in_US_choices(self):
     #     if self.player.country == 1:
