@@ -363,6 +363,11 @@ def get_block_history(player: Player):
 
 
 # PAGES
+
+class Instructions(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number==1
 class NewSupergame(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -740,7 +745,8 @@ class FinalPayment(Page):
         )
 
 
-page_sequence = [NewSupergame,
+page_sequence = [Instructions,
+                 NewSupergame,
                  Decision,
                  DecisionSingle,
                  ResultsWaitPage,

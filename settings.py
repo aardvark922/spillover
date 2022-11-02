@@ -24,6 +24,16 @@ SESSION_CONFIGS = [
         doc="""program for simultaneous treatment with easy pd"""
 
     ),
+    dict(
+        name='gamble_task',
+        app_sequence=['GambleTask'],
+        num_demo_participants=1
+    ),
+    dict(
+        name='demographics',
+        app_sequence=['Demographics'],
+        num_demo_participants=1
+    ),
     # dict(
     #     name='quiz_sim_easy',
     #     app_sequence=['Quiz'],
