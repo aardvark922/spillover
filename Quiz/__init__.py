@@ -323,7 +323,7 @@ class Q1Result(Page):
 
 class Q2(Page):
     form_model = 'player'
-    form_fields = ['Q2_response']
+    # form_fields = ['Q2_response']
 
     @staticmethod
     def get_form_fields(player: Player):
@@ -346,11 +346,27 @@ class Q2(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         fields = get_quiz_data()
-        if player.Q2_response == fields[1]['solution']:
-            player.Q2_correct = True
-            player.num_correct += 1
+        fields_additional = get_quiz_data_additional()
+        session_config=player.session.config
+        if session_config['sim']==1:
+            if player.Q2_response == fields[1]['solution']:
+                player.Q2_correct = True
+                player.num_correct += 1
+            else:
+                player.Q2_correct = False
         else:
-            player.Q2_correct = False
+            if session_config['pd_only']==0:
+                if player.Q2_pgg_response == fields[0]['solution']:
+                    player.Q2_correct = True
+                    player.num_correct += 1
+                else:
+                    player.Q2_correct = False
+            else:
+                if player.Q2_pd_response == fields[1]['solution']:
+                    player.Q2_correct = True
+                    player.num_correct += 1
+                else:
+                    player.Q2_correct = False
 
 
 class Q2Result(Page):
