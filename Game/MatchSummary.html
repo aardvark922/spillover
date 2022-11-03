@@ -22,7 +22,7 @@ Match {{ subsession.sg }} - Summary
     <br>
 </div>
 {{elif pd_only}}
-<div class="content-1">
+
 
     <div class="pd-summary">
         <p>Below shows match history up to round {{end_period}}.</p>
@@ -30,9 +30,9 @@ Match {{ subsession.sg }} - Summary
         <br>
     </div>
     <br>
-</div>
+
 {{else}}
-<div class="content-1">
+
     <div class="pgg-summary">
         <p>Below shows match history up to round {{end_period}}.</p>
         {{include C.pgg_summary_template}}
@@ -40,7 +40,7 @@ Match {{ subsession.sg }} - Summary
     </div>
     <br>
 
-</div>
+
 {{endif}}
 <button class="otree-btn-next btn btn-primary">Next Match</button>
 <style>
@@ -70,6 +70,13 @@ Match {{ subsession.sg }} - Summary
     .content-1 {
         overflow: auto;
     }
+
+    .pgg-summary{
+           height: auto;
+           margin-left: 25%;
+        margin-right: 25%;
+    }
+
 
 
     .pd-summary {

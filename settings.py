@@ -120,9 +120,11 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=0.00, doc=""
+    real_world_currency_per_point=0.0025, participation_fee=5.00, doc="",use_browser_bots=True
 )
 # use_browser_bots=True
+#400: real_world_currency_per_point=0.0025
+#200: real_world_currency_per_point=0.005
 PARTICIPANT_FIELDS = ['quiz_num_correct', 'quiz_earning', 'progress',
                       'pgg_earning', 'pd_earning', 'task1_history','chosen_gamble', 'random_num_gamble', 'gamble_earning',
                       'selected_round_SVO', 'role_SVO', 'SVO_earning']

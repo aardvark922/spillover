@@ -2,11 +2,12 @@
 Match {{ subsession.sg }}
 {{ endblock }}
 {{ block content }}
-<div class="instruction">
 
 
-    <p>A new match has started!</p>
+
+    <p style="text-align: center">A new match has started!</p>
     {{if two_game}}
+<div class="instruction">
     <p>You have been randomly matched with four participants.
         <br>
         You will interact with three of them in the <span style="color: darkblue">Blue Game</span>, and the remaining
@@ -25,18 +26,30 @@ Match {{ subsession.sg }}
 
         </div>
     </div>
+    </div>
+
     {{elif pd_only}}
-     <p>You have been randomly matched with another participant. You will interact with this participant for this match.</p>
-    {{else}}
-         <p>You have been randomly matched with three participants. You will interact with them for this match</p>
+<div class="instruction-single">
+        <p>You have been randomly matched with another participant. You will interact with this participant for this
+            match.</p>
+    </div>
+        {{else}}
+    <div class="instruction-single">
+        <p>You have been randomly matched with three participants. You will interact with them for this match.</p>
+    </div>
     {{endif}}
-</div>
+
 <br>
 <button class="otree-btn-next btn btn-primary">Next</button>
 <style>
 
     .instruction {
         text-align: left;
+    }
+
+    .instruction-single {
+        margin: auto;
+        width: 70%;
     }
 
     .otree-btn-next {
@@ -68,7 +81,7 @@ Match {{ subsession.sg }}
         margin-right: 20px;
     }
 
-        .otree-body {
+    .otree-body {
         max-width: 1200px;
     }
 

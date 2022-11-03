@@ -22,7 +22,8 @@ Summary of earnings
             {{include C.pd_earnings_template}}
         </div>
     </div>
-
+<br>
+    <p>Your total earnings in Part 1 is therefore {{task1_earnings|to1}} and your payment for Part 1 is <b>{{task1_payment}}</b>.</p>
     {{elif pd_only}}
     <div>
         {{include C.pd_earnings_template}}
@@ -34,7 +35,7 @@ Summary of earnings
     </div>
     {{endif}}
     <br>
-    <p>Your total earnings in Part 1 is therefore {{task1_earnings|to1}} and your payment for Part 1 is <b>{{task1_payment}}</b>.</p>
+    <p>Your payment for Part 1 is <b>{{task1_payment}}</b>.</p>
 </div>
 
 <h5>Part 2 Earning</h5>
@@ -44,7 +45,7 @@ Summary of earnings
 </p>
 
 <h4>Total</h4>
-<u><p>Your final payment is <b>{{payment}}</b>(rounded up to the nearest quarter).</p></u>
+<u><p>Your final payment {{if not two_game}} including {{participation_fee}} {{endif}} is <b>{{payment}}</b>(rounded up to the nearest quarter).</p></u>
 
 <div class="Final Instruction">
     We will start payments shortly. Please wait quietly at your seat and fill in the paymemt log on your desk.
