@@ -54,11 +54,11 @@ class C(BaseConstants):
     BLOCK_SIZE = int(1 / (1 - DELTA))
 
     # for app building
-    # COUNT_ROUNDS_PER_SG = [5, 1]
+    COUNT_ROUNDS_PER_SG = [5, 1]
     # COUNT_ROUNDS_PER_SG = [5, 1, 4, 1, 2]
     # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9]
     # Dal Bo&Frechette one sequence
-    COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
+    # COUNT_ROUNDS_PER_SG = [1, 4, 4, 1, 2, 5, 8, 5, 3, 9, 7, 1, 8, 2, 1, 3, 4, 3, 10, 4]
 
     NUM_SG = len(COUNT_ROUNDS_PER_SG)
     # print('number of matches,', NUM_SG)
@@ -376,7 +376,8 @@ class NewSupergame(Page):
         return subsession.period == 1
 
     def vars_for_template(player: Player):
-        return dict(two_game=player.session.config['sim'])
+        return dict(two_game=player.session.config['sim'],
+                    pd_only=player.session.config['pd_only'] )
 
 
 class Decision(Page):
@@ -459,7 +460,10 @@ class DecisionSingle(Page):
             # pd_selected_match=player.subsession.session.vars['pd_payment_match'],
             pd_only=player.session.config['pd_only']
         )
-
+    @staticmethod
+    def js_vars(player: Player):
+        return dict(Endowment=C.ENDOWMENT,
+                    MPCR=C.MPCR)
 
 class ResultsWaitPage(WaitPage):
     # add the following line of code to wait all players in a subsession

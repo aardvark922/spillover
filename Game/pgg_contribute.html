@@ -1,6 +1,8 @@
 <div>
-    <div class="dropdown">
-        <button id="myBtn" class="dropbtn" type="button" onclick="showInstruction()">Rules</button>
+    <div class="dropdown-instructions">
+        <button id="myBtn-instructions" class="dropbtn-instructions" type="button" onclick="showInstruction()">Rules
+        </button>
+        {{ include C.pgg_calculator_template }}
         <div id="pgg-instructions" class="instruction-content">
             <a><i>You are in a group of 4 participants, you and the 3 participants in your match. At the start of each
                 round, each individual will be endowed with <b>25</b> tokens. In each round, each individual must
@@ -21,8 +23,27 @@
 
 </div>
 
+<script>
+    function showInstruction() {
+        document.getElementById("pgg-instructions").classList.toggle("show");
+    }
+</script>
 <style>
-    .instruction-pgg {
+    .dropbtn-instructions {
+        background-color: cornflowerblue;
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    .dropbtn-instructions:hover, .dropbtn-instructions:focus {
+        background-color: darkslateblue;
+    }
+
+    .instruction-content {
         border: 1px solid black;
         padding: 1px
     }
@@ -44,10 +65,8 @@
         text-decoration: none;
         display: block;
     }
+        .show {
+        display: block;
+    }
 </style>
 
-<script>
-    function showInstruction() {
-        document.getElementById("pgg-instructions").classList.toggle("show");
-    }
-</script>

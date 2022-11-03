@@ -1,6 +1,6 @@
-<div class="dropdown">
-    <button id="myBtn" class="dropbtn" type="button" onclick="showCalculator()">Payoff Calculator</button>
-    <div id="myDropdown" class="dropdown-content">
+<div class="dropdown-calculator">
+    <button id="myBtn-calculator" class="dropbtn-calculator" type="button" onclick="showCalculator()">Payoff Calculator</button>
+    <div id="myDropdown-calculator" class="dropdown-calculator-content">
         <a># tokens I move to the <i>Group Account</i>: <input type="number" id="calc-contribution" max="25" min="0"></a>
         <a># tokens the other 3 move to the <i>Group Account</i>: <input type="number" id="calc-groupOther" max="75" min="0"></a>
         <a style="text-decoration: underline">My <i>Private Account</i> earnings: <span id="private-earn"></span></a>
@@ -16,7 +16,7 @@
 
     /* myFunction toggles between adding and removing the show class, which is used to hide and show the dropdown content */
     function showCalculator() {
-        document.getElementById("myDropdown").classList.toggle("show");
+        document.getElementById("myDropdown-calculator").classList.toggle("show");
     }
 
   //   function showCalculator() {
@@ -60,7 +60,7 @@
 
 
 <style>
-    .dropbtn {
+    .dropbtn-calculator {
         background-color: cornflowerblue;
         color: white;
         padding: 10px;
@@ -70,16 +70,16 @@
         cursor: pointer;
     }
 
-    .dropbtn:hover, .dropbtn:focus {
+    .dropbtn-calculator:hover, .dropbtn-calculator:focus {
         background-color: darkslateblue;
     }
 
-    .dropdown {
+    .dropdown-calculator{
         position: relative;
         display: inline-block;
     }
 
-    .dropdown-content {
+    .dropdown-calculator-content {
         display: none;
         position: absolute;
         background-color: #f9f9f9;
@@ -90,7 +90,7 @@
         line-height: 75%;
     }
 
-    .dropdown-content a {
+    .dropdown-calculator-content a {
         color: black;
         padding: 12px 12px;
         text-decoration: none;

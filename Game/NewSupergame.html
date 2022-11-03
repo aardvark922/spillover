@@ -25,6 +25,10 @@ Match {{ subsession.sg }}
 
         </div>
     </div>
+    {{elif pd_only}}
+     <p>You have been randomly matched with another participant. You will interact with this participant for this match.</p>
+    {{else}}
+         <p>You have been randomly matched with three participants. You will interact with them for this match</p>
     {{endif}}
 </div>
 <br>

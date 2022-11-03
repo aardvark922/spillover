@@ -17,9 +17,20 @@ SESSION_CONFIGS = [
         name='treatment_sim_easy',
         app_sequence=['Quiz','Game','GambleTask','Demographics','Payment'],
         num_demo_participants=8,
-        easy=1,
         sim=1,
         pd_only=0,
+        easy=1,
+        same_group=0,
+        doc="""program for simultaneous treatment with easy pd"""
+
+    ),
+    dict(
+        name='treatment_pgg',
+        app_sequence=['Quiz', 'Game', 'GambleTask', 'Demographics', 'Payment'],
+        num_demo_participants=8,
+        sim=0,
+        pd_only=0,
+        easy=0,
         same_group=0,
         doc="""program for simultaneous treatment with easy pd"""
 
