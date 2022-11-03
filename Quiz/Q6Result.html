@@ -25,7 +25,7 @@
 {{ endif }}
 {{ endif }}
 
-<button class="otree-btn-next btn btn-primary">Next Question</button>
+<button class="otree-btn-next btn btn-primary">{{if sim}}Next Question{{else}}Next{{endif}}</button>
 
 <style>
     /* we use this instead of setting 'disabled' because disabled inputs don't get

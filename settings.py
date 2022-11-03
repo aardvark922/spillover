@@ -55,15 +55,15 @@ SESSION_CONFIGS = [
     #     pd_only=0,
     #     same_group=0,
     # ),
-    # dict(
-    #     name='quiz_pgg',
-    #     app_sequence=['Quiz'],
-    #     num_demo_participants=1,
-    #     easy=0,
-    #     sim=0,
-    #     pd_only=0,
-    #     same_group=0,
-    # # ),
+    dict(
+        name='quiz_pgg',
+        app_sequence=['Quiz'],
+        num_demo_participants=1,
+        easy=0,
+        sim=0,
+        pd_only=0,
+        same_group=0,
+    ),
     # dict(
     #     name='quiz_pd',
     #     app_sequence=['Quiz'],
@@ -120,7 +120,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=5.00, doc="",use_browser_bots=True
+    real_world_currency_per_point=0.0025, participation_fee=5.00, doc=""
 )
 # use_browser_bots=True
 #400: real_world_currency_per_point=0.0025
