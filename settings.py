@@ -143,7 +143,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=0.00, doc="",use_browser_bots=True
+    real_world_currency_per_point=0.0025, participation_fee=0.00, doc=""
 )
 # use_browser_bots=True
 #400: real_world_currency_per_point=0.0025
