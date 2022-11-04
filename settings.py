@@ -1,16 +1,28 @@
 from os import environ
 
 SESSION_CONFIGS = [
+    # dict(
+    #     name='main_task_sim_easy',
+    #     app_sequence=['Game'],
+    #     num_demo_participants=8,
+    #     easy=1,
+    #     sim=1,
+    #     pd_only=0,
+    #     same_group=0,
+    #     doc="""
+    #     This is the oTree program for treatment with both games"""
+    #
+    # ),
     dict(
-        name='main_task_sim_easy',
+        name='main_task_sim_difficult',
         app_sequence=['Game'],
         num_demo_participants=8,
-        easy=1,
+        easy=0,
         sim=1,
         pd_only=0,
         same_group=0,
         doc="""
-        This is the oTree program for treatment with both games"""
+    This is the oTree program for treatment with both games"""
 
     ),
     dict(
@@ -25,6 +37,17 @@ SESSION_CONFIGS = [
 
     ),
     dict(
+        name='treatment_sim_difficult',
+        app_sequence=['Quiz', 'Game', 'GambleTask', 'Demographics', 'Payment'],
+        num_demo_participants=8,
+        sim=1,
+        pd_only=0,
+        easy=0,
+        same_group=0,
+        doc="""program for simultaneous treatment with difficult pd"""
+
+    ),
+    dict(
         name='treatment_pgg',
         app_sequence=['Quiz', 'Game', 'GambleTask', 'Demographics', 'Payment'],
         num_demo_participants=8,
@@ -32,7 +55,7 @@ SESSION_CONFIGS = [
         pd_only=0,
         easy=0,
         same_group=0,
-        doc="""program for simultaneous treatment with easy pd"""
+        doc="""program for simultaneous treatment with pgg only"""
 
     ),
     # dict(
@@ -47,25 +70,25 @@ SESSION_CONFIGS = [
     #     sim=0,
     # ),
     # dict(
-    #     name='quiz_sim_easy',
+    #     name='quiz_sim_difficult',
     #     app_sequence=['Quiz'],
     #     num_demo_participants=1,
-    #     easy=1,
+    #     easy=0,
     #     sim=1,
     #     pd_only=0,
     #     same_group=0,
     # ),
-    dict(
-        name='quiz_pgg',
-        app_sequence=['Quiz'],
-        num_demo_participants=1,
-        easy=0,
-        sim=0,
-        pd_only=0,
-        same_group=0,
-    ),
     # dict(
-    #     name='quiz_pd',
+    #     name='quiz_pgg',
+    #     app_sequence=['Quiz'],
+    #     num_demo_participants=1,
+    #     easy=0,
+    #     sim=0,
+    #     pd_only=0,
+    #     same_group=0,
+    # ),
+    # dict(
+    #     name='quiz_pd_easy',
     #     app_sequence=['Quiz'],
     #     num_demo_participants=1,
     #     easy=0,
@@ -73,28 +96,28 @@ SESSION_CONFIGS = [
     #     pd_only=1,
     #     same_group=0,
     # ),
-    dict(
-        name='main_task_pd_easy',
-        app_sequence=['Game'],
-        num_demo_participants=8,
-        easy=1,
-        sim=0,
-        pd_only=1,
-        same_group=0,
-        doc="""
-        This is the oTree program for treatment with easy PD game only"""
-    ),
-    dict(
-        name='main_task_pd_difficult',
-        app_sequence=['Game'],
-        num_demo_participants=8,
-        easy=0,
-        sim=0,
-        pd_only=1,
-        same_group=0,
-        doc="""
-    This is the oTree program for treatment with easy PD game only"""
-    ),
+    # dict(
+    #     name='main_task_pd_easy',
+    #     app_sequence=['Game'],
+    #     num_demo_participants=8,
+    #     easy=1,
+    #     sim=0,
+    #     pd_only=1,
+    #     same_group=0,
+    #     doc="""
+    #     This is the oTree program for treatment with easy PD game only"""
+    # ),
+    # dict(
+    #     name='main_task_pd_difficult',
+    #     app_sequence=['Game'],
+    #     num_demo_participants=8,
+    #     easy=0,
+    #     sim=0,
+    #     pd_only=1,
+    #     same_group=0,
+    #     doc="""
+    # This is the oTree program for treatment with easy PD game only"""
+    # ),
     dict(
         name='main_task_pgg',
         app_sequence=['Game'],
@@ -120,7 +143,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=0.0025, participation_fee=5.00, doc=""
+    real_world_currency_per_point=0.0025, participation_fee=0.00, doc="",use_browser_bots=True
 )
 # use_browser_bots=True
 #400: real_world_currency_per_point=0.0025
