@@ -13,18 +13,18 @@ SESSION_CONFIGS = [
     #     This is the oTree program for treatment with both games"""
     #
     # ),
-    dict(
-        name='main_task_sim_difficult',
-        app_sequence=['Game'],
-        num_demo_participants=8,
-        easy=0,
-        sim=1,
-        pd_only=0,
-        same_group=0,
-        doc="""
-    This is the oTree program for treatment with both games"""
-
-    ),
+    # dict(
+    #     name='main_task_sim_difficult',
+    #     app_sequence=['Game'],
+    #     num_demo_participants=8,
+    #     easy=0,
+    #     sim=1,
+    #     pd_only=0,
+    #     same_group=0,
+    #     doc="""
+    # This is the oTree program for treatment with both games"""
+    #
+    # ),
     dict(
         name='treatment_sim_easy',
         app_sequence=['Quiz','Game','GambleTask','Demographics','Payment'],
@@ -172,6 +172,12 @@ ROOMS = [
     dict(
         name='SO2',
         display_name='Spillover_Session2',
+        participant_label_file='_rooms/lab.txt',
+        # use_secure_urls=True
+    ),
+    dict(
+        name='SO3',
+        display_name='Spillover_Session3',
         participant_label_file='_rooms/lab.txt',
         # use_secure_urls=True
     )

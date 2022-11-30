@@ -19,7 +19,7 @@ class PlayerBot(Bot):
             yield (Q2, {'Q2_response': 1})
             yield (Q2Result)
         elif config['sim']==0 and config['pd_only']==0:
-            yield (Q2_Pgg, {'Q2_pgg_response': random.randint(0, 1)})
+            yield (Q2_Pgg, {'Q2_pgg_response': 1})
             yield (Q2Result_Pgg)
         else:
             yield (Q2_Pd, {'Q2_pd_response': random.randint(0, 1)})
@@ -31,10 +31,10 @@ class PlayerBot(Bot):
             # yield (Q4, {'Q4_response': random.randint(0, 1)})
             yield (Q4, {'Q4_response': 1})
             yield (Q4Result)
-        yield (Q5, {'Q5_response': random.randint(1, 4)})
+        yield (Q5, {'Q5_response': 2})
         yield (Q5Result)
         if config['sim']==1 or config['pd_only']==0:
-            yield (Q6, {'Q6_response': random.randint(1, 4)})
+            yield (Q6, {'Q6_response': 3})
             yield (Q6Result)
         # if self.player.session.config['threshold'] == 28:
         #
@@ -42,7 +42,7 @@ class PlayerBot(Bot):
         #     yield (Q6_24, {'Q6_24_response': random.randint(1, 4)})
         #     yield (Q6Result_24)
         if config['sim']==1 or config['pd_only']==1:
-            yield (Q7, {'Q7_response': random.randint(1, 4)})
+            yield (Q7, {'Q7_response': 2})
             yield (Q7Result)
         # yield (Q8, {'Q8_response': random.randint(0, 1)})
         # yield (Q8Result)
